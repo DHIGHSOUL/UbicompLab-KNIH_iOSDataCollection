@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 class CSVFileManager {
     
@@ -16,7 +17,8 @@ class CSVFileManager {
     // CSV 파일이 업로드되었는지 확인하는 Bool 값
     var csvFileUploaded: Bool = false
     
-    var fileNumber = 1
+    // 파일을 불러올 인덱스 번호를 입력받을 변수
+    var fileNumber: Int!
     
     // MARK: - Instanace member
     
@@ -61,10 +63,17 @@ class CSVFileManager {
             print("CSV파일 생성 에러: \(error)")
         }
     }
-    
+        
     // CSV 파일을 업로드하기 위해 인터넷 연결을 체크하고, 연결이 되어 있다면 업로드를 시작하는 메소드
     func checkInternetAndStartUpload() {
-        readAndUploadCSV(fileNumber: fileNumber)
+        if NetWorkManager.shared.isConnected == true {
+            let realm = try! Realm()
+            let getLastIndex = realm.objects(RealmManager.self)
+            
+            fileNumber = getLastIndex.endIndex
+            
+            readAndUploadCSV(fileNumber: fileNumber)
+        }
     }
     
     // CSV 파일을 읽어온 후 Mobius 서버에 업로드하는 메소드

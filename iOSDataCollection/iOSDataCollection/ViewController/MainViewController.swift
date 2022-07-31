@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import RealmSwift
 
 class MainViewController: UIViewController {
     
@@ -88,9 +89,17 @@ class MainViewController: UIViewController {
         view.backgroundColor = .black
         mainViewLayout()
         showSensorDatas()
+        makeRealm()
     }
     
     // MARK: - Method
+    // 파일을 저장한 번호를 추적하기 위한 인덱스를 저장하는 Realm 라이브러리 생성
+    private func makeRealm() {
+        let realm = try! Realm()
+        
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
+    }
+    
     // Main View의 Layout 지정
     private func mainViewLayout() {
         addViewsInMainView()

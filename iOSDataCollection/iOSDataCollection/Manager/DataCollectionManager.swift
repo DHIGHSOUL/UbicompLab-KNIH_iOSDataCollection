@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreMotion
+import RealmSwift
 
 class DataCollectionManager {
     
@@ -26,7 +27,9 @@ class DataCollectionManager {
     var accelerationDataString = ""
     var rotationDataString = ""
     var pressureDataString = ""
-    var indexCount = 1
+    
+    // 파일을 저장할 때 인덱싱을 하기 위한 변수
+    var indexCount: Int!
     
     // 센서 측정값을 임시로 저장하기 위한 배열
     var accelerationArray: [String] = []
@@ -192,6 +195,18 @@ class DataCollectionManager {
     @objc func makeCSVFileAndUpload() {
         print("Start save and upload")
         
+        let realm = try! Realm()
+        let getRealm = realm.objects(RealmManager.self)
+        indexCount = getRealm.endIndex
+        
+        indexCount += 1
+        
+        let saveNewIndexInRealm = RealmManager()
+        saveNewIndexInRealm.lastSavedNumber = indexCount
+        try! realm.write {
+            realm.add(saveNewIndexInRealm)
+        }
+        
         CSVFileManager.shared.writeCSV(sensorData: accelerationDataString, sensorType: "mAcc", index: indexCount)
         CSVFileManager.shared.writeCSV(sensorData: rotationDataString, sensorType: "mGyr", index: indexCount)
         CSVFileManager.shared.writeCSV(sensorData: pressureDataString, sensorType: "mPre", index: indexCount)
@@ -199,8 +214,6 @@ class DataCollectionManager {
         accelerationDataString = ""
         rotationDataString = ""
         pressureDataString = ""
-        
-        indexCount += 1
         
         CSVFileManager.shared.checkInternetAndStartUpload()
     }
