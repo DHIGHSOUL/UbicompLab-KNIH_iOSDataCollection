@@ -18,7 +18,7 @@ class CSVFileManager {
     var csvFileUploaded: Bool = false
     
     // 파일을 불러올 인덱스 번호를 입력받을 변수
-    var fileNumber: Int!
+    var fileNumber: Int = 0
     
     // MARK: - Instanace member
     
@@ -63,7 +63,7 @@ class CSVFileManager {
             print("CSV파일 생성 에러: \(error)")
         }
     }
-        
+    
     // CSV 파일을 업로드하기 위해 인터넷 연결을 체크하고, 연결이 되어 있다면 업로드를 시작하는 메소드
     func checkInternetAndStartUpload() {
         if NetWorkManager.shared.isConnected == true {
@@ -102,32 +102,92 @@ class CSVFileManager {
     // Mobius 서버에 CSV 파일을 업로드하는 메소드
     func uploadSensorDataToMobius(csvData: String, containerName: String) {
         let semaphore = DispatchSemaphore (value: 0)
-
+        
         let parameters = "{\n    \"m2m:cin\": {\n        \"con\": \"\(csvData)\"\n    }\n}"
         let postData = parameters.data(using: .utf8)
-
+        
         var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/S899/mobile/\(containerName)")!,timeoutInterval: Double.infinity)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("12345", forHTTPHeaderField: "X-M2M-RI")
         request.addValue("SIWLTfduOpL", forHTTPHeaderField: "X-M2M-Origin")
         request.addValue("application/vnd.onem2m-res+json; ty=4", forHTTPHeaderField: "Content-Type")
-
+        
         request.httpMethod = "POST"
         request.httpBody = postData
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard data != nil else {
-              print(String(describing: error))
-              semaphore.signal()
-              return
-          }
-//            print(String(data: data, encoding: .utf8)!)
+                print(String(describing: error))
+                semaphore.signal()
+                return
+            }
+            
+            // POST 성공 여부 체크, POST 실패 시 return
+            let successsRange = 200..<300
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, successsRange.contains(statusCode)
+            else {
+                print("")
+                print("====================================")
+                print("[requestPOST : http post 요청 에러]")
+                print("error : ", (response as? HTTPURLResponse)?.statusCode ?? 0)
+                print("msg : ", (response as? HTTPURLResponse)?.description ?? "")
+                print("====================================")
+                print("")
+                return
+            }
+            
+            if containerName == "mAcc" {
+                self.updateLastUploadedmAccNumber()
+            } else if containerName == "mGyr" {
+                self.updateLastUploadedmGyrNumber()
+            } else if containerName == "mPre" {
+                self.updateLastUploadedmPreNumber()
+            }
+            
             print("\(containerName) Data is served.")
             semaphore.signal()
         }
-
+        
         task.resume()
         semaphore.wait()
+    }
+    
+    // 각각 mAcc, mGyr, mPre 파잃이 업로드 성공되었을 때 Realm 내의 프로퍼티를 +1 시킴(1은 '이미 업로드됨', 0은 '업로드 되지 않음)
+    func updateLastUploadedmAccNumber() {
+        let realm = try! Realm()
+        
+        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: self.fileNumber) else {
+            print("File_\(String(describing: self.fileNumber)) not found")
+            return
+        }
+        
+        try! realm.write {
+            updateRealm.lastUploadedmAccNumber = 1
+        }
+    }
+    func updateLastUploadedmGyrNumber() {
+        let realm = try! Realm()
+        
+        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: self.fileNumber) else {
+            print("File_\(String(describing: self.fileNumber)) not found")
+            return
+        }
+        
+        try! realm.write {
+            updateRealm.lastUploadedmGyrNumber = 1
+        }
+    }
+    func updateLastUploadedmPreNumber() {
+        let realm = try! Realm()
+        
+        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: self.fileNumber) else {
+            print("File_\(String(describing: self.fileNumber)) not found")
+            return
+        }
+        
+        try! realm.write {
+            updateRealm.lastUploadedmPreNumber = 1
+        }
     }
     
 }

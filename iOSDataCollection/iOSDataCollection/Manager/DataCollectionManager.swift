@@ -29,7 +29,7 @@ class DataCollectionManager {
     var pressureDataString = ""
     
     // 파일을 저장할 때 인덱싱을 하기 위한 변수
-    var indexCount: Int!
+    var indexCount: Int = 0
     
     // 센서 측정값을 임시로 저장하기 위한 배열
     var accelerationArray: [String] = []
@@ -201,15 +201,18 @@ class DataCollectionManager {
         
         indexCount += 1
         
-        let saveNewIndexInRealm = RealmManager()
-        saveNewIndexInRealm.lastSavedNumber = indexCount
-        try! realm.write {
-            realm.add(saveNewIndexInRealm)
-        }
-        
         CSVFileManager.shared.writeCSV(sensorData: accelerationDataString, sensorType: "mAcc", index: indexCount)
         CSVFileManager.shared.writeCSV(sensorData: rotationDataString, sensorType: "mGyr", index: indexCount)
         CSVFileManager.shared.writeCSV(sensorData: pressureDataString, sensorType: "mPre", index: indexCount)
+        
+        let saveNewIndexInRealm = RealmManager()
+        saveNewIndexInRealm.lastSavedNumber = indexCount
+        saveNewIndexInRealm.lastUploadedmAccNumber = 0
+        saveNewIndexInRealm.lastUploadedmGyrNumber = 0
+        saveNewIndexInRealm.lastUploadedmPreNumber = 0
+        try! realm.write {
+            realm.add(saveNewIndexInRealm)
+        }
         
         accelerationDataString = ""
         rotationDataString = ""
