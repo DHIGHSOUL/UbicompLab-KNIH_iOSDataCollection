@@ -12,6 +12,8 @@ class CSVFileManager {
     
     static let shared = CSVFileManager()
     
+    // MARK: - Instanace member
+    
     let containerNameArray: [String] = ["mAcc", "mGyr", "mPre"]
     
     // CSV 파일이 업로드되었는지 확인하는 Bool 값
@@ -20,8 +22,15 @@ class CSVFileManager {
     // 파일을 불러올 인덱스 번호를 입력받을 변수
     var fileNumber: Int = 0
     
-    // MARK: - Instanace member
-    
+    // 인터넷 연결이 없을 때, 반복적으로 인터넷 연결을 확인하고, 연결 시 바로 모든 데이터를 업로드할 타이머
+    var uploadFailTimer = Timer()
+    // 인터넷 연결이 없을 때, 업로드되지 못한 파일의 인덱스를 가지고 있을 변수
+    var uploadFailNumber: Int = 0
+    // 마지막으로 업로드된 인덱스 값을 읽어올 변수
+    var lastSavedNumber: Int = 0
+    // 업로드에 재실패했는지 확인하기 위한 변수 -> 재실패했다면 마지막 실패 지점을 업데이트하지 않게 하기 위함
+    var checkFailAgain: Int = 0
+
     // MARK: - Method
     // CSV 폴더를 생성하는 메소드
     func createCSVFolder() {
@@ -73,6 +82,12 @@ class CSVFileManager {
             fileNumber = getLastIndex.endIndex
             
             readAndUploadCSV(fileNumber: fileNumber)
+        } else {
+            if checkFailAgain == 0 {
+                uploadFailNumber = fileNumber
+                uploadFailTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
+                checkFailAgain = 1
+            }
         }
     }
     
@@ -91,8 +106,11 @@ class CSVFileManager {
             do {
                 let dataFromPath: Data = try Data(contentsOf: fileUrl)
                 let csvFile: String = String(data: dataFromPath, encoding: .utf8) ?? "문서 없음"
+                if csvFile == "문서 없음" {
+                    return
+                }
                 let csvData = csvFile.replacingOccurrences(of: "\n", with: "")
-                uploadSensorDataToMobius(csvData: csvData, containerName: containerName)
+                uploadSensorDataToMobius(csvData: csvData, containerName: containerName, fileNumber: fileNumber)
             } catch let error {
                 print(error.localizedDescription)
             }
@@ -100,7 +118,7 @@ class CSVFileManager {
     }
     
     // Mobius 서버에 CSV 파일을 업로드하는 메소드
-    func uploadSensorDataToMobius(csvData: String, containerName: String) {
+    func uploadSensorDataToMobius(csvData: String, containerName: String, fileNumber: Int) {
         let semaphore = DispatchSemaphore (value: 0)
         
         let parameters = "{\n    \"m2m:cin\": {\n        \"con\": \"\(csvData)\"\n    }\n}"
@@ -192,6 +210,7 @@ class CSVFileManager {
         }
     }
     
+    // CSV 파일을 삭제하는 메소드
     func removeCSV(containerName: String) {
         let fileManager: FileManager = FileManager.default
         
@@ -206,6 +225,23 @@ class CSVFileManager {
             try fileManager.removeItem(at: fileUrl)
         } catch let error {
             print(error.localizedDescription)
+        }
+    }
+    
+    // 10초마다 인터넷 연결을 확인하여, 인터넷에 연결되면 업로드를 실패한 지점부터 마지막 저장된 인덱스의 파일까지 모두 업로드하는 메소드
+    @objc func reuploadIfInternetConnected() {
+        if NetWorkManager.shared.isConnected == true {
+            let realm = try! Realm()
+            let getLastIndex = realm.objects(RealmManager.self)
+            
+            lastSavedNumber = getLastIndex.endIndex
+            
+            for number in uploadFailNumber..<lastSavedNumber + 1 {
+                readAndUploadCSV(fileNumber: number)
+            }
+            
+            checkFailAgain = 0
+            uploadFailTimer.invalidate()
         }
     }
     
