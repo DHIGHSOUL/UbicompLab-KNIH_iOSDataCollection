@@ -162,7 +162,7 @@ class CSVFileManager {
                 self.updateLastUploadedmPreNumber()
             }
             
-            self.removeCSV(containerName: containerName)
+            self.removeCSV(containerName: containerName, index: fileNumber)
             
             print("\(containerName) Data is served.")
             semaphore.signal()
@@ -211,11 +211,11 @@ class CSVFileManager {
     }
     
     // CSV 파일을 삭제하는 메소드
-    func removeCSV(containerName: String) {
+    func removeCSV(containerName: String, index: Int) {
         let fileManager: FileManager = FileManager.default
         
         let folderName = "saveCSVFolder"
-        let csvFileName = "\(containerName)_\(fileNumber).csv"
+        let csvFileName = "\(containerName)_\(index).csv"
         
         let documentUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
         let diretoryUrl = documentUrl.appendingPathComponent(folderName)
