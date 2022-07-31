@@ -144,6 +144,8 @@ class CSVFileManager {
                 self.updateLastUploadedmPreNumber()
             }
             
+            self.removeCSV(containerName: containerName)
+            
             print("\(containerName) Data is served.")
             semaphore.signal()
         }
@@ -187,6 +189,23 @@ class CSVFileManager {
         
         try! realm.write {
             updateRealm.lastUploadedmPreNumber = 1
+        }
+    }
+    
+    func removeCSV(containerName: String) {
+        let fileManager: FileManager = FileManager.default
+        
+        let folderName = "saveCSVFolder"
+        let csvFileName = "\(containerName)_\(fileNumber).csv"
+        
+        let documentUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let diretoryUrl = documentUrl.appendingPathComponent(folderName)
+        let fileUrl = diretoryUrl.appendingPathComponent(csvFileName)
+        
+        do {
+            try fileManager.removeItem(at: fileUrl)
+        } catch let error {
+            print(error.localizedDescription)
         }
     }
     
