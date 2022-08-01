@@ -199,8 +199,8 @@ class DataCollectionManager {
         let realm = try! Realm()
         let getRealmToCheck = realm.objects(RealmManager.self)
         
-        for index in 1..<getRealmToCheck.endIndex + 1{
-            if getRealmToCheck[index].lastUploadedmAccNumber == 0 {
+        for index in 1..<getRealmToCheck.endIndex {
+            if getRealmToCheck[index].lastUploadedmAccNumber == 0 || getRealmToCheck[index].lastUploadedmGyrNumber == 0 || getRealmToCheck[index].lastUploadedmPreNumber == 0 {
                 return index
             }
         }
