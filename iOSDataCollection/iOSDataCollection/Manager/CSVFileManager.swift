@@ -85,7 +85,7 @@ class CSVFileManager {
         } else {
             if checkFailAgain == 0 {
                 uploadFailNumber = fileNumber
-                uploadFailTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
+                uploadFailTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
                 checkFailAgain = 1
             }
         }
@@ -109,7 +109,7 @@ class CSVFileManager {
                 if csvFile == "문서 없음" {
                     return
                 }
-                let csvData = csvFile.replacingOccurrences(of: "\n", with: "")
+                let csvData = csvFile.replacingOccurrences(of: "\n", with: ",")
                 uploadSensorDataToMobius(csvData: csvData, containerName: containerName, fileNumber: fileNumber)
             } catch let error {
                 print(error.localizedDescription)
