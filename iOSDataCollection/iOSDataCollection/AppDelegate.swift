@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NetWorkManager.shared.startMonitoring()
         CSVFileManager.shared.createCSVFolder()
         DataCollectionManager.shared.dataCollectionManagerMethod()
+        DataCollectionManager.shared.checkAndReUploadFiles()
         
         return true
     }

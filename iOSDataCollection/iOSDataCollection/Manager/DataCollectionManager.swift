@@ -13,6 +13,9 @@ class DataCollectionManager {
     
     static let shared = DataCollectionManager()
     
+    // 앱 재시작 후의 잔여 파일을 감지하고 인터넷 연결을 지속적으로 체크하기 위한 타이머
+    var restartAndCheckTimer = Timer()
+    
     // 센서 측정값을 저장하는 변수
     var newAccelerationXData = String()
     var newAccelerationYData = String()
@@ -191,6 +194,38 @@ class DataCollectionManager {
         return dateFormatter.string(from: nowDate)
     }
     
+    // 앱 재시작 시, 업로드되지 않은 파일의 인덱스를 확인하여 전부 업로드시키는 메소드
+    func checkWhenReStart() -> Int {
+        let realm = try! Realm()
+        let getRealmToCheck = realm.objects(RealmManager.self)
+        
+        for index in 1..<getRealmToCheck.endIndex + 1{
+            if getRealmToCheck[index].lastUploadedmAccNumber == 0 {
+                return index
+            }
+        }
+        
+        // Check 시 남아 있는 파일 없음(이상 없음)
+        return 0
+    }
+    
+    // Realm의 마지막 인덱스를 읽어오는 메소드
+    func getLastIndexOfRealm() -> Int {
+        let realm = try! Realm()
+        let getRealm = realm.objects(RealmManager.self)
+        let getLastIndex = getRealm.endIndex
+        
+        return getLastIndex
+    }
+    
+    // 앱 재시작 시(checkWhenReStart), 파일이 남아 있다면 인터넷 연결을 체크하고 남은 파일을 한번에 업로드함
+    func checkAndReUploadFiles() {
+        if DataCollectionManager.shared.checkWhenReStart() != 0 {
+            restartAndCheckTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadFiles), userInfo: nil, repeats: true)
+        }
+    }
+
+    // MARK: - @objc Method
     // CSV 파일을 만들고 업로드하는 메소드
     @objc func makeCSVFileAndUpload() {
         print("Start save and upload")
@@ -221,4 +256,14 @@ class DataCollectionManager {
         CSVFileManager.shared.checkInternetAndStartUpload()
     }
     
+    // 앱 재시작 후 잔여 파일을 모두 업로드하기 위한 메소드
+    @objc func reuploadFiles() {
+        if NetWorkManager.shared.isConnected == true {
+            for index in DataCollectionManager.shared.checkWhenReStart()..<DataCollectionManager.shared.getLastIndexOfRealm() + 1 {
+                CSVFileManager.shared.readAndUploadCSV(fileNumber: index)
+            }
+            
+            restartAndCheckTimer.invalidate()
+        }
+    }
 }

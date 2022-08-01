@@ -228,6 +228,7 @@ class CSVFileManager {
         }
     }
     
+    // MARK: - @objc Method
     // 10초마다 인터넷 연결을 확인하여, 인터넷에 연결되면 업로드를 실패한 지점부터 마지막 저장된 인덱스의 파일까지 모두 업로드하는 메소드
     @objc func reuploadIfInternetConnected() {
         if NetWorkManager.shared.isConnected == true {
