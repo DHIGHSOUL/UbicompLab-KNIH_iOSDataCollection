@@ -13,6 +13,7 @@
 		FD789FD3288ECF2900EB8C70 /* WindowTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */; };
 		FD789FD5288ECF4C00EB8C70 /* CheckSensorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */; };
 		FD8BB6B2288E5EA800F2F386 /* DataCollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */; };
+		FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DA328978B620007C149 /* NotificationManager.swift */; };
 		FDC1F400288FA9C9002B7BF2 /* CSVFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC1F3FF288FA9C9002B7BF2 /* CSVFileManager.swift */; };
 		FDD1D769288E508800D4E6F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D768288E508800D4E6F3 /* AppDelegate.swift */; };
 		FDD1D76B288E508800D4E6F3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D76A288E508800D4E6F3 /* SceneDelegate.swift */; };
@@ -51,6 +52,7 @@
 		FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTabBarViewController.swift; sourceTree = "<group>"; };
 		FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckSensorViewController.swift; sourceTree = "<group>"; };
 		FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionManager.swift; sourceTree = "<group>"; };
+		FDB33DA328978B620007C149 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		FDC1F3FF288FA9C9002B7BF2 /* CSVFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVFileManager.swift; sourceTree = "<group>"; };
 		FDD1D765288E508800D4E6F3 /* iOSDataCollection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSDataCollection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDD1D768288E508800D4E6F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */,
 				FDC1F3FF288FA9C9002B7BF2 /* CSVFileManager.swift */,
 				FD272AF62892B2D7009CED32 /* NetworkManager.swift */,
+				FDB33DA328978B620007C149 /* NotificationManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				FD8BB6B2288E5EA800F2F386 /* DataCollectionManager.swift in Sources */,
 				FDD1D769288E508800D4E6F3 /* AppDelegate.swift in Sources */,
 				FD75A8FE2896E27B00DC2C88 /* UserInfoViewController.swift in Sources */,
+				FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */,
 				FDC1F400288FA9C9002B7BF2 /* CSVFileManager.swift in Sources */,
 				FDD1D76B288E508800D4E6F3 /* SceneDelegate.swift in Sources */,
 				FD789FD3288ECF2900EB8C70 /* WindowTabBarViewController.swift in Sources */,
