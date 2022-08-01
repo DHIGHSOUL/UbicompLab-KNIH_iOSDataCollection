@@ -109,7 +109,7 @@ class CSVFileManager {
                 if csvFile == "문서 없음" {
                     return
                 }
-                let csvData = csvFile.replacingOccurrences(of: "\n", with: "")
+                let csvData = csvFile.replacingOccurrences(of: "\n", with: ",")
                 uploadSensorDataToMobius(csvData: csvData, containerName: containerName, fileNumber: fileNumber)
             } catch let error {
                 print(error.localizedDescription)
