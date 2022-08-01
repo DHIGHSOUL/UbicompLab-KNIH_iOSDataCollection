@@ -10,6 +10,9 @@ import RealmSwift
 
 class RealmManager: Object {
     @objc dynamic var lastSavedNumber: Int = 0
+    @objc dynamic var lastUploadedmAccNumber: Int = 0
+    @objc dynamic var lastUploadedmGyrNumber: Int = 0
+    @objc dynamic var lastUploadedmPreNumber: Int = 0
     
     override class func primaryKey() -> String? {
         return "lastSavedNumber"
