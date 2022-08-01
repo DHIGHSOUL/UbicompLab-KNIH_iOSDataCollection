@@ -83,7 +83,7 @@ class DataCollectionManager {
             }
         }
         
-        Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(makeCSVFileAndUpload), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 900, target: self, selector: #selector(makeCSVFileAndUpload), userInfo: nil, repeats: true)
     }
     
     // 가속도 측정값을 출력(print)하는 메소드

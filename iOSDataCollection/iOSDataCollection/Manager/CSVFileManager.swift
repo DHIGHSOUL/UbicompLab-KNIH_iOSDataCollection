@@ -85,7 +85,7 @@ class CSVFileManager {
         } else {
             if checkFailAgain == 0 {
                 uploadFailNumber = fileNumber
-                uploadFailTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
+                uploadFailTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
                 checkFailAgain = 1
             }
         }
