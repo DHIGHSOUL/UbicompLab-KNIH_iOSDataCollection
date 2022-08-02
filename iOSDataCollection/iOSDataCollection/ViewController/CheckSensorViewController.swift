@@ -62,6 +62,18 @@ class CheckSensorViewController: UIViewController {
         
         checkSensorViewLayout()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        checkSensorsWorking()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        checkComponentTimer.invalidate()
+    }
 
     // MARK: - Method
     // Check Sensor View의 Layout 지정
@@ -69,7 +81,6 @@ class CheckSensorViewController: UIViewController {
         addViewsInMainView()
         textFieldSetting()
         componentsInView()
-        checkSensorsWorking()
     }
     
     // AddSubView를 한 번에 실시
@@ -162,6 +173,8 @@ class CheckSensorViewController: UIViewController {
     // MARK: - @objc Method
     // 앱 내 컴포넌트들이 작동하는지 확인하는 메소드
     @objc func checkComponents() {
+        
+        print("Checking Components")
         
         if DataCollectionManager.shared.motionManager.isDeviceMotionAvailable == true {
             checkAcceleration.backgroundColor = .systemGreen
