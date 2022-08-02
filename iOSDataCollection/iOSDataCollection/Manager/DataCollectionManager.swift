@@ -201,8 +201,13 @@ class DataCollectionManager {
         
         // Realm의 마지막 인덱스가 0이 아니면, 1 ~ 마지막 인덱스까지 업로드 인덱스가 0인 인덱스 필터링
         if getRealmToCheck.endIndex != 0 {
-            for index in 0..<getRealmToCheck.endIndex + 1 {
-                if getRealmToCheck[index].lastUploadedmAccNumber == 0 || getRealmToCheck[index].lastUploadedmGyrNumber == 0 || getRealmToCheck[index].lastUploadedmPreNumber == 0 {
+            for index in 0..<getLastIndexOfRealm() + 1 {
+                if index == 0 {
+                    continue
+                }
+                let checkRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: index)
+                
+                if checkRealm?.lastUploadedmAccNumber == 0 || checkRealm?.lastUploadedmGyrNumber == 0 || checkRealm?.lastUploadedmPreNumber == 0 {
                     return index
                 }
             }
@@ -223,7 +228,7 @@ class DataCollectionManager {
     
     // 앱 재시작 시(checkWhenReStart), 파일이 남아 있다면 인터넷 연결을 체크하고 남은 파일을 한번에 업로드함
     func checkAndReUploadFiles() {
-        if DataCollectionManager.shared.checkWhenReStart() != 0 {
+        if checkWhenReStart() != 0 {
             restartAndCheckTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadFiles), userInfo: nil, repeats: true)
         }
     }
@@ -262,7 +267,7 @@ class DataCollectionManager {
     // 앱 재시작 후 잔여 파일을 모두 업로드하기 위한 메소드
     @objc func reuploadFiles() {
         if NetWorkManager.shared.isConnected == true {
-            for index in DataCollectionManager.shared.checkWhenReStart()..<DataCollectionManager.shared.getLastIndexOfRealm() + 1 {
+            for index in checkWhenReStart()..<getLastIndexOfRealm() + 1 {
                 CSVFileManager.shared.readAndUploadCSV(fileNumber: index)
             }
             

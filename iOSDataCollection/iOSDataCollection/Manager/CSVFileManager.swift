@@ -154,11 +154,11 @@ class CSVFileManager {
             }
             
             if containerName == "mAcc" {
-                self.updateLastUploadedmAccNumber()
+                self.updateLastUploadedmAccNumber(fileNumber: fileNumber)
             } else if containerName == "mGyr" {
-                self.updateLastUploadedmGyrNumber()
+                self.updateLastUploadedmGyrNumber(fileNumber: fileNumber)
             } else if containerName == "mPre" {
-                self.updateLastUploadedmPreNumber()
+                self.updateLastUploadedmPreNumber(fileNumber: fileNumber)
             }
             
             self.removeCSV(containerName: containerName, index: fileNumber)
@@ -172,10 +172,10 @@ class CSVFileManager {
     }
     
     // 각각 mAcc, mGyr, mPre 파잃이 업로드 성공되었을 때 Realm 내의 프로퍼티를 +1 시킴(1은 '이미 업로드됨', 0은 '업로드 되지 않음)
-    func updateLastUploadedmAccNumber() {
+    func updateLastUploadedmAccNumber(fileNumber: Int) {
         let realm = try! Realm()
         
-        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: self.fileNumber) else {
+        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: fileNumber) else {
             print("File_\(String(describing: self.fileNumber)) not found")
             return
         }
@@ -184,10 +184,10 @@ class CSVFileManager {
             updateRealm.lastUploadedmAccNumber = 1
         }
     }
-    func updateLastUploadedmGyrNumber() {
+    func updateLastUploadedmGyrNumber(fileNumber: Int) {
         let realm = try! Realm()
         
-        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: self.fileNumber) else {
+        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: fileNumber) else {
             print("File_\(String(describing: self.fileNumber)) not found")
             return
         }
@@ -196,10 +196,10 @@ class CSVFileManager {
             updateRealm.lastUploadedmGyrNumber = 1
         }
     }
-    func updateLastUploadedmPreNumber() {
+    func updateLastUploadedmPreNumber(fileNumber: Int) {
         let realm = try! Realm()
         
-        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: self.fileNumber) else {
+        guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: fileNumber) else {
             print("File_\(String(describing: self.fileNumber)) not found")
             return
         }
