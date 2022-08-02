@@ -199,9 +199,12 @@ class DataCollectionManager {
         let realm = try! Realm()
         let getRealmToCheck = realm.objects(RealmManager.self)
         
-        for index in 1..<getRealmToCheck.endIndex {
-            if getRealmToCheck[index].lastUploadedmAccNumber == 0 || getRealmToCheck[index].lastUploadedmGyrNumber == 0 || getRealmToCheck[index].lastUploadedmPreNumber == 0 {
-                return index
+        // Realm의 마지막 인덱스가 0이 아니면, 1 ~ 마지막 인덱스까지 업로드 인덱스가 0인 인덱스 필터링
+        if getRealmToCheck.endIndex != 0 {
+            for index in 1..<getRealmToCheck.endIndex + 1 {
+                if getRealmToCheck[index].lastUploadedmAccNumber == 0 || getRealmToCheck[index].lastUploadedmGyrNumber == 0 || getRealmToCheck[index].lastUploadedmPreNumber == 0 {
+                    return index
+                }
             }
         }
         

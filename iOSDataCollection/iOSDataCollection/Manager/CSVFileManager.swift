@@ -76,10 +76,7 @@ class CSVFileManager {
     // CSV 파일을 업로드하기 위해 인터넷 연결을 체크하고, 연결이 되어 있다면 업로드를 시작하는 메소드
     func checkInternetAndStartUpload() {
         if NetWorkManager.shared.isConnected == true {
-            let realm = try! Realm()
-            let getLastIndex = realm.objects(RealmManager.self)
-            
-            fileNumber = getLastIndex.endIndex
+            fileNumber = DataCollectionManager.shared.getLastIndexOfRealm()
             
             readAndUploadCSV(fileNumber: fileNumber)
         } else {
@@ -229,13 +226,10 @@ class CSVFileManager {
     }
     
     // MARK: - @objc Method
-    // 10초마다 인터넷 연결을 확인하여, 인터넷에 연결되면 업로드를 실패한 지점부터 마지막 저장된 인덱스의 파일까지 모두 업로드하는 메소드
+    // 특정 시간마다 인터넷 연결을 확인하여, 인터넷에 연결되면 업로드를 실패한 지점부터 마지막 저장된 인덱스의 파일까지 모두 업로드하는 메소드
     @objc func reuploadIfInternetConnected() {
         if NetWorkManager.shared.isConnected == true {
-            let realm = try! Realm()
-            let getLastIndex = realm.objects(RealmManager.self)
-            
-            lastSavedNumber = getLastIndex.endIndex
+            lastSavedNumber = DataCollectionManager.shared.getLastIndexOfRealm()
             
             for number in uploadFailNumber..<lastSavedNumber + 1 {
                 readAndUploadCSV(fileNumber: number)
