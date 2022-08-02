@@ -121,7 +121,9 @@ class CSVFileManager {
         let parameters = "{\n    \"m2m:cin\": {\n        \"con\": \"\(csvData)\"\n    }\n}"
         let postData = parameters.data(using: .utf8)
         
-        var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/S899/mobile/\(containerName)")!,timeoutInterval: Double.infinity)
+        let userID = UserDefaults.standard.string(forKey: "ID")!
+        
+        var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/\(String(describing: userID))/mobile/\(containerName)")!,timeoutInterval: Double.infinity)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("12345", forHTTPHeaderField: "X-M2M-RI")
         request.addValue("SIWLTfduOpL", forHTTPHeaderField: "X-M2M-Origin")

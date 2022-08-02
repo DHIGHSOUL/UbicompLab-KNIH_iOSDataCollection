@@ -83,7 +83,7 @@ class DataCollectionManager {
             }
         }
         
-        Timer.scheduledTimer(timeInterval: 900, target: self, selector: #selector(makeCSVFileAndUpload), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(makeCSVFileAndUpload), userInfo: nil, repeats: true)
     }
     
     // 가속도 측정값을 출력(print)하는 메소드
@@ -201,7 +201,7 @@ class DataCollectionManager {
         
         // Realm의 마지막 인덱스가 0이 아니면, 1 ~ 마지막 인덱스까지 업로드 인덱스가 0인 인덱스 필터링
         if getRealmToCheck.endIndex != 0 {
-            for index in 1..<getRealmToCheck.endIndex + 1 {
+            for index in 0..<getRealmToCheck.endIndex + 1 {
                 if getRealmToCheck[index].lastUploadedmAccNumber == 0 || getRealmToCheck[index].lastUploadedmGyrNumber == 0 || getRealmToCheck[index].lastUploadedmPreNumber == 0 {
                     return index
                 }

@@ -11,12 +11,17 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        NotificationManager.shared.notificationCenter.delegate = self
         NotificationManager.shared.requestNotificationAuthorization()
-        NetWorkManager.shared.startMonitoring()
-        CSVFileManager.shared.createCSVFolder()
-        DataCollectionManager.shared.dataCollectionManagerMethod()
-        DataCollectionManager.shared.checkAndReUploadFiles()
+        
+        if UserDefaults.standard.integer(forKey: "appAuthorization") != 1 {
+            UserDefaults.standard.setValue(0, forKey: "appAuthorization")
+        } else {
+            NotificationManager.shared.notificationCenter.delegate = self
+            NetWorkManager.shared.startMonitoring()
+            CSVFileManager.shared.createCSVFolder()
+            DataCollectionManager.shared.dataCollectionManagerMethod()
+            DataCollectionManager.shared.checkAndReUploadFiles()
+        }
         
         return true
     }
