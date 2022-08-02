@@ -14,15 +14,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         window?.overrideUserInterfaceStyle = .dark
         
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: windowScene)
-        let firstViewController = MainViewController()
-        
-        window?.rootViewController = firstViewController
-        window?.makeKeyAndVisible()
-        
-        let tabBarController = WindowTabBarViewController()
-        window?.rootViewController = tabBarController
+        if UserDefaults.standard.integer(forKey: "appAuthorization") == 1 {
+            guard let windowScene = (scene as? UIWindowScene) else { return }
+            window = UIWindow(windowScene: windowScene)
+            let firstViewController = MainViewController()
+            
+            window?.rootViewController = firstViewController
+            window?.makeKeyAndVisible()
+            
+            let tabBarController = WindowTabBarViewController()
+            window?.rootViewController = tabBarController
+        } else {
+            guard let windowScene = (scene as? UIWindowScene) else { return }
+            window = UIWindow(windowScene: windowScene)
+            let userInfoViewController = UserInfoViewController()
+            
+            window?.rootViewController = userInfoViewController
+            window?.makeKeyAndVisible()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

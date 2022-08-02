@@ -89,8 +89,8 @@ class CheckSensorViewController: UIViewController {
         
         for newView in mainViews {
             view.addSubview(newView)
-            view.translatesAutoresizingMaskIntoConstraints = false
-            view.sizeToFit()
+            newView.translatesAutoresizingMaskIntoConstraints = false
+            newView.sizeToFit()
         }
     }
     
