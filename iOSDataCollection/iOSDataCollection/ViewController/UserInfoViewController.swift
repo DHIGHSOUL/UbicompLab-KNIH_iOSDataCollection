@@ -109,19 +109,23 @@ class UserInfoViewController: UIViewController {
         
         // 입력된 번호 길이가 3자리가 아니거나, 숫자가 아니라면 오류
         if Int(enteredID ?? "오류") == nil {
-            let noNumberAlert = UIAlertController(title: "ID에는 숫자만 입력되어야 합니다!", message: "다시 입력해주세요", preferredStyle: .alert)
-            let checkButton = UIAlertAction(title: "확인", style: .default)
+            let noNumberAlert = UIAlertController(title: "ID는 숫자만 입력되어야 합니다!", message: "다시 입력해주세요!", preferredStyle: .alert)
+            let checkButton = UIAlertAction(title: "확인", style: .default) {_ in
+                self.userIDTextField.text = ""
+            }
             noNumberAlert.addAction(checkButton)
             present(noNumberAlert, animated: true, completion: nil)
             
             return false
         } else if (enteredID ?? "오류").count != 3 {
-                let lengthErrorAlert = UIAlertController(title: "ID 길이는 3자리입니다!", message: "다시 입력해주세요", preferredStyle: .alert)
-                let checkButton = UIAlertAction(title: "확인", style: .default)
-                lengthErrorAlert.addAction(checkButton)
-                present(lengthErrorAlert, animated: true, completion: nil)
-                
-                return false
+            let lengthErrorAlert = UIAlertController(title: "ID 길이는 3자리입니다!", message: "다시 입력해주세요!", preferredStyle: .alert)
+            let checkButton = UIAlertAction(title: "확인", style: .default) {_ in
+                self.userIDTextField.text = ""
+            }
+            lengthErrorAlert.addAction(checkButton)
+            present(lengthErrorAlert, animated: true, completion: nil)
+            
+            return false
         }
         
         return true
@@ -144,7 +148,7 @@ class UserInfoViewController: UIViewController {
             print(UserDefaults.standard.integer(forKey: "appAuthorization"))
             
             if UserDefaults.standard.integer(forKey: "appAuthorization") == 1 {
-                let successAlert = UIAlertController(title: "저장되었습니다!", message: "앱이 꺼집니다! 종료 후 앱을 재시작해주세요!", preferredStyle: .alert)
+                let successAlert = UIAlertController(title: "저장되었습니다!", message: "앱이 꺼집니다. 종료 후 앱을 재시작해주세요!", preferredStyle: .alert)
                 let checkButton = UIAlertAction(title: "확인", style: .default) {_ in
                     UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
