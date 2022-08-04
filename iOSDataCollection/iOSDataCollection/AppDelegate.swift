@@ -11,11 +11,10 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        NotificationManager.shared.requestNotificationAuthorization()
-        
         if UserDefaults.standard.integer(forKey: "appAuthorization") != 1 {
             UserDefaults.standard.setValue(0, forKey: "appAuthorization")
         } else {
+            NotificationManager.shared.requestNotificationAuthorization()
             NotificationManager.shared.notificationCenter.delegate = self
             NetWorkManager.shared.startMonitoring()
             CSVFileManager.shared.createCSVFolder()
