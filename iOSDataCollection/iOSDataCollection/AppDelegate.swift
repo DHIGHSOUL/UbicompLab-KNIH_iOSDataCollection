@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             NotificationManager.shared.requestNotificationAuthorization()
             HealthDataManager.shared.requestHealthDataAuthorization()
+            HealthDataManager.shared.getHealthDataLoop()
             NotificationManager.shared.notificationCenter.delegate = self
             NetWorkManager.shared.startMonitoring()
             CSVFileManager.shared.createCSVFolder()

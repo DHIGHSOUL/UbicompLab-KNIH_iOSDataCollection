@@ -13,7 +13,7 @@ class CSVFileManager {
     static let shared = CSVFileManager()
     
     // MARK: - Instanace member
-    
+    // 컨테이너 이름 배열
     let containerNameArray: [String] = ["mAcc", "mGyr", "mPre"]
     
     // CSV 파일이 업로드되었는지 확인하는 Bool 값

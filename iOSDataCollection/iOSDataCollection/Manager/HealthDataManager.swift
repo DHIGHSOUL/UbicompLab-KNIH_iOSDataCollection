@@ -15,6 +15,11 @@ class HealthDataManager {
     let healthStore = HKHealthStore()
     
     // MARK: - Instance member
+    // Health 데이터들을 업로드하기 위한 타이머
+    var uploadHealthDataTimer = Timer()
+    
+    // 컨테이너 이름 배열
+    let containerNameArray: [String] = ["step", "energy"]
     
     // MARK: - Method
     // 건강 정보를 읽기 위해 사용자의 허가를 얻기 위한 메소드
@@ -38,11 +43,10 @@ class HealthDataManager {
     }
     
     // 일별로 걸음 수를 얻는 메소드
-    func getStepCountPerDay() {
+    func getStepCountPerDay(end: Date) {
         guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }
-        let now = Date()
-        let startDate = Calendar.current.startOfDay(for: now)
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: now, options: .strictStartDate)
+        let startDate = Calendar.current.startOfDay(for: end)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: end, options: .strictStartDate)
         
         var stepSum: Double = 0.0
         
@@ -53,21 +57,23 @@ class HealthDataManager {
             }
             
             stepSum = sum.doubleValue(for: HKUnit.count())
+            let startUnixTime = startDate.timeIntervalSince1970
+            let endUnixTime = end.timeIntervalSince1970
             
-            print("시작 시간 : \(startDate)")
-            print("종료 시간 : \(now)")
-            print("걸음 수 : \(Int(stepSum))")
+            let stepString = "\(Int(startUnixTime)),\(Int(endUnixTime)),\(String(Int(stepSum)))"
+            
+            print("걸음 수 : \(stepString)")
+            UserDefaults.standard.setValue(stepString, forKey: "step")
         }
         
         healthStore.execute(query)
     }
     
     // 일별로 사용한 에너지(칼로리)를 얻는 메소드
-    func getBurnedEnergyPerDay() {
+    func getBurnedEnergyPerDay(end: Date) {
         guard let energyType = HKSampleType.quantityType(forIdentifier: .activeEnergyBurned) else { return }
-        let now = Date()
-        let startDate = Calendar.current.startOfDay(for: now)
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: now, options: .strictStartDate)
+        let startDate = Calendar.current.startOfDay(for: end)
+        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: end, options: .strictStartDate)
         
         var energySum: Double = 0.0
         
@@ -78,10 +84,13 @@ class HealthDataManager {
             }
             
             energySum = sum.doubleValue(for: HKUnit.kilocalorie())
+            let startUnixTime = startDate.timeIntervalSince1970
+            let endUnixTime = end.timeIntervalSince1970
             
-            print("시작 시간 : \(startDate)")
-            print("종료 시간 : \(now)")
-            print("소비 에너지 : \(Int(energySum))")
+            let energyString = "\(Int(startUnixTime)),\(Int(endUnixTime)),\(String(Int(energySum)))"
+            
+            print("소비 에너지 : \(energyString)")
+            UserDefaults.standard.setValue(energyString, forKey: "energy")
         }
         
         healthStore.execute(query)
@@ -89,18 +98,14 @@ class HealthDataManager {
     
     // 건강 정보를 받아오는 루프를 생성하는 메소드
     func getHealthDataLoop() {
-        print("------------------------------------------------------------")
-        print(Date.now)
-        print("------------------------------------------------------------")
-        
         let calender = Calendar.current
         
-        let now = Date()
-        let getDataTime = calender.date(bySettingHour: 00, minute: 00, second: 00, of: now)!
+        let startTime = Date()
+        let getDataTime = calender.date(bySettingHour: 23, minute: 59, second: 59, of: startTime)!
         
         var getHealthDataTimer = Timer()
         
-        getHealthDataTimer = Timer.init(fireAt: getDataTime, interval: 10, target: self, selector: #selector(getHealthDatas), userInfo: nil, repeats: true)
+        getHealthDataTimer = Timer.init(fireAt: getDataTime, interval: 86400, target: self, selector: #selector(getHealthDatas), userInfo: nil, repeats: true)
         
         print("Loop Started")
         print("------------------------------------------------------------")
@@ -108,9 +113,69 @@ class HealthDataManager {
     }
     
     // MARK: - @objc Method
+    // Health 데이터들을 가져오는 메소드
     @objc func getHealthDatas() {
-        getStepCountPerDay()
-        getBurnedEnergyPerDay()
+        let now = Date()
+        
+        getStepCountPerDay(end: now)
+        getBurnedEnergyPerDay(end: now)
+        
+        uploadHealthDataTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(uploadHealthDatas), userInfo: nil, repeats: true)
+    }
+    
+    // TODO: 서버에 관련 컨터이너 만들어야 함 -
+    // 인터넷 연결이 감지되면 UserDefaults DB에 저장되어 있는 Health 데이터들을 업로드하는 메소드
+    @objc func uploadHealthDatas() {
+        if NetWorkManager.shared.isConnected == true {
+            for containerName in containerNameArray {
+                if UserDefaults.standard.string(forKey: containerName) != "" {
+                    let semaphore = DispatchSemaphore (value: 0)
+                    
+                    let parameters = "{\n    \"m2m:cin\": {\n        \"con\": \"\(String(describing: UserDefaults.standard.string(forKey: containerName)))\"\n    }\n}"
+                    let postData = parameters.data(using: .utf8)
+                    
+                    let userID = UserDefaults.standard.string(forKey: "ID")!
+                    
+                    var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/\(String(describing: userID))/mobile/\(containerName)")!,timeoutInterval: Double.infinity)
+                    request.addValue("application/json", forHTTPHeaderField: "Accept")
+                    request.addValue("12345", forHTTPHeaderField: "X-M2M-RI")
+                    request.addValue("SIWLTfduOpL", forHTTPHeaderField: "X-M2M-Origin")
+                    request.addValue("application/vnd.onem2m-res+json; ty=4", forHTTPHeaderField: "Content-Type")
+                    
+                    request.httpMethod = "POST"
+                    request.httpBody = postData
+                    
+                    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                        guard data != nil else {
+                            print(String(describing: error))
+                            semaphore.signal()
+                            return
+                        }
+                        
+                        // POST 성공 여부 체크, POST 실패 시 return
+                        let successsRange = 200..<300
+                        guard let statusCode = (response as? HTTPURLResponse)?.statusCode, successsRange.contains(statusCode)
+                        else {
+                            print("")
+                            print("====================================")
+                            print("[requestPOST : http post 요청 에러]")
+                            print("error : ", (response as? HTTPURLResponse)?.statusCode ?? 0)
+                            print("msg : ", (response as? HTTPURLResponse)?.description ?? "")
+                            print("====================================")
+                            print("")
+                            return
+                        }
+                        
+                        print("\(containerName) Data is served.")
+                        UserDefaults.standard.setValue("", forKey: containerName)
+                        semaphore.signal()
+                    }
+                    task.resume()
+                    semaphore.wait()
+                }
+            }
+            uploadHealthDataTimer.invalidate()
+        }
     }
     
 }
