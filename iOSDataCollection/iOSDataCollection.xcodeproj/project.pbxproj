@@ -57,6 +57,7 @@
 		FDB33DA328978B620007C149 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		FDB33DC9289950210007C149 /* HealthDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataManager.swift; sourceTree = "<group>"; };
 		FDB33DCB2899505F0007C149 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
+		FDB33DF728997F5B0007C149 /* iOSDataCollection.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iOSDataCollection.entitlements; sourceTree = "<group>"; };
 		FDC1F3FF288FA9C9002B7BF2 /* CSVFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVFileManager.swift; sourceTree = "<group>"; };
 		FDD1D765288E508800D4E6F3 /* iOSDataCollection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSDataCollection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDD1D768288E508800D4E6F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -125,6 +126,7 @@
 		FDD1D767288E508800D4E6F3 /* iOSDataCollection */ = {
 			isa = PBXGroup;
 			children = (
+				FDB33DF728997F5B0007C149 /* iOSDataCollection.entitlements */,
 				FDD1D768288E508800D4E6F3 /* AppDelegate.swift */,
 				FDD1D76A288E508800D4E6F3 /* SceneDelegate.swift */,
 				FDD1D774288E508900D4E6F3 /* Assets.xcassets */,
@@ -158,10 +160,10 @@
 		FDD1D79B288E512C00D4E6F3 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				FD75A8FD2896E27B00DC2C88 /* UserInfoViewController.swift */,
 				FDD1D76C288E508800D4E6F3 /* MainViewController.swift */,
 				FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */,
 				FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */,
-				FD75A8FD2896E27B00DC2C88 /* UserInfoViewController.swift */,
 				FDB33DCB2899505F0007C149 /* MenuViewController.swift */,
 			);
 			path = ViewController;
@@ -507,6 +509,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = iOSDataCollection/iOSDataCollection.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8RN9H3Z673;
@@ -537,6 +540,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = iOSDataCollection/iOSDataCollection.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8RN9H3Z673;

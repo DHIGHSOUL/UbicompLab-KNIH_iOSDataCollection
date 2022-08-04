@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.standard.setValue(0, forKey: "appAuthorization")
         } else {
             NotificationManager.shared.requestNotificationAuthorization()
+            HealthDataManager.shared.requestHealthDataAuthorization()
             NotificationManager.shared.notificationCenter.delegate = self
             NetWorkManager.shared.startMonitoring()
             CSVFileManager.shared.createCSVFolder()

@@ -76,6 +76,12 @@ class CheckSensorViewController: UIViewController {
     }
 
     // MARK: - Method
+    // 고도, 기압계 센서 작동을 측정하기 위해 NSNumber 값을 가져오는 메소드
+    func sensorDataForCheck(_ altimeter: CMAltitudeData) {
+    altitudeDataForCheckSensor = altimeter.relativeAltitude
+    pressureDataForCheckSensor = altimeter.pressure
+}
+    
     // Check Sensor View의 Layout 지정
     private func checkSensorViewLayout() {
         addViewsInMainView()
@@ -164,15 +170,9 @@ class CheckSensorViewController: UIViewController {
         self.checkComponentTimer = Timer.scheduledTimer(timeInterval: checkComponentTimeInterval, target: self, selector: #selector(checkComponents), userInfo: nil, repeats: true)
     }
     
-    // 고도, 기압계 센서 작동을 측정하기 위해 NSNumber 값을 가져오는 메소드
-    func sensorDataForCheck(_ altimeter: CMAltitudeData) {
-        altitudeDataForCheckSensor = altimeter.relativeAltitude
-        pressureDataForCheckSensor = altimeter.pressure
-    }
-    
     // MARK: - @objc Method
     // 앱 내 컴포넌트들이 작동하는지 확인하는 메소드
-    @objc func checkComponents() {
+    @objc private func checkComponents() {
         
         if DataCollectionManager.shared.motionManager.isDeviceMotionAvailable == true {
             checkAcceleration.backgroundColor = .systemGreen

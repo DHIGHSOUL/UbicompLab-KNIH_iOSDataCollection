@@ -117,7 +117,6 @@ class MainViewController: UIViewController {
         for newView in mainViews {
             view.addSubview(newView)
             newView.translatesAutoresizingMaskIntoConstraints = false
-            newView.sizeToFit()
         }
     }
     
@@ -238,7 +237,7 @@ class MainViewController: UIViewController {
     
     // MARK: - @objc Method
     // 가속도, 각속도 측정값 표시 메소드
-    @objc func showAccelerationAndRotationData() {
+    @objc private func showAccelerationAndRotationData() {
         showAccelerationXTextField.text = DataCollectionManager.shared.newAccelerationXData
         showAccelerationYTextField.text = DataCollectionManager.shared.newAccelerationYData
         showAccelerationZTextField.text = DataCollectionManager.shared.newAccelerationZData
@@ -248,7 +247,7 @@ class MainViewController: UIViewController {
     }
     
     // 고도, 기압 측정값 표시 준비 메소드
-    @objc func showAltitudeAndPressureData() {
+    @objc private func showAltitudeAndPressureData() {
         showAltitudeTextField.text = DataCollectionManager.shared.newAltitudeData
         showPressureTextField.text = DataCollectionManager.shared.newPressureData
     }

@@ -30,7 +30,7 @@ class UserInfoViewController: UIViewController {
     }()
     
     // User ID를 입력받을 TextField
-    let userIDTextField: UITextField = {
+    private let userIDTextField: UITextField = {
         let field = UITextField()
         field.backgroundColor = .white
         field.textColor = .black
@@ -40,7 +40,7 @@ class UserInfoViewController: UIViewController {
     }()
     
     // 저장하기 버튼
-    let saveIDButton: UIButton = {
+    private let saveIDButton: UIButton = {
         let button = UIButton()
         button.clipsToBounds = true
         button.setTitle("저장하기", for: .normal)
@@ -138,8 +138,6 @@ class UserInfoViewController: UIViewController {
     // MARK: - @objc Method
     // 저장하기 버튼을 눌러 User ID를 UserDefaults에 저장하고 앱을 재시작시키는 메소드
     @objc private func pressSaveUserIDButton() {
-        print(UserDefaults.standard.integer(forKey: "appAuthorization"))
-        
         if checkUserID() == true {
             UserDefaults.standard.setValue("S\(userIDTextField.text!)", forKey: "ID")
             print("User ID = \(String(describing: UserDefaults.standard.string(forKey: "ID")))")
@@ -148,7 +146,7 @@ class UserInfoViewController: UIViewController {
             print(UserDefaults.standard.integer(forKey: "appAuthorization"))
             
             if UserDefaults.standard.integer(forKey: "appAuthorization") == 1 {
-                let successAlert = UIAlertController(title: "저장되었습니다!", message: "앱이 꺼집니다. 종료 후 앱을 재시작해주세요!", preferredStyle: .alert)
+                let successAlert = UIAlertController(title: "저장이 완료되었습니다", message: "앱이 꺼집니다. 종료 후 앱을 재시작해주세요!", preferredStyle: .alert)
                 let checkButton = UIAlertAction(title: "확인", style: .default) {_ in
                     UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

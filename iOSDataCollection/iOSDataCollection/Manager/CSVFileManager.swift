@@ -75,18 +75,18 @@ class CSVFileManager {
     
     // CSV 파일을 업로드하기 위해 인터넷 연결을 체크하고, 연결이 되어 있다면 업로드를 시작하는 메소드
     func checkInternetAndStartUpload() {
-        if NetWorkManager.shared.isConnected == true {
-            fileNumber = DataCollectionManager.shared.getLastIndexOfRealm()
-            
-            readAndUploadCSV(fileNumber: fileNumber)
-        } else {
-            if checkFailAgain == 0 {
-                uploadFailNumber = fileNumber
-                uploadFailTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
-                checkFailAgain = 1
-            }
+    if NetWorkManager.shared.isConnected == true {
+        fileNumber = DataCollectionManager.shared.getLastIndexOfRealm()
+        
+        readAndUploadCSV(fileNumber: fileNumber)
+    } else {
+        if checkFailAgain == 0 {
+            uploadFailNumber = fileNumber
+            uploadFailTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
+            checkFailAgain = 1
         }
     }
+}
     
     // CSV 파일을 읽어온 후 Mobius 서버에 업로드하는 메소드
     func readAndUploadCSV(fileNumber: Int) {
@@ -115,7 +115,7 @@ class CSVFileManager {
     }
     
     // Mobius 서버에 CSV 파일을 업로드하는 메소드
-    func uploadSensorDataToMobius(csvData: String, containerName: String, fileNumber: Int) {
+    private func uploadSensorDataToMobius(csvData: String, containerName: String, fileNumber: Int) {
         let semaphore = DispatchSemaphore (value: 0)
         
         let parameters = "{\n    \"m2m:cin\": {\n        \"con\": \"\(csvData)\"\n    }\n}"
@@ -172,7 +172,7 @@ class CSVFileManager {
     }
     
     // 각각 mAcc, mGyr, mPre 파잃이 업로드 성공되었을 때 Realm 내의 프로퍼티를 +1 시킴(1은 '이미 업로드됨', 0은 '업로드 되지 않음)
-    func updateLastUploadedmAccNumber(fileNumber: Int) {
+    private func updateLastUploadedmAccNumber(fileNumber: Int) {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: fileNumber) else {
@@ -184,7 +184,7 @@ class CSVFileManager {
             updateRealm.lastUploadedmAccNumber = 1
         }
     }
-    func updateLastUploadedmGyrNumber(fileNumber: Int) {
+    private func updateLastUploadedmGyrNumber(fileNumber: Int) {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: fileNumber) else {
@@ -196,7 +196,7 @@ class CSVFileManager {
             updateRealm.lastUploadedmGyrNumber = 1
         }
     }
-    func updateLastUploadedmPreNumber(fileNumber: Int) {
+    private func updateLastUploadedmPreNumber(fileNumber: Int) {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: fileNumber) else {
@@ -210,7 +210,7 @@ class CSVFileManager {
     }
     
     // CSV 파일을 삭제하는 메소드
-    func removeCSV(containerName: String, index: Int) {
+    private func removeCSV(containerName: String, index: Int) {
         let fileManager: FileManager = FileManager.default
         
         let folderName = "saveCSVFolder"

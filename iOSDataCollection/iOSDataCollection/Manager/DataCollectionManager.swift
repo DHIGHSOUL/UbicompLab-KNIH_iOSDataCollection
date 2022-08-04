@@ -47,6 +47,13 @@ class DataCollectionManager {
     var currentPressure = NSNumber()
     
     // MARK: - Method
+    // UnixTime을 가져오는 메소드
+    public func getUnixTime() -> String {
+        let nowUnixTime = Date().timeIntervalSince1970
+        
+        return String(Int(nowUnixTime))
+    }
+    
     // 데이터들을 관리하는 매니저 메소드
     func dataCollectionManagerMethod() {
         print("Start Data Collection")
@@ -84,6 +91,22 @@ class DataCollectionManager {
         }
         
         Timer.scheduledTimer(timeInterval: 900, target: self, selector: #selector(makeCSVFileAndUpload), userInfo: nil, repeats: true)
+    }
+    
+    // Realm의 마지막 인덱스를 읽어오는 메소드
+    func getLastIndexOfRealm() -> Int {
+        let realm = try! Realm()
+        let getRealm = realm.objects(RealmManager.self)
+        let getLastIndex = getRealm.endIndex
+        
+        return getLastIndex
+    }
+    
+    // 앱 재시작 시(checkWhenReStart), 파일이 남아 있다면 인터넷 연결을 체크하고 남은 파일을 한번에 업로드함
+    func checkAndReUploadFiles() {
+        if checkWhenReStart() != 0 {
+            restartAndCheckTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadFiles), userInfo: nil, repeats: true)
+        }
     }
     
     // 가속도 측정값을 출력(print)하는 메소드
@@ -151,15 +174,8 @@ class DataCollectionManager {
         }
     }
     
-    // UnixTime을 가져오는 메소드
-    public func getUnixTime() -> String {
-        let nowUnixTime = Date().timeIntervalSince1970
-        
-        return String(Int(nowUnixTime))
-    }
-    
     // CSV 파일에 입력될 String을 만들기 위해 실행되는 메소드
-    func makeStringToSaveCSV(sensorDataArray: [String], sensorType: String) {
+    private func makeStringToSaveCSV(sensorDataArray: [String], sensorType: String) {
         if sensorType == "Acceleration" {
             accelerationDataString += getUnixTime()
             
@@ -185,17 +201,8 @@ class DataCollectionManager {
         }
     }
     
-    // 현재 시간(not UnixTime)을 가져오는 메소드
-    public func getNowDateAndTime() -> String {
-        let nowDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyMMddHHmm"
-        
-        return dateFormatter.string(from: nowDate)
-    }
-    
     // 앱 재시작 시, 업로드되지 않은 파일의 인덱스를 확인하여 전부 업로드시키는 메소드
-    func checkWhenReStart() -> Int {
+    private func checkWhenReStart() -> Int {
         let realm = try! Realm()
         let getRealmToCheck = realm.objects(RealmManager.self)
         
@@ -216,26 +223,10 @@ class DataCollectionManager {
         // Check 시 남아 있는 파일 없음(이상 없음)
         return 0
     }
-    
-    // Realm의 마지막 인덱스를 읽어오는 메소드
-    func getLastIndexOfRealm() -> Int {
-        let realm = try! Realm()
-        let getRealm = realm.objects(RealmManager.self)
-        let getLastIndex = getRealm.endIndex
-        
-        return getLastIndex
-    }
-    
-    // 앱 재시작 시(checkWhenReStart), 파일이 남아 있다면 인터넷 연결을 체크하고 남은 파일을 한번에 업로드함
-    func checkAndReUploadFiles() {
-        if checkWhenReStart() != 0 {
-            restartAndCheckTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadFiles), userInfo: nil, repeats: true)
-        }
-    }
 
     // MARK: - @objc Method
     // CSV 파일을 만들고 업로드하는 메소드
-    @objc func makeCSVFileAndUpload() {
+    @objc private func makeCSVFileAndUpload() {
         print("Start save and upload")
         
         let realm = try! Realm()
@@ -265,13 +256,14 @@ class DataCollectionManager {
     }
     
     // 앱 재시작 후 잔여 파일을 모두 업로드하기 위한 메소드
-    @objc func reuploadFiles() {
+    @objc private func reuploadFiles(completion: @escaping () -> Void) {
         if NetWorkManager.shared.isConnected == true {
             for index in checkWhenReStart()..<getLastIndexOfRealm() + 1 {
                 CSVFileManager.shared.readAndUploadCSV(fileNumber: index)
             }
-            
-            restartAndCheckTimer.invalidate()
         }
+        
+        completion()
+        restartAndCheckTimer.invalidate()
     }
 }
