@@ -17,9 +17,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if UserDefaults.standard.integer(forKey: "appAuthorization") == 1 {
             guard let windowScene = (scene as? UIWindowScene) else { return }
             window = UIWindow(windowScene: windowScene)
-            let firstViewController = MainViewController()
+            let mainViewController = MainViewController()
             
-            window?.rootViewController = firstViewController
+            window?.rootViewController = mainViewController
             window?.makeKeyAndVisible()
             
             let tabBarController = WindowTabBarViewController()

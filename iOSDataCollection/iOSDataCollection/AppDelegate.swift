@@ -13,11 +13,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         if UserDefaults.standard.integer(forKey: "appAuthorization") != 1 {
             UserDefaults.standard.setValue(0, forKey: "appAuthorization")
-        } else {
+            MainViewController.shared.requestLocationAuthorization()
             NotificationManager.shared.requestNotificationAuthorization()
             HealthDataManager.shared.requestHealthDataAuthorization()
-            HealthDataManager.shared.getHealthDataLoop()
+        } else {
             NotificationManager.shared.notificationCenter.delegate = self
+            
+            HealthDataManager.shared.getHealthDataLoop()
             NetWorkManager.shared.startMonitoring()
             CSVFileManager.shared.createCSVFolder()
             DataCollectionManager.shared.dataCollectionManagerMethod()
@@ -37,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-//        NotificationManager.shared.setTerminateNotification()
+        NotificationManager.shared.setTerminateNotification()
     }
 
 }

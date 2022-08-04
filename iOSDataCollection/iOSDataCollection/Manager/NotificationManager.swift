@@ -21,12 +21,20 @@ class NotificationManager {
     notificationCenter.requestAuthorization(options: authOptions) { success, error in
         if let error = error {
             print("NotificationAuthorizationError = \(error)")
+            self.requestNotificationAuthorization()
+        } else {
+            if success {
+                print("알림 권한 획득")
+            } else {
+                print("알림 권한 거부")
+                self.requestNotificationAuthorization()
+            }
         }
     }
 }
     
     // 앱이 종료될 시 유저에게 보낼 알림을 설정
-    private func setTerminateNotification() {
+    func setTerminateNotification() {
         print("앱 재실행 유도 시작")
         
         let notificaitonContent = UNMutableNotificationContent()

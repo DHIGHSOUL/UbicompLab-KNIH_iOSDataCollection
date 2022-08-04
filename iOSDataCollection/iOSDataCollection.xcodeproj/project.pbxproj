@@ -20,13 +20,18 @@
 		FDD1D769288E508800D4E6F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D768288E508800D4E6F3 /* AppDelegate.swift */; };
 		FDD1D76B288E508800D4E6F3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D76A288E508800D4E6F3 /* SceneDelegate.swift */; };
 		FDD1D76D288E508800D4E6F3 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D76C288E508800D4E6F3 /* MainViewController.swift */; };
-		FDD1D773288E508800D4E6F3 /* iOSDataCollection.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D771288E508800D4E6F3 /* iOSDataCollection.xcdatamodeld */; };
 		FDD1D775288E508900D4E6F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDD1D774288E508900D4E6F3 /* Assets.xcassets */; };
 		FDD1D778288E508900D4E6F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDD1D776288E508900D4E6F3 /* LaunchScreen.storyboard */; };
 		FDD1D783288E508900D4E6F3 /* iOSDataCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D782288E508900D4E6F3 /* iOSDataCollectionTests.swift */; };
 		FDD1D78D288E508900D4E6F3 /* iOSDataCollectionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D78C288E508900D4E6F3 /* iOSDataCollectionUITests.swift */; };
 		FDD1D78F288E508900D4E6F3 /* iOSDataCollectionUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD1D78E288E508900D4E6F3 /* iOSDataCollectionUITestsLaunchTests.swift */; };
 		FDD1D7A1288E515D00D4E6F3 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FDD1D7A0288E515D00D4E6F3 /* SnapKit */; };
+		FDF1956F289C161000C55461 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF1956E289C161000C55461 /* HealthKit.framework */; };
+		FDF19571289C198900C55461 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF19570289C198900C55461 /* SafariServices.framework */; };
+		FDF19573289C199A00C55461 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF19572289C199A00C55461 /* CoreMotion.framework */; };
+		FDF19575289C19A100C55461 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF19574289C19A100C55461 /* CoreLocation.framework */; };
+		FDF19577289C19B500C55461 /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF19576289C19B500C55461 /* Network.framework */; };
+		FDF19579289C19BA00C55461 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF19578289C19BA00C55461 /* UserNotifications.framework */; };
 		FDFB6474289363DD00D6791D /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FDFB6473289363DD00D6791D /* RealmSwift */; };
 		FDFB647728937E9300D6791D /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFB647628937E9300D6791D /* RealmManager.swift */; };
 /* End PBXBuildFile section */
@@ -72,6 +77,13 @@
 		FDD1D788288E508900D4E6F3 /* iOSDataCollectionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSDataCollectionUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDD1D78C288E508900D4E6F3 /* iOSDataCollectionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSDataCollectionUITests.swift; sourceTree = "<group>"; };
 		FDD1D78E288E508900D4E6F3 /* iOSDataCollectionUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSDataCollectionUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		FDF1956C289C160A00C55461 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		FDF1956E289C161000C55461 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		FDF19570289C198900C55461 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
+		FDF19572289C199A00C55461 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		FDF19574289C19A100C55461 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		FDF19576289C19B500C55461 /* Network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Network.framework; path = System/Library/Frameworks/Network.framework; sourceTree = SDKROOT; };
+		FDF19578289C19BA00C55461 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		FDFB647628937E9300D6791D /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,6 +92,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDF19579289C19BA00C55461 /* UserNotifications.framework in Frameworks */,
+				FDF19577289C19B500C55461 /* Network.framework in Frameworks */,
+				FDF19575289C19A100C55461 /* CoreLocation.framework in Frameworks */,
+				FDF19573289C199A00C55461 /* CoreMotion.framework in Frameworks */,
+				FDF19571289C198900C55461 /* SafariServices.framework in Frameworks */,
+				FDF1956F289C161000C55461 /* HealthKit.framework in Frameworks */,
 				FDFB6474289363DD00D6791D /* RealmSwift in Frameworks */,
 				FDD1D7A1288E515D00D4E6F3 /* SnapKit in Frameworks */,
 				FD43D61028917B34007F28D0 /* SnapKit in Frameworks */,
@@ -110,6 +128,7 @@
 				FDD1D781288E508900D4E6F3 /* iOSDataCollectionTests */,
 				FDD1D78B288E508900D4E6F3 /* iOSDataCollectionUITests */,
 				FDD1D766288E508800D4E6F3 /* Products */,
+				FDF1956B289C160900C55461 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -179,6 +198,20 @@
 				FDB33DC9289950210007C149 /* HealthDataManager.swift */,
 			);
 			path = Manager;
+			sourceTree = "<group>";
+		};
+		FDF1956B289C160900C55461 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FDF19578289C19BA00C55461 /* UserNotifications.framework */,
+				FDF19576289C19B500C55461 /* Network.framework */,
+				FDF19574289C19A100C55461 /* CoreLocation.framework */,
+				FDF19572289C199A00C55461 /* CoreMotion.framework */,
+				FDF19570289C198900C55461 /* SafariServices.framework */,
+				FDF1956E289C161000C55461 /* HealthKit.framework */,
+				FDF1956C289C160A00C55461 /* WebKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		FDFB647528937E7F00D6791D /* Model */ = {
@@ -342,7 +375,6 @@
 				FDD1D76B288E508800D4E6F3 /* SceneDelegate.swift in Sources */,
 				FD789FD3288ECF2900EB8C70 /* WindowTabBarViewController.swift in Sources */,
 				FDFB647728937E9300D6791D /* RealmManager.swift in Sources */,
-				FDD1D773288E508800D4E6F3 /* iOSDataCollection.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +472,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -494,7 +526,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -515,13 +547,18 @@
 				DEVELOPMENT_TEAM = 8RN9H3Z673;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSDataCollection/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -529,9 +566,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = SCH.iOSDataCollection;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -546,13 +586,18 @@
 				DEVELOPMENT_TEAM = 8RN9H3Z673;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSDataCollection/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -560,9 +605,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = SCH.iOSDataCollection;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

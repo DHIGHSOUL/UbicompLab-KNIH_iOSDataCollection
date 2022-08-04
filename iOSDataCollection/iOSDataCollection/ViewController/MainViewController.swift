@@ -8,11 +8,15 @@
 import UIKit
 import SnapKit
 import RealmSwift
+import CoreLocation
 
 class MainViewController: UIViewController {
     
     // Singletone
     static let shared = MainViewController()
+    
+    // 백그라운드에서 위치 정보를 지속적으로 가져올 Location Manager
+    var locationManager = CLLocationManager()
     
     // Main View의 TextField에 값을 지속적으로 표시하기 위한 Timer와 Interval
     var showAccelerationAndRotationTimer = Timer()
@@ -90,9 +94,26 @@ class MainViewController: UIViewController {
         makeRealm()
         mainViewLayout()
         showSensorDatas()
+        locationManagerSetting()
     }
     
     // MARK: - Method
+    
+    // 위치 정보 관련 설정 메소드
+    func locationManagerSetting() {
+        locationManager.delegate = self
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.pausesLocationUpdatesAutomatically = false
+        locationManager.requestAlwaysAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            print("위치 정보 읽기 시작")
+            locationManager.startUpdatingLocation()
+        } else {
+            print("위치 정보를 받아올 수 없음")
+        }
+    }
+    
     // 파일을 저장한 번호를 추적하기 위한 인덱스를 저장하는 Realm 라이브러리 생성
     private func makeRealm() {
         _ = try! Realm()
@@ -250,6 +271,31 @@ class MainViewController: UIViewController {
     @objc private func showAltitudeAndPressureData() {
         showAltitudeTextField.text = DataCollectionManager.shared.newAltitudeData
         showPressureTextField.text = DataCollectionManager.shared.newPressureData
+    }
+    
+}
+
+extension MainViewController: CLLocationManagerDelegate {
+    
+    // 위치 정보 이용 권한을 요청하는 메소드
+    func requestLocationAuthorization() {
+        locationManager.requestWhenInUseAuthorization()
+    }
+    
+    // 권한을 습득하지 못하면 지속적으로 요청하는 메소드
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        switch status {
+        case .authorizedAlways, .authorizedWhenInUse:
+            print("위치 권한 획득")
+        case .restricted, .notDetermined:
+            print("위치 권한이 설정되지 않음")
+            requestLocationAuthorization()
+        case .denied:
+            print("위치 권한 거부")
+            requestLocationAuthorization()
+        default:
+            print("Default")
+        }
     }
     
 }

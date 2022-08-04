@@ -31,11 +31,13 @@ class HealthDataManager {
             healthStore.requestAuthorization(toShare: share, read: read) { (success, error) in
                 if error != nil {
                     print(error?.localizedDescription ?? "HealthKit Error")
+                    self.requestHealthDataAuthorization()
                 } else {
                     if success {
                         print("HealthKit 권한이 허가되었습니다.")
                     } else {
                         print("HealthKit 권한이 없습니다.")
+                        self.requestHealthDataAuthorization()
                     }
                 }
             }
@@ -136,7 +138,7 @@ class HealthDataManager {
                     
                     let userID = UserDefaults.standard.string(forKey: "ID")!
                     
-                    var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/\(String(describing: userID))/mobile/\(containerName)")!,timeoutInterval: Double.infinity)
+                    var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/\(String(describing: userID))/health/\(containerName)")!,timeoutInterval: Double.infinity)
                     request.addValue("application/json", forHTTPHeaderField: "Accept")
                     request.addValue("12345", forHTTPHeaderField: "X-M2M-RI")
                     request.addValue("SIWLTfduOpL", forHTTPHeaderField: "X-M2M-Origin")
