@@ -157,7 +157,7 @@ class MenuViewController: UIViewController {
             make.width.equalToSuperview()
             make.height.equalTo(60)
         }
-        contactNotionButton.addTarget(self, action: #selector(pressContactNotionButton), for: .touchUpInside)
+        surveyButton.addTarget(self, action: #selector(pressSurveyButton), for: .touchUpInside)
         
         logOutButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
@@ -235,18 +235,19 @@ class MenuViewController: UIViewController {
         self.present(contactNotionAlert, animated: true, completion: nil)
     }
     
+    // 설문조사 페이지 버튼을 눌렀을 때 앱 내에서 페이지를 띄우는 메소드
     @objc private func pressSurveyButton() {
-        let contactNotionAlert = UIAlertController(title: "페이지를 여시겠습니까?", message: nil, preferredStyle: .alert)
+        let surveyAlert = UIAlertController(title: "페이지를 여시겠습니까?", message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: "취소", style: .cancel)
         let okButton = UIAlertAction(title: "확인", style: .default) { _ in
-            if let contactNotionURL = NSURL(string: "http://114.71.220.59:2017/") {
-                let contactNotionView: SFSafariViewController = SFSafariViewController(url: contactNotionURL as URL)
-                self.present(contactNotionView, animated: true, completion: nil)
+            if let surveyURL = NSURL(string: "http://114.71.220.59:2017/") {
+                let surveyView: SFSafariViewController = SFSafariViewController(url: surveyURL as URL)
+                self.present(surveyView, animated: true, completion: nil)
             }
         }
-        contactNotionAlert.addAction(cancelButton)
-        contactNotionAlert.addAction(okButton)
-        self.present(contactNotionAlert, animated: true, completion: nil)
+        surveyAlert.addAction(cancelButton)
+        surveyAlert.addAction(okButton)
+        self.present(surveyAlert, animated: true, completion: nil)
     }
     
 }
