@@ -69,10 +69,34 @@ class MenuViewController: UIViewController {
         return button
     }()
     
+    // 설문조사 가입 페이지로 이동하는 것을 알리는 Label
+    private let surveyRegisterLabel: UILabel = {
+        let label = UILabel()
+        label.text = "설문조사 회원가입 웹페이지로 이동합니다."
+        label.textColor = .lightGray
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.textAlignment = .center
+        
+        return label
+    }()
+    
+    // 설문조사 회원가입 페이지로 이동하는 버튼
+    private let surveyRegisterButton: UIButton = {
+        let button = UIButton()
+        button.clipsToBounds = true
+        button.setTitle("설문조사 회원가입하기", for: .normal)
+        var buttonConfiguration = UIButton.Configuration.filled()
+        buttonConfiguration.baseBackgroundColor = .darkGray
+        buttonConfiguration.baseForegroundColor = .white
+        button.configuration = buttonConfiguration
+        
+        return button
+    }()
+    
     // 설문조사 페이지로 이동하는 것을 알리는 Label
     private let surveyLabel: UILabel = {
         let label = UILabel()
-        label.text = "설문조사 페이지로 이동합니다."
+        label.text = "설문조사 웹페이지로 이동합니다."
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 13)
         label.textAlignment = .center
@@ -84,7 +108,7 @@ class MenuViewController: UIViewController {
     private let surveyButton: UIButton = {
         let button = UIButton()
         button.clipsToBounds = true
-        button.setTitle("설문조사 페이지로 이동하기", for: .normal)
+        button.setTitle("설문조사 참여하기", for: .normal)
         var buttonConfiguration = UIButton.Configuration.filled()
         buttonConfiguration.baseBackgroundColor = .darkGray
         buttonConfiguration.baseForegroundColor = .white
@@ -147,8 +171,20 @@ class MenuViewController: UIViewController {
         }
         contactNotionButton.addTarget(self, action: #selector(pressContactNotionButton), for: .touchUpInside)
         
-        surveyLabel.snp.makeConstraints { make in
+        surveyRegisterLabel.snp.makeConstraints { make in
             make.top.equalTo(contactNotionButton.snp.bottom).offset(20)
+            make.width.equalTo(view)
+        }
+        
+        surveyRegisterButton.snp.makeConstraints { make in
+            make.top.equalTo(surveyRegisterLabel.snp.bottom).offset(10)
+            make.width.equalToSuperview()
+            make.height.equalTo(60)
+        }
+        surveyRegisterButton.addTarget(self, action: #selector(pressSurveyRegisterButton), for: .touchUpInside)
+        
+        surveyLabel.snp.makeConstraints { make in
+            make.top.equalTo(surveyRegisterButton.snp.bottom).offset(20)
             make.width.equalTo(view)
         }
         
@@ -171,7 +207,7 @@ class MenuViewController: UIViewController {
     
     // AddSubView를 한 번에 실시
     private func addSubViews() {
-        let views = [userIDLabel, surveyLabel, surveyButton, warningNotionLabel, warningNotionButton, contactNotionLabel, contactNotionButton, logOutButton]
+        let views = [userIDLabel, warningNotionLabel, warningNotionButton, contactNotionLabel, contactNotionButton, surveyRegisterLabel, surveyRegisterButton, surveyLabel, surveyButton, logOutButton]
         
         for newView in views {
             view.addSubview(newView)
@@ -233,6 +269,21 @@ class MenuViewController: UIViewController {
         contactNotionAlert.addAction(cancelButton)
         contactNotionAlert.addAction(okButton)
         self.present(contactNotionAlert, animated: true, completion: nil)
+    }
+    
+    // 설문조사 회원가입 버튼을 눌렀을 때 앱 내에서 페이지를 띄우는 메소드
+    @objc private func pressSurveyRegisterButton() {
+        let surveyAlert = UIAlertController(title: "페이지를 여시겠습니까?", message: nil, preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: "취소", style: .cancel)
+        let okButton = UIAlertAction(title: "확인", style: .default) { _ in
+            if let surveyRegisterURL = NSURL(string: "http://114.71.220.59:2017/register") {
+                let surveyRegisterView: SFSafariViewController = SFSafariViewController(url: surveyRegisterURL as URL)
+                self.present(surveyRegisterView, animated: true, completion: nil)
+            }
+        }
+        surveyAlert.addAction(cancelButton)
+        surveyAlert.addAction(okButton)
+        self.present(surveyAlert, animated: true, completion: nil)
     }
     
     // 설문조사 페이지 버튼을 눌렀을 때 앱 내에서 페이지를 띄우는 메소드
