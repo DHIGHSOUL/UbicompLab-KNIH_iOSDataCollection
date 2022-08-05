@@ -90,11 +90,24 @@ class MainViewController: UIViewController {
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .black
         makeRealm()
         mainViewLayout()
-        showSensorDatas()
         locationManagerSetting()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        showSensorDatas()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        showAccelerationAndRotationTimer.invalidate()
+        showAltitudeAndPressureTimer.invalidate()
     }
     
     // MARK: - Method

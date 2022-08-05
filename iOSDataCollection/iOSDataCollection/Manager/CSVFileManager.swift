@@ -30,7 +30,7 @@ class CSVFileManager {
     var lastSavedNumber: Int = 0
     // 업로드에 재실패했는지 확인하기 위한 변수 -> 재실패했다면 마지막 실패 지점을 업데이트하지 않게 하기 위함
     var checkFailAgain: Int = 0
-
+    
     // MARK: - Method
     // CSV 폴더를 생성하는 메소드
     func createCSVFolder() {
@@ -75,18 +75,18 @@ class CSVFileManager {
     
     // CSV 파일을 업로드하기 위해 인터넷 연결을 체크하고, 연결이 되어 있다면 업로드를 시작하는 메소드
     func checkInternetAndStartUpload() {
-    if NetWorkManager.shared.isConnected == true {
-        fileNumber = DataCollectionManager.shared.getLastIndexOfRealm()
-        
-        readAndUploadCSV(fileNumber: fileNumber)
-    } else {
-        if checkFailAgain == 0 {
-            uploadFailNumber = fileNumber
-            uploadFailTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
-            checkFailAgain = 1
+        if NetWorkManager.shared.isConnected == true {
+            fileNumber = DataCollectionManager.shared.getLastIndexOfRealm()
+            
+            readAndUploadCSV(fileNumber: fileNumber)
+        } else {
+            if checkFailAgain == 0 {
+                uploadFailNumber = fileNumber
+                uploadFailTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadIfInternetConnected), userInfo: nil, repeats: true)
+                checkFailAgain = 1
+            }
         }
     }
-}
     
     // CSV 파일을 읽어온 후 Mobius 서버에 업로드하는 메소드
     func readAndUploadCSV(fileNumber: Int) {

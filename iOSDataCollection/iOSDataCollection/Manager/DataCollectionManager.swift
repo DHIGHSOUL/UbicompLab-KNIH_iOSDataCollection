@@ -115,7 +115,7 @@ class DataCollectionManager {
         let accY = String(format: "%.3f", arguments: [acceleration.y])
         let accZ = String(format: "%.3f", arguments: [acceleration.z])
         
-//        print("accX = " + accX + " || accY = " + accY + " || accZ = " + accZ)
+        //        print("accX = " + accX + " || accY = " + accY + " || accZ = " + accZ)
         
         self.newAccelerationXData = accX
         self.newAccelerationYData = accY
@@ -137,7 +137,7 @@ class DataCollectionManager {
         let rotY = String(format: "%.3f", arguments: [rotation.y])
         let rotZ = String(format: "%.3f", arguments: [rotation.z])
         
-//        print("rotX = " + rotX + " || rotY = " + rotY + " || rotZ = " + rotZ)
+        //        print("rotX = " + rotX + " || rotY = " + rotY + " || rotZ = " + rotZ)
         
         self.newRotationXData = rotX
         self.newRotationYData = rotY
@@ -159,10 +159,6 @@ class DataCollectionManager {
         
         let alt = altitude.relativeAltitude.stringValue
         let pre = String(format: "%.3f", Double(truncating: altitude.pressure) * 10)
-        
-//        print(getUnixTime())
-//        print("alt = " + alt + " || pre = " + pre)
-        
         self.newAltitudeData = alt
         self.newPressureData = pre
         
@@ -223,7 +219,7 @@ class DataCollectionManager {
         // Check 시 남아 있는 파일 없음(이상 없음)
         return 0
     }
-
+    
     // MARK: - @objc Method
     // CSV 파일을 만들고 업로드하는 메소드
     @objc private func makeCSVFileAndUpload() {

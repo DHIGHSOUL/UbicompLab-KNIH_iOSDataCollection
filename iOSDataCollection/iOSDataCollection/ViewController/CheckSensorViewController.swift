@@ -55,7 +55,7 @@ class CheckSensorViewController: UIViewController {
     }()
     private var checkInternet = UITextField()
     
-
+    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,13 +74,13 @@ class CheckSensorViewController: UIViewController {
         
         checkComponentTimer.invalidate()
     }
-
+    
     // MARK: - Method
     // 고도, 기압계 센서 작동을 측정하기 위해 NSNumber 값을 가져오는 메소드
     func sensorDataForCheck(_ altimeter: CMAltitudeData) {
-    altitudeDataForCheckSensor = altimeter.relativeAltitude
-    pressureDataForCheckSensor = altimeter.pressure
-}
+        altitudeDataForCheckSensor = altimeter.relativeAltitude
+        pressureDataForCheckSensor = altimeter.pressure
+    }
     
     // Check Sensor View의 Layout 지정
     private func checkSensorViewLayout() {

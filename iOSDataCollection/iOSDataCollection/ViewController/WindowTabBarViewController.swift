@@ -8,7 +8,7 @@
 import UIKit
 
 class WindowTabBarViewController: UITabBarController {
-
+    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,7 +16,7 @@ class WindowTabBarViewController: UITabBarController {
         setUpTabBarLayout()
         self.selectedIndex = 1
     }
-
+    
     // MARK: - Method
     // 센서 확인, 측정 페이지로 이동하는 하단 탭바
     private func setUpTabBarLayout() {

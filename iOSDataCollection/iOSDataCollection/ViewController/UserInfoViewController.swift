@@ -35,6 +35,7 @@ class UserInfoViewController: UIViewController {
         field.backgroundColor = .white
         field.textColor = .black
         field.textAlignment = .center
+        field.placeholder = "숫자 3자리"
         
         return field
     }()
