@@ -92,7 +92,6 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .black
-        makeRealm()
         mainViewLayout()
         locationManagerSetting()
     }
@@ -128,11 +127,12 @@ class MainViewController: UIViewController {
     }
     
     // 파일을 저장한 번호를 추적하기 위한 인덱스를 저장하는 Realm 라이브러리 생성
-    private func makeRealm() {
-        _ = try! Realm()
-        
-        print(Realm.Configuration.defaultConfiguration.fileURL!)
-    }
+    func makeRealm() {
+    let realm = try! Realm()
+    
+    print("Realm DB 생성")
+    print(Realm.Configuration.defaultConfiguration.fileURL!)
+}
     
     // Main View의 Layout 지정
     private func mainViewLayout() {

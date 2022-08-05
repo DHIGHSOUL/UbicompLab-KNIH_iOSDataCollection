@@ -19,10 +19,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             NotificationManager.shared.notificationCenter.delegate = self
             
+            MainViewController.shared.makeRealm()
+            CSVFileManager.shared.createCSVFolder()
             NotificationManager.shared.setAskSurveyNotification()
             HealthDataManager.shared.getHealthDataLoop()
             NetWorkManager.shared.startMonitoring()
-            CSVFileManager.shared.createCSVFolder()
             DataCollectionManager.shared.dataCollectionManagerMethod()
             DataCollectionManager.shared.checkAndReUploadFiles()
         }
@@ -40,7 +41,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        NotificationManager.shared.setTerminateNotification()
+        if UserDefaults.standard.integer(forKey: "appAuthorization") == 1 {
+            NotificationManager.shared.setTerminateNotification()
+        }
     }
     
 }

@@ -40,6 +40,7 @@ class CSVFileManager {
         let folderName = "saveCSVFolder"
         
         let documentUrl: URL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        print(documentUrl)
         let directoryUrl: URL = documentUrl.appendingPathComponent(folderName)
         
         do {

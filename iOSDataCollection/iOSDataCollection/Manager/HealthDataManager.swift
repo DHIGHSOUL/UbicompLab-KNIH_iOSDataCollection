@@ -19,7 +19,7 @@ class HealthDataManager {
     var uploadHealthDataTimer = Timer()
     
     // 컨테이너 이름 배열
-    let containerNameArray: [String] = ["step", "energy"]
+    let containerNameArray: [String] = ["steps", "calories"]
     
     // MARK: - Method
     // 건강 정보를 읽기 위해 사용자의 허가를 얻기 위한 메소드
@@ -92,7 +92,7 @@ class HealthDataManager {
             let energyString = "\(Int(startUnixTime)),\(Int(endUnixTime)),\(String(Int(energySum)))"
             
             print("소비 에너지 : \(energyString)")
-            UserDefaults.standard.setValue(energyString, forKey: "energy")
+            UserDefaults.standard.setValue(energyString, forKey: "calories")
         }
         
         healthStore.execute(query)
