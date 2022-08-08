@@ -18,9 +18,6 @@ class HealthDataManager {
     // Health 데이터들을 업로드하기 위한 타이머
     var uploadHealthDataTimer = Timer()
     
-    // 컨테이너 이름 배열
-    let containerNameArray: [String] = ["steps", "calories"]
-    
     // MARK: - Method
     // 건강 정보를 읽기 위해 사용자의 허가를 얻기 위한 메소드
     func requestHealthDataAuthorization() {
@@ -62,10 +59,10 @@ class HealthDataManager {
             let startUnixTime = startDate.timeIntervalSince1970
             let endUnixTime = end.timeIntervalSince1970
             
-            let stepString = "\(Int(startUnixTime)),\(Int(endUnixTime)),\(String(Int(stepSum)))"
+            let stepString = "\(String(Int(startUnixTime))),\(String(Int(endUnixTime))),\(String(Int(stepSum)))"
             
             print("걸음 수 : \(stepString)")
-            UserDefaults.standard.setValue(stepString, forKey: "step")
+            UserDefaults.standard.setValue(stepString, forKey: "steps")
         }
         
         healthStore.execute(query)
@@ -89,7 +86,7 @@ class HealthDataManager {
             let startUnixTime = startDate.timeIntervalSince1970
             let endUnixTime = end.timeIntervalSince1970
             
-            let energyString = "\(Int(startUnixTime)),\(Int(endUnixTime)),\(String(Int(energySum)))"
+            let energyString = "\(String(Int(startUnixTime))),\(String(Int(endUnixTime))),\(String(Int(energySum)))"
             
             print("소비 에너지 : \(energyString)")
             UserDefaults.standard.setValue(energyString, forKey: "calories")
@@ -129,54 +126,63 @@ class HealthDataManager {
     // 인터넷 연결이 감지되면 UserDefaults DB에 저장되어 있는 Health 데이터들을 업로드하는 메소드
     @objc func uploadHealthDatas() {
         if NetWorkManager.shared.isConnected == true {
-            for containerName in containerNameArray {
-                if UserDefaults.standard.string(forKey: containerName) != "" {
-                    let semaphore = DispatchSemaphore (value: 0)
-                    
-                    let parameters = "{\n    \"m2m:cin\": {\n        \"con\": \"\(String(describing: UserDefaults.standard.string(forKey: containerName)))\"\n    }\n}"
-                    let postData = parameters.data(using: .utf8)
-                    
-                    let userID = UserDefaults.standard.string(forKey: "ID")!
-                    
-                    var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/\(String(describing: userID))/health/\(containerName)")!,timeoutInterval: Double.infinity)
-                    request.addValue("application/json", forHTTPHeaderField: "Accept")
-                    request.addValue("12345", forHTTPHeaderField: "X-M2M-RI")
-                    request.addValue("SIWLTfduOpL", forHTTPHeaderField: "X-M2M-Origin")
-                    request.addValue("application/vnd.onem2m-res+json; ty=4", forHTTPHeaderField: "Content-Type")
-                    
-                    request.httpMethod = "POST"
-                    request.httpBody = postData
-                    
-                    let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                        guard data != nil else {
-                            print(String(describing: error))
-                            semaphore.signal()
-                            return
-                        }
-                        
-                        // POST 성공 여부 체크, POST 실패 시 return
-                        let successsRange = 200..<300
-                        guard let statusCode = (response as? HTTPURLResponse)?.statusCode, successsRange.contains(statusCode)
-                        else {
-                            print("")
-                            print("====================================")
-                            print("[requestPOST : http post 요청 에러]")
-                            print("error : ", (response as? HTTPURLResponse)?.statusCode ?? 0)
-                            print("msg : ", (response as? HTTPURLResponse)?.description ?? "")
-                            print("====================================")
-                            print("")
-                            return
-                        }
-                        
-                        print("\(containerName) Data is served.")
-                        UserDefaults.standard.setValue("", forKey: containerName)
-                        semaphore.signal()
-                    }
-                    task.resume()
-                    semaphore.wait()
-                }
-            }
+            let stepsDataToUpload = UserDefaults.standard.string(forKey: "steps")
+            print(stepsDataToUpload!)
+            let caloriesDataToUpload = UserDefaults.standard.string(forKey: "calories")
+            print(caloriesDataToUpload!)
+            
+            uploadData(containerName: "steps", data: stepsDataToUpload ?? "오류")
+            uploadData(containerName: "calories", data: caloriesDataToUpload ?? "오류")
+            
             uploadHealthDataTimer.invalidate()
+        }
+    }
+    
+    private func uploadData(containerName: String, data: String) {
+        if data != "" && data != "오류" {
+            let semaphore = DispatchSemaphore (value: 0)
+            
+            let parameters = "{\n    \"m2m:cin\": {\n        \"con\": \"\(data)\"\n    }\n}"
+            let postData = parameters.data(using: .utf8)
+            
+            let userID = UserDefaults.standard.string(forKey: "ID")!
+            
+            var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/\(userID)/health/\(containerName)")!,timeoutInterval: Double.infinity)
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+            request.addValue("12345", forHTTPHeaderField: "X-M2M-RI")
+            request.addValue("SIWLTfduOpL", forHTTPHeaderField: "X-M2M-Origin")
+            request.addValue("application/vnd.onem2m-res+json; ty=4", forHTTPHeaderField: "Content-Type")
+            
+            request.httpMethod = "POST"
+            request.httpBody = postData
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard data != nil else {
+                    print(error?.localizedDescription ?? "URLSession 에러")
+                    semaphore.signal()
+                    return
+                }
+                
+                // POST 성공 여부 체크, POST 실패 시 return
+                let successsRange = 200..<300
+                guard let statusCode = (response as? HTTPURLResponse)?.statusCode, successsRange.contains(statusCode)
+                else {
+                    print("")
+                    print("====================================")
+                    print("[requestPOST : http post 요청 에러]")
+                    print("error : ", (response as? HTTPURLResponse)?.statusCode ?? 0)
+                    print("msg : ", (response as? HTTPURLResponse)?.description ?? "")
+                    print("====================================")
+                    print("")
+                    return
+                }
+                
+                print("\(containerName) data is served.")
+                UserDefaults.standard.setValue("", forKey: containerName)
+                semaphore.signal()
+            }
+            task.resume()
+            semaphore.wait()
         }
     }
     
