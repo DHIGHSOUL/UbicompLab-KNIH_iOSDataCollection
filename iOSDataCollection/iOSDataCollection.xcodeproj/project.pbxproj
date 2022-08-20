@@ -13,6 +13,8 @@
 		FD789FD3288ECF2900EB8C70 /* WindowTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */; };
 		FD789FD5288ECF4C00EB8C70 /* CheckSensorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */; };
 		FD8BB6B2288E5EA800F2F386 /* DataCollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */; };
+		FDA69CF028B101CF003A2F53 /* HealthRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */; };
+		FDA69CF228B11679003A2F53 /* SleepRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CF128B11679003A2F53 /* SleepRealmManager.swift */; };
 		FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DA328978B620007C149 /* NotificationManager.swift */; };
 		FDB33DCA289950210007C149 /* HealthDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DC9289950210007C149 /* HealthDataManager.swift */; };
 		FDB33DCC2899505F0007C149 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DCB2899505F0007C149 /* MenuViewController.swift */; };
@@ -33,7 +35,7 @@
 		FDF19577289C19B500C55461 /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF19576289C19B500C55461 /* Network.framework */; };
 		FDF19579289C19BA00C55461 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF19578289C19BA00C55461 /* UserNotifications.framework */; };
 		FDFB6474289363DD00D6791D /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FDFB6473289363DD00D6791D /* RealmSwift */; };
-		FDFB647728937E9300D6791D /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFB647628937E9300D6791D /* RealmManager.swift */; };
+		FDFB647728937E9300D6791D /* SensorRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFB647628937E9300D6791D /* SensorRealmManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTabBarViewController.swift; sourceTree = "<group>"; };
 		FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckSensorViewController.swift; sourceTree = "<group>"; };
 		FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionManager.swift; sourceTree = "<group>"; };
+		FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthRealmManager.swift; sourceTree = "<group>"; };
+		FDA69CF128B11679003A2F53 /* SleepRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepRealmManager.swift; sourceTree = "<group>"; };
 		FDB33DA328978B620007C149 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		FDB33DC9289950210007C149 /* HealthDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataManager.swift; sourceTree = "<group>"; };
 		FDB33DCB2899505F0007C149 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
@@ -84,7 +88,7 @@
 		FDF19574289C19A100C55461 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		FDF19576289C19B500C55461 /* Network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Network.framework; path = System/Library/Frameworks/Network.framework; sourceTree = SDKROOT; };
 		FDF19578289C19BA00C55461 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
-		FDFB647628937E9300D6791D /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
+		FDFB647628937E9300D6791D /* SensorRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorRealmManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,7 +221,9 @@
 		FDFB647528937E7F00D6791D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				FDFB647628937E9300D6791D /* RealmManager.swift */,
+				FDFB647628937E9300D6791D /* SensorRealmManager.swift */,
+				FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */,
+				FDA69CF128B11679003A2F53 /* SleepRealmManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -363,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FD272AF72892B2D7009CED32 /* NetworkManager.swift in Sources */,
+				FDA69CF228B11679003A2F53 /* SleepRealmManager.swift in Sources */,
 				FD789FD5288ECF4C00EB8C70 /* CheckSensorViewController.swift in Sources */,
 				FDB33DCA289950210007C149 /* HealthDataManager.swift in Sources */,
 				FDB33DCC2899505F0007C149 /* MenuViewController.swift in Sources */,
@@ -373,8 +380,9 @@
 				FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */,
 				FDC1F400288FA9C9002B7BF2 /* CSVFileManager.swift in Sources */,
 				FDD1D76B288E508800D4E6F3 /* SceneDelegate.swift in Sources */,
+				FDA69CF028B101CF003A2F53 /* HealthRealmManager.swift in Sources */,
 				FD789FD3288ECF2900EB8C70 /* WindowTabBarViewController.swift in Sources */,
-				FDFB647728937E9300D6791D /* RealmManager.swift in Sources */,
+				FDFB647728937E9300D6791D /* SensorRealmManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,7 +573,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = SCH.iOSDataCollection;
+				PRODUCT_BUNDLE_IDENTIFIER = "SCH-JKH.iOSDataCollection";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -605,7 +613,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = SCH.iOSDataCollection;
+				PRODUCT_BUNDLE_IDENTIFIER = "SCH-JKH.iOSDataCollection";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

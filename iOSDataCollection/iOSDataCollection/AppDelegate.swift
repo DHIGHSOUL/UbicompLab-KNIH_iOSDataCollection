@@ -12,7 +12,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         if UserDefaults.standard.integer(forKey: "appAuthorization") != 1 {
-            UserDefaults.standard.setValue(0, forKey: "appAuthorization")
             MainViewController.shared.requestLocationAuthorization()
             NotificationManager.shared.requestNotificationAuthorization()
             HealthDataManager.shared.requestHealthDataAuthorization()
@@ -20,12 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NotificationManager.shared.notificationCenter.delegate = self
             
             MainViewController.shared.makeRealm()
-            CSVFileManager.shared.createCSVFolder()
+            CSVFileManager.shared.createSensorCSVFolder()
+            CSVFileManager.shared.createHealthCSVFolder()
             NotificationManager.shared.setAskSurveyNotification()
-            HealthDataManager.shared.getHealthDataLoop()
             NetWorkManager.shared.startMonitoring()
+            HealthDataManager.shared.getHealthDataLoop()
             DataCollectionManager.shared.dataCollectionManagerMethod()
-            DataCollectionManager.shared.checkAndReUploadFiles()
+            DataCollectionManager.shared.checkAndReUploadSensorFiles()
+            HealthDataManager.shared.checkAndReUploadHealthFiles()
         }
         
         return true

@@ -90,22 +90,22 @@ class DataCollectionManager {
             }
         }
         
-        Timer.scheduledTimer(timeInterval: 900, target: self, selector: #selector(makeCSVFileAndUpload), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 900, target: self, selector: #selector(makeSensorCSVFileAndUpload), userInfo: nil, repeats: true)
     }
     
-    // Realm의 마지막 인덱스를 읽어오는 메소드
-    func getLastIndexOfRealm() -> Int {
+    // Sensor Realm의 마지막 인덱스를 읽어오는 메소드
+    func getLastIndexOfSensorRealm() -> Int {
         let realm = try! Realm()
-        let getRealm = realm.objects(RealmManager.self)
+        let getRealm = realm.objects(SensorRealmManager.self)
         let getLastIndex = getRealm.endIndex
         
         return getLastIndex
     }
     
-    // 앱 재시작 시(checkWhenReStart), 파일이 남아 있다면 인터넷 연결을 체크하고 남은 파일을 한번에 업로드함
-    func checkAndReUploadFiles() {
-        if checkWhenReStart() != 0 {
-            restartAndCheckTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadFiles), userInfo: nil, repeats: true)
+    // 앱 재시작 시(checkWhenReStart), 센서 데이터 파일이 남아 있다면 인터넷 연결을 체크하고 남은 파일을 한번에 업로드함
+    func checkAndReUploadSensorFiles() {
+        if checkWhenReStartSensorDatas() != 0 {
+            restartAndCheckTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadFiles), userInfo: nil, repeats: true)
         }
     }
     
@@ -198,17 +198,17 @@ class DataCollectionManager {
     }
     
     // 앱 재시작 시, 업로드되지 않은 파일의 인덱스를 확인하여 전부 업로드시키는 메소드
-    private func checkWhenReStart() -> Int {
+    private func checkWhenReStartSensorDatas() -> Int {
         let realm = try! Realm()
-        let getRealmToCheck = realm.objects(RealmManager.self)
+        let getRealmToCheck = realm.objects(SensorRealmManager.self)
         
         // Realm의 마지막 인덱스가 0이 아니면, 1 ~ 마지막 인덱스까지 업로드 인덱스가 0인 인덱스 필터링
         if getRealmToCheck.endIndex != 0 {
-            for index in 0..<getLastIndexOfRealm() + 1 {
+            for index in 0..<getLastIndexOfSensorRealm() + 1 {
                 if index == 0 {
                     continue
                 }
-                let checkRealm = realm.object(ofType: RealmManager.self, forPrimaryKey: index)
+                let checkRealm = realm.object(ofType: SensorRealmManager.self, forPrimaryKey: index)
                 
                 if checkRealm?.lastUploadedmAccNumber == 0 || checkRealm?.lastUploadedmGyrNumber == 0 || checkRealm?.lastUploadedmPreNumber == 0 {
                     return index
@@ -221,21 +221,21 @@ class DataCollectionManager {
     }
     
     // MARK: - @objc Method
-    // CSV 파일을 만들고 업로드하는 메소드
-    @objc private func makeCSVFileAndUpload() {
+    // Sensor CSV 파일을 만들고 업로드하는 메소드
+    @objc private func makeSensorCSVFileAndUpload() {
         print("Start save and upload")
         
         let realm = try! Realm()
-        let getRealm = realm.objects(RealmManager.self)
+        let getRealm = realm.objects(SensorRealmManager.self)
         indexCount = getRealm.endIndex
         
         indexCount += 1
         
-        CSVFileManager.shared.writeCSV(sensorData: accelerationDataString, sensorType: "mAcc", index: indexCount)
-        CSVFileManager.shared.writeCSV(sensorData: rotationDataString, sensorType: "mGyr", index: indexCount)
-        CSVFileManager.shared.writeCSV(sensorData: pressureDataString, sensorType: "mPre", index: indexCount)
+        CSVFileManager.shared.writeSensorCSV(sensorData: accelerationDataString, sensorType: "mAcc", index: indexCount)
+        CSVFileManager.shared.writeSensorCSV(sensorData: rotationDataString, sensorType: "mGyr", index: indexCount)
+        CSVFileManager.shared.writeSensorCSV(sensorData: pressureDataString, sensorType: "mPre", index: indexCount)
         
-        let saveNewIndexInRealm = RealmManager()
+        let saveNewIndexInRealm = SensorRealmManager()
         saveNewIndexInRealm.lastSavedNumber = indexCount
         saveNewIndexInRealm.lastUploadedmAccNumber = 0
         saveNewIndexInRealm.lastUploadedmGyrNumber = 0
@@ -248,18 +248,21 @@ class DataCollectionManager {
         rotationDataString = ""
         pressureDataString = ""
         
-        CSVFileManager.shared.checkInternetAndStartUpload()
+        CSVFileManager.shared.checkInternetAndStartUploadSensorData()
     }
     
     // 앱 재시작 후 잔여 파일을 모두 업로드하기 위한 메소드
     @objc private func reuploadFiles(completion: @escaping () -> Void) {
         if NetWorkManager.shared.isConnected == true {
-            for index in checkWhenReStart()..<getLastIndexOfRealm() + 1 {
-                CSVFileManager.shared.readAndUploadCSV(fileNumber: index)
+            for index in checkWhenReStartSensorDatas()..<getLastIndexOfSensorRealm() + 1 {
+                CSVFileManager.shared.readAndUploadSensorCSV(fileNumber: index)
+            }
+            
+            if checkWhenReStartSensorDatas() == 0 {
+                restartAndCheckTimer.invalidate()
             }
         }
         
         completion()
-        restartAndCheckTimer.invalidate()
     }
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import HealthKit
+import RealmSwift
 
 class HealthDataManager {
     
@@ -18,12 +19,59 @@ class HealthDataManager {
     // Health 데이터들을 업로드하기 위한 타이머
     var uploadHealthDataTimer = Timer()
     
+    // 앱 재시작 후의 잔여 파일을 감지하고 인터넷 연결을 지속적으로 체크하기 위한 타이머
+    var restartAndCheckTimer = Timer()
+    
+    // 걸음 수 데이터를 HKSample 형식으로 받아들일 배열, 받아들인 배열 구조를 업로드할 구조로 재구성할(startTime, endTime, data) 배열, 업로드를 위한 문자열
+    var stepDataArray: [HKSample] = []
+    var stepStringDataArray: [String] = []
+    var stepStringToUpload = ""
+    
+    // 활성 에너지 수 데이터를 HKSample 형식으로 받아들일 배열, 받아들인 배열 구조를 업로드할 구조로 재구성할(startTime, endTime, data) 배열, 업로드를 위한 문자열
+    var energyDataArray: [HKSample] = []
+    var energyStringDataArray: [String] = []
+    var energyStringToUpload = ""
+    
+    // 걷고 뛴 거리 데이터를 HKSample 형식으로 받아들일 배열, 받아들인 배열 구조를 업로드할 구조로 재구성할(startTime, endTime, data) 배열, 업로드를 위한 문자열
+    var distanceDataArray: [HKSample] = []
+    var distanceStringDataArray: [String] = []
+    var distanceStringToUpload = ""
+    
+    // 파일을 저장할 때 인덱싱을 하기 위한 변수
+    var indexCount: Int = 0
+    
+    // Health 데이터의 컨테이너 이름 배열
+    let healthContainerNameArray: [String] = ["steps", "calories", "distance"]
+    
     // MARK: - Method
+    // 앱 재시작 시, 업로드되지 않은 파일의 인덱스를 확인하여 전부 업로드시키는 메소드
+    private func checkWhenReStartHealthDatas() -> Int {
+        let realm = try! Realm()
+        let getRealmToCheck = realm.objects(HealthRealmManager.self)
+        
+        // Realm의 마지막 인덱스가 0이 아니면, 1 ~ 마지막 인덱스까지 업로드 인덱스가 0인 인덱스 필터링
+        if getRealmToCheck.endIndex != 0 {
+            for index in 0..<getLastIndexOfHealthRealm() + 1 {
+                if index == 0 {
+                    continue
+                }
+                let checkRealm = realm.object(ofType: HealthRealmManager.self, forPrimaryKey: index)
+                
+                if checkRealm?.lastUploadedStepNumber == 0 || checkRealm?.lastUploadedEnergyNumber == 0 {
+                    return index
+                }
+            }
+        }
+        
+        // Check 시 남아 있는 파일 없음(이상 없음)
+        return 0
+    }
+    
     // 건강 정보를 읽기 위해 사용자의 허가를 얻기 위한 메소드
     func requestHealthDataAuthorization() {
         if HKHealthStore.isHealthDataAvailable() {
-            let read = Set([HKObjectType.quantityType(forIdentifier: .heartRate)!, HKObjectType.quantityType(forIdentifier: .stepCount)!])
-            let share = Set([HKObjectType.quantityType(forIdentifier: .heartRate)!, HKObjectType.quantityType(forIdentifier: .stepCount)!])
+            let read = Set([HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!, HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!, HKObjectType.quantityType(forIdentifier: .stepCount)!, HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!])
+            let share = Set([HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!, HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!, HKObjectType.quantityType(forIdentifier: .stepCount)!, HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!])
             
             healthStore.requestAuthorization(toShare: share, read: read) { (success, error) in
                 if error != nil {
@@ -41,149 +89,280 @@ class HealthDataManager {
         }
     }
     
-    // 일별로 걸음 수를 얻는 메소드
+    // 걸음 수를 얻는 메소드
     func getStepCountPerDay(end: Date) {
         guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }
-        let startDate = Calendar.current.startOfDay(for: end)
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: end, options: .strictStartDate)
+        let startTime = Calendar.current.startOfDay(for: end)
+        let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
         
-        var stepSum: Double = 0.0
-        
-        let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { (_, result, error) in
-            guard let result = result, let sum = result.sumQuantity() else {
-                print("Fail to get step")
-                return
+        let query = HKSampleQuery(sampleType: stepType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
+            let results = result
+            
+            for newResult in results! {
+                self.stepDataArray.append(newResult)
             }
             
-            stepSum = sum.doubleValue(for: HKUnit.count())
-            let startUnixTime = startDate.timeIntervalSince1970
-            let endUnixTime = end.timeIntervalSince1970
-            
-            let stepString = "\(String(Int(startUnixTime))),\(String(Int(endUnixTime))),\(String(Int(stepSum)))"
-            
-            print("걸음 수 : \(stepString)")
-            UserDefaults.standard.setValue(stepString, forKey: "steps")
+            for dataIndex in 0..<self.stepDataArray.count {
+                
+                let printResult = self.stepDataArray[dataIndex]
+                
+                let startCollectTime = Int(printResult.startDate.timeIntervalSince1970)
+                let endCollectTime = Int(printResult.endDate.timeIntervalSince1970)
+                let collectDevice = printResult.device?.model
+                let printResultToQuantity: HKQuantitySample = printResult as! HKQuantitySample
+                let collectedStepData = Int(printResultToQuantity.quantity.doubleValue(for: .count()))
+                
+                let newStepData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedStepData)"
+                
+                self.stepStringDataArray.append(newStepData)
+            }
         }
         
         healthStore.execute(query)
     }
     
-    // 일별로 사용한 에너지(칼로리)를 얻는 메소드
-    func getBurnedEnergyPerDay(end: Date) {
-        guard let energyType = HKSampleType.quantityType(forIdentifier: .activeEnergyBurned) else { return }
-        let startDate = Calendar.current.startOfDay(for: end)
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: end, options: .strictStartDate)
+    // 사용한 활성에너지(kcal)를 얻는 메소드
+    func getActiveEnergyPerDay(end: Date) {
+        guard let activeEnergyType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) else { return }
+        let startTime = Calendar.current.startOfDay(for: end)
+        let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
         
-        var energySum: Double = 0.0
-        
-        let query = HKStatisticsQuery(quantityType: energyType, quantitySamplePredicate: predicate, options: .cumulativeSum) { (_, result, error) in
-            guard let result = result, let sum = result.sumQuantity() else {
-                print("Fail to get Calorie")
-                return
+        let query = HKSampleQuery(sampleType: activeEnergyType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
+            let results = result
+            
+            for newResult in results! {
+                self.energyDataArray.append(newResult)
             }
             
-            energySum = sum.doubleValue(for: HKUnit.kilocalorie())
-            let startUnixTime = startDate.timeIntervalSince1970
-            let endUnixTime = end.timeIntervalSince1970
-            
-            let energyString = "\(String(Int(startUnixTime))),\(String(Int(endUnixTime))),\(String(Int(energySum)))"
-            
-            print("소비 에너지 : \(energyString)")
-            UserDefaults.standard.setValue(energyString, forKey: "calories")
+            for dataIndex in 0..<self.energyDataArray.count {
+                
+                let printResult = self.energyDataArray[dataIndex]
+                
+                let startCollectTime = Int(printResult.startDate.timeIntervalSince1970)
+                let endCollectTime = Int(printResult.endDate.timeIntervalSince1970)
+                let collectDevice = printResult.device?.model
+                let printResultToQuantity: HKQuantitySample = printResult as! HKQuantitySample
+                let collectedEnergyData = Int(printResultToQuantity.quantity.doubleValue(for: .smallCalorie()))
+                
+                let newEnergyData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedEnergyData)"
+                
+                self.energyStringDataArray.append(newEnergyData)
+            }
         }
         
         healthStore.execute(query)
+    }
+    
+    // 걷고 뛴 거리(meter)를 얻는 메소드
+    func getDistanceWalkAndRunPerDay(end: Date) {
+        guard let distanceType = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning) else { return }
+        let startTime = Calendar.current.startOfDay(for: end)
+        let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
+        
+        let query = HKSampleQuery(sampleType: distanceType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
+            let results = result
+            
+            for newResult in results! {
+                self.energyDataArray.append(newResult)
+            }
+            
+            for dataIndex in 0..<self.distanceDataArray.count {
+                
+                let printResult = self.distanceDataArray[dataIndex]
+                
+                let startCollectTime = Int(printResult.startDate.timeIntervalSince1970)
+                let endCollectTime = Int(printResult.endDate.timeIntervalSince1970)
+                let collectDevice = printResult.device?.model
+                let printResultToQuantity: HKQuantitySample = printResult as! HKQuantitySample
+                let collectedDistanceData = Int(printResultToQuantity.quantity.doubleValue(for: .meter()))
+                
+                let newDistanceData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedDistanceData)"
+                
+                self.energyStringDataArray.append(newDistanceData)
+            }
+        }
+        
+        healthStore.execute(query)
+    }
+    
+    // 받아온 건강 정보들을 CSV 파일(문자열)로 만드는 메소드
+    func makeHealthDataString(dataType: String) {
+        if dataType == "steps" {
+            self.stepStringToUpload += self.stepStringDataArray[0]
+            
+            if stepStringDataArray.count > 1 {
+                for dataIndex in 1..<self.stepStringDataArray.count {
+                    self.stepStringToUpload += "," + self.stepStringDataArray[dataIndex]
+                }
+            }
+        } else if dataType == "calories" {
+            self.energyStringToUpload += self.energyStringDataArray[0]
+            
+            if energyStringDataArray.count > 1 {
+                for dataIndex in 1..<self.energyStringDataArray.count {
+                    self.energyStringToUpload += "," + self.energyStringDataArray[dataIndex]
+                }
+            }
+        } else if dataType == "distance" {
+            self.distanceStringToUpload += self.distanceStringDataArray[0]
+            
+            if distanceStringDataArray.count > 1 {
+                for dataIndex in 1..<self.distanceStringDataArray.count {
+                    self.distanceStringToUpload += "," + self.distanceStringDataArray[dataIndex]
+                }
+            }
+        }
     }
     
     // 건강 정보를 받아오는 루프를 생성하는 메소드
     func getHealthDataLoop() {
-        let calender = Calendar.current
+        let calendar = Calendar.current
         
         let startTime = Date()
-        let getDataTime = calender.date(bySettingHour: 23, minute: 59, second: 59, of: startTime)!
+        let getDataTime = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: startTime)!
         
         var getHealthDataTimer = Timer()
         
-        getHealthDataTimer = Timer.init(fireAt: getDataTime, interval: 86400, target: self, selector: #selector(getHealthDatas), userInfo: nil, repeats: true)
+        getHealthDataTimer = Timer.init(fireAt: getDataTime, interval: 86400, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
         
         print("Loop Started")
         print("------------------------------------------------------------")
         RunLoop.main.add(getHealthDataTimer, forMode: .common)
     }
     
-    // MARK: - @objc Method
-    // Health 데이터들을 가져오는 메소드
-    @objc func getHealthDatas() {
-        let now = Date()
+    // Health Realm의 마지막 인덱스를 읽어오는 메소드
+    func getLastIndexOfHealthRealm() -> Int {
+        let realm = try! Realm()
+        let getRealm = realm.objects(HealthRealmManager.self)
+        let getLastIndex = getRealm.endIndex
         
-        getStepCountPerDay(end: now)
-        getBurnedEnergyPerDay(end: now)
-        
-        uploadHealthDataTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(uploadHealthDatas), userInfo: nil, repeats: true)
+        return getLastIndex
     }
     
-    // TODO: 서버에 관련 컨터이너 만들어야 함 -
-    // 인터넷 연결이 감지되면 UserDefaults DB에 저장되어 있는 Health 데이터들을 업로드하는 메소드
-    @objc func uploadHealthDatas() {
-        if NetWorkManager.shared.isConnected == true {
-            let stepsDataToUpload = UserDefaults.standard.string(forKey: "steps")
-            print(stepsDataToUpload!)
-            let caloriesDataToUpload = UserDefaults.standard.string(forKey: "calories")
-            print(caloriesDataToUpload!)
-            
-            uploadData(containerName: "steps", data: stepsDataToUpload ?? "오류")
-            uploadData(containerName: "calories", data: caloriesDataToUpload ?? "오류")
-            
-            uploadHealthDataTimer.invalidate()
+    // 앱 재시작 시(checkWhenReStart), 건강 데이터 파일이 남아 있다면 인터넷 연결을 체크하고 남은 파일을 한번에 업로드함
+    func checkAndReUploadHealthFiles() {
+        if checkWhenReStartHealthDatas() != 0 {
+            restartAndCheckTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadFiles), userInfo: nil, repeats: true)
         }
     }
     
-    private func uploadData(containerName: String, data: String) {
-        if data != "" && data != "오류" {
-            let semaphore = DispatchSemaphore (value: 0)
-            
-            let parameters = "{\n    \"m2m:cin\": {\n        \"con\": \"\(data)\"\n    }\n}"
-            let postData = parameters.data(using: .utf8)
-            
-            let userID = UserDefaults.standard.string(forKey: "ID")!
-            
-            var request = URLRequest(url: URL(string: "http://114.71.220.59:7579/Mobius/\(userID)/health/\(containerName)")!,timeoutInterval: Double.infinity)
-            request.addValue("application/json", forHTTPHeaderField: "Accept")
-            request.addValue("12345", forHTTPHeaderField: "X-M2M-RI")
-            request.addValue("SIWLTfduOpL", forHTTPHeaderField: "X-M2M-Origin")
-            request.addValue("application/vnd.onem2m-res+json; ty=4", forHTTPHeaderField: "Content-Type")
-            
-            request.httpMethod = "POST"
-            request.httpBody = postData
-            
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                guard data != nil else {
-                    print(error?.localizedDescription ?? "URLSession 에러")
-                    semaphore.signal()
-                    return
-                }
-                
-                // POST 성공 여부 체크, POST 실패 시 return
-                let successsRange = 200..<300
-                guard let statusCode = (response as? HTTPURLResponse)?.statusCode, successsRange.contains(statusCode)
-                else {
-                    print("")
-                    print("====================================")
-                    print("[requestPOST : http post 요청 에러]")
-                    print("error : ", (response as? HTTPURLResponse)?.statusCode ?? 0)
-                    print("msg : ", (response as? HTTPURLResponse)?.description ?? "")
-                    print("====================================")
-                    print("")
-                    return
-                }
-                
-                print("\(containerName) data is served.")
-                UserDefaults.standard.setValue("", forKey: containerName)
-                semaphore.signal()
+    // 앱 재시작 시, 건강 데이터 파일이 CSV 파일로 저장되어 있는지 확인하기 위한 메소드
+    func checkHealthCSVExist(fileName: String, fileIndex: Int) -> Bool {
+        let fileManager: FileManager = FileManager.default
+        
+        let folderName = "saveHealthCSVFolder"
+        let csvFileName = "\(fileName)_\(fileIndex).csv"
+        
+        let documentUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let diretoryUrl = documentUrl.appendingPathComponent(folderName)
+        let fileUrl = diretoryUrl.appendingPathComponent(csvFileName)
+        
+        do {
+            let dataFromPath: Data = try Data(contentsOf: fileUrl)
+            let csvFile: String = String(data: dataFromPath, encoding: .utf8) ?? "문서 없음"
+            if csvFile == "문서 없음" {
+                return false
             }
-            task.resume()
-            semaphore.wait()
+        } catch let error {
+            print(error.localizedDescription)
         }
+        
+        return true
+    }
+    
+    // MARK: - @objc Method
+    // 앱 재시작 후 잔여 파일을 모두 업로드하기 위한 메소드
+    @objc private func reuploadFiles(completion: @escaping () -> Void) {
+        if NetWorkManager.shared.isConnected == true {
+            for index in checkWhenReStartHealthDatas()..<getLastIndexOfHealthRealm() + 1 {
+                for containerName in healthContainerNameArray {
+                    if checkHealthCSVExist(fileName: containerName, fileIndex: index) == false {
+                        let realm = try! Realm()
+                        let getRealm = realm.objects(HealthRealmManager.self)
+                        let notUploadedUnixTimeString = getRealm[index].saveUnixTime
+                        let notUploadedUnixTime = Double(notUploadedUnixTimeString)
+                        let notUploadedDate = Date(timeIntervalSince1970: notUploadedUnixTime!)
+                        
+                        if containerName == "steps" {
+                            getStepCountPerDay(end: notUploadedDate)
+                            makeHealthDataString(dataType: "steps")
+                            CSVFileManager.shared.writeHealthCSV(sensorData: stepStringToUpload, dataType: "steps", index: index)
+                            stepDataArray.removeAll()
+                            stepStringDataArray.removeAll()
+                            stepStringToUpload = ""
+                        } else if containerName == "calories" {
+                            getActiveEnergyPerDay(end: notUploadedDate)
+                            makeHealthDataString(dataType: "calories")
+                            CSVFileManager.shared.writeHealthCSV(sensorData: energyStringToUpload, dataType: "calories", index: index)
+                            energyDataArray.removeAll()
+                            energyStringDataArray.removeAll()
+                            energyStringToUpload = ""
+                        } else if containerName == "distance" {
+                            getDistanceWalkAndRunPerDay(end: notUploadedDate)
+                            makeHealthDataString(dataType: "distance")
+                            CSVFileManager.shared.writeHealthCSV(sensorData: distanceStringToUpload, dataType: "distance", index: indexCount)
+                            distanceDataArray.removeAll()
+                            distanceStringDataArray.removeAll()
+                            distanceStringToUpload = ""
+                        }
+                    }
+                }
+                
+                CSVFileManager.shared.readAndUploadHealthCSV(fileNumber: index)
+                if checkWhenReStartHealthDatas() == 0 {
+                    restartAndCheckTimer.invalidate()
+                }
+            }
+        }
+        
+        completion()
+    }
+    
+    // Health CSV 파일을 만들고 업로드하는 메소드
+    @objc func makeHealthCSVFileAndUpload() {
+        print("Start save and upload health data")
+        
+        let realm = try! Realm()
+        let getRealm = realm.objects(HealthRealmManager.self)
+        indexCount = getRealm.endIndex
+        
+        let end = Date()
+        let todayEndUnixTime = String(end.timeIntervalSince1970)
+        
+        let saveNewIndexInRealm = HealthRealmManager()
+        saveNewIndexInRealm.lastSavedNumber = indexCount
+        saveNewIndexInRealm.saveUnixTime = todayEndUnixTime
+        saveNewIndexInRealm.lastUploadedStepNumber = 0
+        saveNewIndexInRealm.lastUploadedEnergyNumber = 0
+        saveNewIndexInRealm.lastUploadedDistanceNumber = 0
+        try! realm.write {
+            realm.add(saveNewIndexInRealm)
+        }
+        
+        getStepCountPerDay(end: end)
+        getActiveEnergyPerDay(end: end)
+        getDistanceWalkAndRunPerDay(end: end)
+        
+        makeHealthDataString(dataType: "steps")
+        makeHealthDataString(dataType: "calories")
+        makeHealthDataString(dataType: "distance")
+        
+        stepDataArray.removeAll()
+        energyDataArray.removeAll()
+        distanceDataArray.removeAll()
+        
+        CSVFileManager.shared.writeHealthCSV(sensorData: stepStringToUpload, dataType: "steps", index: indexCount)
+        CSVFileManager.shared.writeHealthCSV(sensorData: energyStringToUpload, dataType: "calories", index: indexCount)
+        CSVFileManager.shared.writeHealthCSV(sensorData: distanceStringToUpload, dataType: "distance", index: indexCount)
+        
+        stepStringDataArray.removeAll()
+        energyStringDataArray.removeAll()
+        distanceStringDataArray.removeAll()
+        stepStringToUpload = ""
+        energyStringToUpload = ""
+        distanceStringToUpload = ""
+        
+        CSVFileManager.shared.checkInternetAndStartUploadHealthData()
     }
     
 }

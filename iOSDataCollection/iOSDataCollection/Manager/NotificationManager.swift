@@ -59,7 +59,7 @@ class NotificationManager {
         print("설문조사 알림 설정")
         
         let notificaitonContent = UNMutableNotificationContent()
-        notificaitonContent.title = "🤗 설문조사를 진행할 시간이에요!"
+        notificaitonContent.title = "설문조사를 진행할 시간이에요!"
         notificaitonContent.body = "오늘의 설문조사를 마치셨나요? 🤔"
         notificaitonContent.sound = .default
         
