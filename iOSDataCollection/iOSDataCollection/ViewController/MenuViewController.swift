@@ -192,7 +192,7 @@ class MenuViewController: UIViewController {
         testNotionButton.snp.makeConstraints { make in
             make.top.equalTo(testNotionLabel.snp.bottom).offset(5)
             make.width.equalToSuperview()
-            make.height.equalTo(45)
+            make.height.equalTo(40)
         }
         testNotionButton.addTarget(self, action: #selector(pressTestNotionButton), for: .touchUpInside)
         
@@ -204,7 +204,7 @@ class MenuViewController: UIViewController {
         warningNotionButton.snp.makeConstraints { make in
             make.top.equalTo(warningNotionLabel.snp.bottom).offset(5)
             make.width.equalToSuperview()
-            make.height.equalTo(45)
+            make.height.equalTo(40)
         }
         warningNotionButton.addTarget(self, action: #selector(pressWarningNotionButton), for: .touchUpInside)
         
@@ -216,7 +216,7 @@ class MenuViewController: UIViewController {
         contactNotionButton.snp.makeConstraints { make in
             make.top.equalTo(contactNotionLabel.snp.bottom).offset(5)
             make.width.equalToSuperview()
-            make.height.equalTo(45)
+            make.height.equalTo(40)
         }
         contactNotionButton.addTarget(self, action: #selector(pressContactNotionButton), for: .touchUpInside)
         
@@ -228,7 +228,7 @@ class MenuViewController: UIViewController {
         surveyRegisterButton.snp.makeConstraints { make in
             make.top.equalTo(surveyRegisterLabel.snp.bottom).offset(5)
             make.width.equalToSuperview()
-            make.height.equalTo(45)
+            make.height.equalTo(40)
         }
         surveyRegisterButton.addTarget(self, action: #selector(pressSurveyRegisterButton), for: .touchUpInside)
         
@@ -240,7 +240,7 @@ class MenuViewController: UIViewController {
         surveyButton.snp.makeConstraints { make in
             make.top.equalTo(surveyLabel.snp.bottom).offset(5)
             make.width.equalToSuperview()
-            make.height.equalTo(45)
+            make.height.equalTo(40)
         }
         surveyButton.addTarget(self, action: #selector(pressSurveyButton), for: .touchUpInside)
         

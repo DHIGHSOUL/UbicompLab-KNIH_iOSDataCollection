@@ -14,7 +14,8 @@
 		FD789FD5288ECF4C00EB8C70 /* CheckSensorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */; };
 		FD8BB6B2288E5EA800F2F386 /* DataCollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */; };
 		FDA69CF028B101CF003A2F53 /* HealthRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */; };
-		FDA69CF228B11679003A2F53 /* SleepRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CF128B11679003A2F53 /* SleepRealmManager.swift */; };
+		FDA69CF428B23183003A2F53 /* SleepUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CF328B23183003A2F53 /* SleepUploadViewController.swift */; };
+		FDA69CF628B27DAD003A2F53 /* SleepDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CF528B27DAD003A2F53 /* SleepDataManager.swift */; };
 		FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DA328978B620007C149 /* NotificationManager.swift */; };
 		FDB33DCA289950210007C149 /* HealthDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DC9289950210007C149 /* HealthDataManager.swift */; };
 		FDB33DCC2899505F0007C149 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DCB2899505F0007C149 /* MenuViewController.swift */; };
@@ -62,7 +63,8 @@
 		FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckSensorViewController.swift; sourceTree = "<group>"; };
 		FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionManager.swift; sourceTree = "<group>"; };
 		FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthRealmManager.swift; sourceTree = "<group>"; };
-		FDA69CF128B11679003A2F53 /* SleepRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepRealmManager.swift; sourceTree = "<group>"; };
+		FDA69CF328B23183003A2F53 /* SleepUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepUploadViewController.swift; sourceTree = "<group>"; };
+		FDA69CF528B27DAD003A2F53 /* SleepDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepDataManager.swift; sourceTree = "<group>"; };
 		FDB33DA328978B620007C149 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		FDB33DC9289950210007C149 /* HealthDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataManager.swift; sourceTree = "<group>"; };
 		FDB33DCB2899505F0007C149 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
@@ -184,10 +186,11 @@
 			isa = PBXGroup;
 			children = (
 				FD75A8FD2896E27B00DC2C88 /* UserInfoViewController.swift */,
-				FDD1D76C288E508800D4E6F3 /* MainViewController.swift */,
 				FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */,
 				FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */,
+				FDD1D76C288E508800D4E6F3 /* MainViewController.swift */,
 				FDB33DCB2899505F0007C149 /* MenuViewController.swift */,
+				FDA69CF328B23183003A2F53 /* SleepUploadViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				FD272AF62892B2D7009CED32 /* NetworkManager.swift */,
 				FDB33DA328978B620007C149 /* NotificationManager.swift */,
 				FDB33DC9289950210007C149 /* HealthDataManager.swift */,
+				FDA69CF528B27DAD003A2F53 /* SleepDataManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -223,7 +227,6 @@
 			children = (
 				FDFB647628937E9300D6791D /* SensorRealmManager.swift */,
 				FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */,
-				FDA69CF128B11679003A2F53 /* SleepRealmManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -369,8 +372,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FD272AF72892B2D7009CED32 /* NetworkManager.swift in Sources */,
-				FDA69CF228B11679003A2F53 /* SleepRealmManager.swift in Sources */,
 				FD789FD5288ECF4C00EB8C70 /* CheckSensorViewController.swift in Sources */,
+				FDA69CF428B23183003A2F53 /* SleepUploadViewController.swift in Sources */,
 				FDB33DCA289950210007C149 /* HealthDataManager.swift in Sources */,
 				FDB33DCC2899505F0007C149 /* MenuViewController.swift in Sources */,
 				FDD1D76D288E508800D4E6F3 /* MainViewController.swift in Sources */,
@@ -383,6 +386,7 @@
 				FDA69CF028B101CF003A2F53 /* HealthRealmManager.swift in Sources */,
 				FD789FD3288ECF2900EB8C70 /* WindowTabBarViewController.swift in Sources */,
 				FDFB647728937E9300D6791D /* SensorRealmManager.swift in Sources */,
+				FDA69CF628B27DAD003A2F53 /* SleepDataManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

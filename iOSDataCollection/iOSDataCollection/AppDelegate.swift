@@ -61,6 +61,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         NotificationManager.shared.notificationCenter.removeAllPendingNotificationRequests()
         NotificationManager.shared.notificationCenter.removeAllDeliveredNotifications()
         
+        
+        
         completionHandler()
     }
     

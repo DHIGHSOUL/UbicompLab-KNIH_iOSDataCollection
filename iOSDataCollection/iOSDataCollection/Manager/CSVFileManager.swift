@@ -23,7 +23,10 @@ class CSVFileManager {
     var csvFileUploaded: Bool = false
     
     // 파일을 불러올 인덱스 번호를 입력받을 변수
-    var fileNumber: Int = 0
+    var sensorFileNumber: Int = 0
+    
+    // Health Data 파일을 불러올 인덱스 번호를 입력받을 변수
+    var healthFileNumber: Int = 0
     
     // 인터넷 연결이 없을 때, 반복적으로 인터넷 연결을 확인하고, 연결 시 바로 모든 센서 데이터를 업로드할 타이머
     var uploadFailSensorTimer = Timer()
@@ -130,12 +133,12 @@ class CSVFileManager {
     // Sensor CSV 파일을 업로드하기 위해 인터넷 연결을 체크하고, 연결이 되어 있다면 센서 데이터 업로드를 시작하는 메소드
     func checkInternetAndStartUploadSensorData() {
         if NetWorkManager.shared.isConnected == true {
-            fileNumber = DataCollectionManager.shared.getLastIndexOfSensorRealm()
+            sensorFileNumber = DataCollectionManager.shared.getLastIndexOfSensorRealm()
             
-            readAndUploadSensorCSV(fileNumber: fileNumber)
+            readAndUploadSensorCSV(fileNumber: sensorFileNumber)
         } else {
             if checkFailAgainUploadSensorData == 0 {
-                uploadFailSensorNumber = fileNumber
+                uploadFailSensorNumber = sensorFileNumber
                 uploadFailSensorTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadSensorDataIfInternetConnected), userInfo: nil, repeats: true)
                 checkFailAgainUploadSensorData = 1
             }
@@ -145,12 +148,12 @@ class CSVFileManager {
     // Health CSV 파일을 업로드하기 위해 인터넷 연결을 체크하고, 연결이 되어 있다면 센서 데이터 업로드를 시작하는 메소드
     func checkInternetAndStartUploadHealthData() {
         if NetWorkManager.shared.isConnected == true {
-            fileNumber = HealthDataManager.shared.getLastIndexOfHealthRealm()
+            healthFileNumber = HealthDataManager.shared.getLastIndexOfHealthRealm()
             
-            readAndUploadHealthCSV(fileNumber: fileNumber)
+            readAndUploadHealthCSV(fileNumber: healthFileNumber)
         } else {
             if checkFailAgainUploadHealthData == 0 {
-                uploadFailHealthNumber = fileNumber
+                uploadFailHealthNumber = healthFileNumber
                 uploadFailHealthTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadHealthDataIfInternetConnected), userInfo: nil, repeats: true)
                 checkFailAgainUploadHealthData = 1
             }
@@ -284,7 +287,7 @@ class CSVFileManager {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: SensorRealmManager.self, forPrimaryKey: fileNumber) else {
-            print("File_\(String(describing: self.fileNumber)) not found")
+            print("File_\(String(describing: self.sensorFileNumber)) not found")
             return
         }
         
@@ -297,7 +300,7 @@ class CSVFileManager {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: SensorRealmManager.self, forPrimaryKey: fileNumber) else {
-            print("File_\(String(describing: self.fileNumber)) not found")
+            print("File_\(String(describing: self.sensorFileNumber)) not found")
             return
         }
         
@@ -310,7 +313,7 @@ class CSVFileManager {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: SensorRealmManager.self, forPrimaryKey: fileNumber) else {
-            print("File_\(String(describing: self.fileNumber)) not found")
+            print("File_\(String(describing: self.sensorFileNumber)) not found")
             return
         }
         
@@ -323,7 +326,7 @@ class CSVFileManager {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: HealthRealmManager.self, forPrimaryKey: fileNumber) else {
-            print("File_\(String(describing: self.fileNumber)) not found")
+            print("File_\(String(describing: self.healthFileNumber)) not found")
             return
         }
         
@@ -336,7 +339,7 @@ class CSVFileManager {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: HealthRealmManager.self, forPrimaryKey: fileNumber) else {
-            print("File_\(String(describing: self.fileNumber)) not found")
+            print("File_\(String(describing: self.healthFileNumber)) not found")
             return
         }
         
@@ -349,7 +352,7 @@ class CSVFileManager {
         let realm = try! Realm()
         
         guard let updateRealm = realm.object(ofType: HealthRealmManager.self, forPrimaryKey: fileNumber) else {
-            print("File_\(String(describing: self.fileNumber)) not found")
+            print("File_\(String(describing: self.healthFileNumber)) not found")
             return
         }
         
