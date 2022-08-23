@@ -37,4 +37,5 @@ class WindowTabBarViewController: UITabBarController {
         
         viewControllers = [firstViewController, secondViewController, thirdViewController]
     }
+    
 }

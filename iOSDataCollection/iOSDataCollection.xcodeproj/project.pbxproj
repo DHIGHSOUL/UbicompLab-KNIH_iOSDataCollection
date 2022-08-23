@@ -14,7 +14,6 @@
 		FD789FD5288ECF4C00EB8C70 /* CheckSensorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */; };
 		FD8BB6B2288E5EA800F2F386 /* DataCollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */; };
 		FDA69CF028B101CF003A2F53 /* HealthRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */; };
-		FDA69CF428B23183003A2F53 /* SleepUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CF328B23183003A2F53 /* SleepUploadViewController.swift */; };
 		FDA69CF628B27DAD003A2F53 /* SleepDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CF528B27DAD003A2F53 /* SleepDataManager.swift */; };
 		FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DA328978B620007C149 /* NotificationManager.swift */; };
 		FDB33DCA289950210007C149 /* HealthDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DC9289950210007C149 /* HealthDataManager.swift */; };
@@ -63,7 +62,6 @@
 		FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckSensorViewController.swift; sourceTree = "<group>"; };
 		FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionManager.swift; sourceTree = "<group>"; };
 		FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthRealmManager.swift; sourceTree = "<group>"; };
-		FDA69CF328B23183003A2F53 /* SleepUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepUploadViewController.swift; sourceTree = "<group>"; };
 		FDA69CF528B27DAD003A2F53 /* SleepDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepDataManager.swift; sourceTree = "<group>"; };
 		FDB33DA328978B620007C149 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		FDB33DC9289950210007C149 /* HealthDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataManager.swift; sourceTree = "<group>"; };
@@ -190,7 +188,6 @@
 				FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */,
 				FDD1D76C288E508800D4E6F3 /* MainViewController.swift */,
 				FDB33DCB2899505F0007C149 /* MenuViewController.swift */,
-				FDA69CF328B23183003A2F53 /* SleepUploadViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -373,7 +370,6 @@
 			files = (
 				FD272AF72892B2D7009CED32 /* NetworkManager.swift in Sources */,
 				FD789FD5288ECF4C00EB8C70 /* CheckSensorViewController.swift in Sources */,
-				FDA69CF428B23183003A2F53 /* SleepUploadViewController.swift in Sources */,
 				FDB33DCA289950210007C149 /* HealthDataManager.swift in Sources */,
 				FDB33DCC2899505F0007C149 /* MenuViewController.swift in Sources */,
 				FDD1D76D288E508800D4E6F3 /* MainViewController.swift in Sources */,
@@ -555,8 +551,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOSDataCollection/iOSDataCollection.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 8RN9H3Z673;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSDataCollection/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
@@ -571,7 +568,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -595,8 +592,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOSDataCollection/iOSDataCollection.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 8RN9H3Z673;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSDataCollection/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
@@ -611,7 +609,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

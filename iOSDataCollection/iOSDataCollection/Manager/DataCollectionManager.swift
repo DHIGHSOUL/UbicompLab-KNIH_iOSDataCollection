@@ -90,7 +90,7 @@ class DataCollectionManager {
             }
         }
         
-        Timer.scheduledTimer(timeInterval: 900, target: self, selector: #selector(makeSensorCSVFileAndUpload), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 600, target: self, selector: #selector(makeSensorCSVFileAndUpload), userInfo: nil, repeats: true)
     }
     
     // Sensor Realm의 마지막 인덱스를 읽어오는 메소드
@@ -231,10 +231,6 @@ class DataCollectionManager {
         
         indexCount += 1
         
-        CSVFileManager.shared.writeSensorCSV(sensorData: accelerationDataString, sensorType: "mAcc", index: indexCount)
-        CSVFileManager.shared.writeSensorCSV(sensorData: rotationDataString, sensorType: "mGyr", index: indexCount)
-        CSVFileManager.shared.writeSensorCSV(sensorData: pressureDataString, sensorType: "mPre", index: indexCount)
-        
         let saveNewIndexInRealm = SensorRealmManager()
         saveNewIndexInRealm.lastSavedNumber = indexCount
         saveNewIndexInRealm.lastUploadedmAccNumber = 0
@@ -243,6 +239,10 @@ class DataCollectionManager {
         try! realm.write {
             realm.add(saveNewIndexInRealm)
         }
+        
+        CSVFileManager.shared.writeSensorCSV(sensorData: accelerationDataString, sensorType: "mAcc", index: indexCount)
+        CSVFileManager.shared.writeSensorCSV(sensorData: rotationDataString, sensorType: "mGyr", index: indexCount)
+        CSVFileManager.shared.writeSensorCSV(sensorData: pressureDataString, sensorType: "mPre", index: indexCount)
         
         accelerationDataString = ""
         rotationDataString = ""

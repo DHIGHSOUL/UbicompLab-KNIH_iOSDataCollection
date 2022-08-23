@@ -37,11 +37,16 @@ class HealthDataManager {
     var distanceStringDataArray: [String] = []
     var distanceStringToUpload = ""
     
+    // 수면 데이터를 HKSample 형식으로 받아들일 배열, 받아들인 배열 구조를 업로드할 구조로 재구성할(startTime, endTime, data) 배열, 업로드를 위한 문자열
+    var sleepDataArray: [HKCategorySample] = []
+    var sleepStringDataArray: [String] = []
+    var sleepStringToUpload = ""
+    
     // 파일을 저장할 때 인덱싱을 하기 위한 변수
     var indexCount: Int = 0
     
     // Health 데이터의 컨테이너 이름 배열
-    let healthContainerNameArray: [String] = ["steps", "calories", "distance"]
+    let healthContainerNameArray: [String] = ["steps", "calories", "distance", "sleep"]
     
     // MARK: - Method
     // 앱 재시작 시, 업로드되지 않은 파일의 인덱스를 확인하여 전부 업로드시키는 메소드
@@ -146,7 +151,7 @@ class HealthDataManager {
                 let endCollectTime = Int(printResult.endDate.timeIntervalSince1970)
                 let collectDevice = printResult.device?.model
                 let printResultToQuantity: HKQuantitySample = printResult as! HKQuantitySample
-                let collectedEnergyData = Int(printResultToQuantity.quantity.doubleValue(for: .smallCalorie()) * 1000)
+                let collectedEnergyData = Int(printResultToQuantity.quantity.doubleValue(for: .smallCalorie()))
                 
                 let newEnergyData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedEnergyData)"
                 
@@ -171,7 +176,6 @@ class HealthDataManager {
             }
             
             for dataIndex in 0..<self.distanceDataArray.count {
-                
                 let printResult = self.distanceDataArray[dataIndex]
                 
                 let startCollectTime = Int(printResult.startDate.timeIntervalSince1970)
@@ -184,6 +188,44 @@ class HealthDataManager {
                 
                 self.distanceStringDataArray.append(newDistanceData)
             }
+        }
+        
+        healthStore.execute(query)
+    }
+    
+    // 작일 10:00:00 ~ 금일 09:59:59까지 24시간의 수면 데이터를 얻는 메소드
+    func getSleepPerDay(start: Date, end: Date) {
+        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return }
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
+        
+        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { [weak self] (_, result, error) -> Void in
+            if error != nil {
+                return
+            }
+            
+            if let result = result {
+                for newResult in result {
+                    self?.sleepDataArray.append(newResult as! HKCategorySample)
+                }
+            }
+            
+            if (self?.sleepDataArray.count)! > 0 {
+                for newData in self!.sleepDataArray {
+                    let startCollectTime = Int(newData.startDate.timeIntervalSince1970)
+                    let endCollectTime = Int(newData.endDate.timeIntervalSince1970)
+                    let collectDeviceNumber = newData.value
+                    var collectDevice = ""
+                    if collectDeviceNumber == 0 {
+                        collectDevice = "iPhone"
+                    } else if collectDeviceNumber == 1 {
+                        collectDevice = "Watch"
+                    }
+                    let collectedSleepTimeData =  Int(newData.endDate.timeIntervalSince(newData.startDate))
+                    let newSleepData = "\(startCollectTime),\(endCollectTime),\(collectDevice ),\(collectedSleepTimeData)"
+                    
+                    self?.sleepStringDataArray.append(newSleepData)
+                }
+            } else { return }
         }
         
         healthStore.execute(query)
@@ -215,19 +257,28 @@ class HealthDataManager {
                     distanceStringToUpload += "," + distanceStringDataArray[dataIndex]
                 }
             }
+        } else if dataType == "sleep" {
+            sleepStringToUpload += sleepStringDataArray[0]
+            
+            if sleepStringDataArray.count > 1 {
+                for dataIndex in 1..<self.sleepStringDataArray.count {
+                    sleepStringToUpload += "," + sleepStringDataArray[dataIndex]
+                }
+            }
         }
     }
     
     // 건강 정보를 받아오는 루프를 생성하는 메소드
-    func getHealthDataLoop() {
+    func setHealthDataLoop() {
         let calendar = Calendar.current
         
-        let startTime = Date()
-        let getDataTime = calendar.date(bySettingHour: 00, minute: 01, second: 00, of: startTime)!
+        let now = Date()
+        let tomorrow = Calendar.current.date(byAdding: .day, value: +1, to: now)
+        let startTime = calendar.date(bySettingHour: 10, minute: 00, second: 00, of: tomorrow ?? Date())!
         
         var getHealthDataTimer = Timer()
         
-        getHealthDataTimer = Timer.init(fireAt: getDataTime, interval: 86400, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
+        getHealthDataTimer = Timer.init(fireAt: startTime , interval: 86400, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
         
         print("Collecting health data loop started")
         print("------------------------------------------------------------")
@@ -265,6 +316,10 @@ class HealthDataManager {
             }
         } else if property == "distance" {
             if getRealm[fileIndex].lastUploadedDistanceNumber == 0 {
+                return false
+            }
+        } else if property == "sleep" {
+            if getRealm[fileIndex].lastUploadedSleepNumber == 0 {
                 return false
             }
         }
@@ -338,6 +393,18 @@ class HealthDataManager {
                                     self.distanceStringDataArray.removeAll()
                                     self.distanceStringToUpload = ""
                                 }
+                            } else if containerName == "sleep" {
+                                let startTime = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: notUploadedDate)
+                                let endYesterday = Calendar.current.date(byAdding: .day, value: +1, to: notUploadedDate)
+                                let endTime = Calendar.current.date(bySettingHour: 09, minute: 59, second: 59, of: endYesterday!)
+                                getSleepPerDay(start: startTime!, end: endTime!)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                    self.makeHealthDataString(dataType: "sleep")
+                                    CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: index)
+                                    self.sleepDataArray.removeAll()
+                                    self.sleepStringDataArray.removeAll()
+                                    self.sleepStringToUpload = ""
+                                }
                             }
                         }
                     }
@@ -357,8 +424,11 @@ class HealthDataManager {
     @objc func makeHealthCSVFileAndUpload() {
         print("Start save and upload health data")
         
+        // TODO: - TEST
         let now = Date()
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)
+        let yesterdayStartSleep = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: yesterday ?? Date())
+        let todayFinishSleep = Calendar.current.date(bySettingHour: 09, minute: 59, second: 59, of: now)
         let end = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: yesterday ?? Date())
         let todayEndUnixTime = String(end!.timeIntervalSince1970)
         
@@ -374,6 +444,7 @@ class HealthDataManager {
         saveNewIndexInRealm.lastUploadedStepNumber = 0
         saveNewIndexInRealm.lastUploadedEnergyNumber = 0
         saveNewIndexInRealm.lastUploadedDistanceNumber = 0
+        saveNewIndexInRealm.lastUploadedSleepNumber = 0
         try! realm.write {
             realm.add(saveNewIndexInRealm)
         }
@@ -381,6 +452,7 @@ class HealthDataManager {
         getStepCountPerDay(end: end!)
         getActiveEnergyPerDay(end: end!)
         getDistanceWalkAndRunPerDay(end: end!)
+        getSleepPerDay(start: yesterdayStartSleep!, end: todayFinishSleep!)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             for array in self.healthContainerNameArray {
@@ -390,16 +462,20 @@ class HealthDataManager {
             CSVFileManager.shared.writeHealthCSV(sensorData: self.stepStringToUpload, dataType: "steps", index: self.indexCount)
             CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: self.indexCount)
             CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: self.indexCount)
+            CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: self.indexCount)
             
             self.stepDataArray.removeAll()
             self.energyDataArray.removeAll()
             self.distanceDataArray.removeAll()
+            self.sleepDataArray.removeAll()
             self.stepStringDataArray.removeAll()
             self.energyStringDataArray.removeAll()
             self.distanceStringDataArray.removeAll()
+            self.sleepStringDataArray.removeAll()
             self.stepStringToUpload = ""
             self.energyStringToUpload = ""
             self.distanceStringToUpload = ""
+            self.sleepStringToUpload = ""
             
             CSVFileManager.shared.checkInternetAndStartUploadHealthData()
         }
