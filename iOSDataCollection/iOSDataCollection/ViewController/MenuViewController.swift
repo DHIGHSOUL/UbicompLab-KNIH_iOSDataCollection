@@ -26,7 +26,7 @@ class MenuViewController: UIViewController {
     // '사용방법' 노션으로 이동하는 것을 알리는 Label
     private let testNotionLabel: UILabel = {
         let label = UILabel()
-        label.text = "'사용방법' 노션 페이지로 이동합니다."
+        label.text = LanguageChange.MenuViewWord.whatToDoLabel
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 13)
         label.textAlignment = .center
@@ -38,7 +38,7 @@ class MenuViewController: UIViewController {
     private let testNotionButton: UIButton = {
         let button = UIButton()
         button.clipsToBounds = true
-        button.setTitle("사용방법 확인하기", for: .normal)
+        button.setTitle(LanguageChange.MenuViewWord.whatToDoButton, for: .normal)
         var buttonConfiguration = UIButton.Configuration.filled()
         buttonConfiguration.baseBackgroundColor = .darkGray
         buttonConfiguration.baseForegroundColor = .white
@@ -50,7 +50,7 @@ class MenuViewController: UIViewController {
     // '주의사항' 노션으로 이동하는 것을 알리는 Label
     private let warningNotionLabel: UILabel = {
         let label = UILabel()
-        label.text = "'주의사항' 노션 페이지로 이동합니다."
+        label.text = LanguageChange.MenuViewWord.precautionLabel
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 13)
         label.textAlignment = .center
@@ -62,7 +62,7 @@ class MenuViewController: UIViewController {
     private let warningNotionButton: UIButton = {
         let button = UIButton()
         button.clipsToBounds = true
-        button.setTitle("주의사항 확인하기", for: .normal)
+        button.setTitle(LanguageChange.MenuViewWord.precautionButton, for: .normal)
         var buttonConfiguration = UIButton.Configuration.filled()
         buttonConfiguration.baseBackgroundColor = .darkGray
         buttonConfiguration.baseForegroundColor = .white
@@ -74,7 +74,7 @@ class MenuViewController: UIViewController {
     // '문의사항' 노션으로 이동하는 것을 알리는 Label
     private let contactNotionLabel: UILabel = {
         let label = UILabel()
-        label.text = "'문의하기' 노션 페이지로 이동합니다."
+        label.text = LanguageChange.MenuViewWord.contactLabel
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 13)
         label.textAlignment = .center
@@ -86,7 +86,7 @@ class MenuViewController: UIViewController {
     private let contactNotionButton: UIButton = {
         let button = UIButton()
         button.clipsToBounds = true
-        button.setTitle("문의 메일 확인하기", for: .normal)
+        button.setTitle(LanguageChange.MenuViewWord.contactButton, for: .normal)
         var buttonConfiguration = UIButton.Configuration.filled()
         buttonConfiguration.baseBackgroundColor = .darkGray
         buttonConfiguration.baseForegroundColor = .white
@@ -98,7 +98,7 @@ class MenuViewController: UIViewController {
     // 설문조사 가입 페이지로 이동하는 것을 알리는 Label
     private let surveyRegisterLabel: UILabel = {
         let label = UILabel()
-        label.text = "설문조사 회원가입 웹페이지로 이동합니다."
+        label.text = LanguageChange.MenuViewWord.registerLabel
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 13)
         label.textAlignment = .center
@@ -110,7 +110,7 @@ class MenuViewController: UIViewController {
     private let surveyRegisterButton: UIButton = {
         let button = UIButton()
         button.clipsToBounds = true
-        button.setTitle("설문조사 회원가입하기", for: .normal)
+        button.setTitle(LanguageChange.MenuViewWord.registerButton, for: .normal)
         var buttonConfiguration = UIButton.Configuration.filled()
         buttonConfiguration.baseBackgroundColor = .darkGray
         buttonConfiguration.baseForegroundColor = .white
@@ -122,7 +122,7 @@ class MenuViewController: UIViewController {
     // 설문조사 페이지로 이동하는 것을 알리는 Label
     private let surveyLabel: UILabel = {
         let label = UILabel()
-        label.text = "설문조사 웹페이지로 이동합니다."
+        label.text = LanguageChange.MenuViewWord.surveyLabel
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 13)
         label.textAlignment = .center
@@ -134,7 +134,7 @@ class MenuViewController: UIViewController {
     private let surveyButton: UIButton = {
         let button = UIButton()
         button.clipsToBounds = true
-        button.setTitle("설문조사 참여하기", for: .normal)
+        button.setTitle(LanguageChange.MenuViewWord.surveyButton, for: .normal)
         var buttonConfiguration = UIButton.Configuration.filled()
         buttonConfiguration.baseBackgroundColor = .darkGray
         buttonConfiguration.baseForegroundColor = .white
@@ -146,7 +146,7 @@ class MenuViewController: UIViewController {
     // 로그아웃 경고를 나타낼 Label
     private let warningLogOutLabel: UILabel = {
         let label = UILabel()
-        label.text = "Warning : 로그아웃은 ID가 잘못되었을 때만 사용해주세요."
+        label.text = LanguageChange.MenuViewWord.logOutWarning
         label.textColor = .systemRed
         label.font = UIFont.systemFont(ofSize: 13)
         label.textAlignment = .center
@@ -158,7 +158,7 @@ class MenuViewController: UIViewController {
     private let logOutButton: UIButton = {
         let button = UIButton()
         button.clipsToBounds = true
-        button.setTitle("로그아웃", for: .normal)
+        button.setTitle(LanguageChange.MenuViewWord.logOutButton, for: .normal)
         var buttonConfiguration = UIButton.Configuration.filled()
         buttonConfiguration.baseBackgroundColor = .systemRed
         buttonConfiguration.baseForegroundColor = .white
@@ -172,12 +172,15 @@ class MenuViewController: UIViewController {
         super.viewDidLoad()
         
         menuViewLayout()
+
     }
     
     // MARK: - Method
     // Menu View의 레이아웃 설정
     private func menuViewLayout() {
         addSubViews()
+        
+//        if UserDefaults.standard.value(forKey: "AppleLanguages")
         
         userIDLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(-40)
@@ -272,9 +275,9 @@ class MenuViewController: UIViewController {
     // MARK: - @objc Method
     // '사용방법' 노션 페이지 버튼을 눌렀을 때 앱 내에서 페이지를 띄우는 메소드
     @objc private func pressTestNotionButton() {
-        let testNotionAlert = UIAlertController(title: "페이지를 여시겠습니까?", message: nil, preferredStyle: .alert)
-        let cancelButton = UIAlertAction(title: "취소", style: .cancel)
-        let okButton = UIAlertAction(title: "확인", style: .default) { _ in
+        let testNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
+        let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
             if let testNotionURL = NSURL(string: "https://potent-barnacle-025.notion.site/bc2c2486ad7b4cfa94823e303082abca") {
                 let testNotionView: SFSafariViewController = SFSafariViewController(url: testNotionURL as URL)
                 self.present(testNotionView, animated: true, completion: nil)
@@ -288,9 +291,9 @@ class MenuViewController: UIViewController {
     
     // '주의사항' 노션 페이지 버튼을 눌렀을 때 앱 내에서 페이지를 띄우는 메소드
     @objc private func pressWarningNotionButton() {
-        let warningNotionAlert = UIAlertController(title: "페이지를 여시겠습니까?", message: nil, preferredStyle: .alert)
-        let cancelButton = UIAlertAction(title: "취소", style: .cancel)
-        let okButton = UIAlertAction(title: "확인", style: .default) { _ in
+        let warningNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
+        let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
             if let warningNotionURL = NSURL(string: "https://potent-barnacle-025.notion.site/3af5727fddf149f09a56bfa624d9ef15") {
                 let warningNotionView: SFSafariViewController = SFSafariViewController(url: warningNotionURL as URL)
                 self.present(warningNotionView, animated: true, completion: nil)
@@ -304,9 +307,9 @@ class MenuViewController: UIViewController {
     
     // '문의사항' 노션 페이지 버튼을 눌렀을 때 앱 내에서 페이지를 띄우는 메소드
     @objc private func pressContactNotionButton() {
-        let contactNotionAlert = UIAlertController(title: "페이지를 여시겠습니까?", message: nil, preferredStyle: .alert)
-        let cancelButton = UIAlertAction(title: "취소", style: .cancel)
-        let okButton = UIAlertAction(title: "확인", style: .default) { _ in
+        let contactNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
+        let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
             if let contactNotionURL = NSURL(string: "https://potent-barnacle-025.notion.site/71828069ba564a4b876991c1610f161e") {
                 let contactNotionView: SFSafariViewController = SFSafariViewController(url: contactNotionURL as URL)
                 self.present(contactNotionView, animated: true, completion: nil)
@@ -319,9 +322,9 @@ class MenuViewController: UIViewController {
     
     // 설문조사 회원가입 버튼을 눌렀을 때 앱 내에서 페이지를 띄우는 메소드
     @objc private func pressSurveyRegisterButton() {
-        let surveyAlert = UIAlertController(title: "페이지를 여시겠습니까?", message: nil, preferredStyle: .alert)
-        let cancelButton = UIAlertAction(title: "취소", style: .cancel)
-        let okButton = UIAlertAction(title: "확인", style: .default) { _ in
+        let surveyAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
+        let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
             if let surveyRegisterURL = NSURL(string: "http://114.71.220.59:2017/register") {
                 let surveyRegisterView: SFSafariViewController = SFSafariViewController(url: surveyRegisterURL as URL)
                 self.present(surveyRegisterView, animated: true, completion: nil)
@@ -334,9 +337,9 @@ class MenuViewController: UIViewController {
     
     // 설문조사 페이지 버튼을 눌렀을 때 앱 내에서 페이지를 띄우는 메소드
     @objc private func pressSurveyButton() {
-        let surveyAlert = UIAlertController(title: "페이지를 여시겠습니까?", message: nil, preferredStyle: .alert)
-        let cancelButton = UIAlertAction(title: "취소", style: .cancel)
-        let okButton = UIAlertAction(title: "확인", style: .default) { _ in
+        let surveyAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
+        let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
             if let surveyURL = NSURL(string: "http://114.71.220.59:2017/") {
                 let surveyView: SFSafariViewController = SFSafariViewController(url: surveyURL as URL)
                 self.present(surveyView, animated: true, completion: nil)
@@ -349,12 +352,12 @@ class MenuViewController: UIViewController {
     
     // 로그아웃 버튼을 누를 때 실행되는 메소드
     @objc private func pressLogOutButton() {
-        let logOutAlert = UIAlertController(title: "로그아웃 하시겠습니까?", message: "로그아웃하면 데이터를 수집할 수 없습니다!", preferredStyle: .alert)
-        let cancelButton = UIAlertAction(title: "취소", style: .cancel)
-        let checkButton = UIAlertAction(title: "확인", style: .default) { _ in
-            let checkOneMoreAlert = UIAlertController(title: "정말 로그아웃 하시겠습니까?", message: "로그아웃은 ID를 바꿀 때만 실행해주세요.", preferredStyle: .alert)
-            let cancelButton = UIAlertAction(title: "취소", style: .cancel)
-            let checkButton = UIAlertAction(title: "로그아웃", style: .destructive) { _ in
+        let logOutAlert = UIAlertController(title: LanguageChange.AlertWord.wantToLogOut, message: LanguageChange.AlertWord.canNotCollectData, preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
+        let checkButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
+            let checkOneMoreAlert = UIAlertController(title: LanguageChange.AlertWord.reallySingOut, message: LanguageChange.AlertWord.signOutWhenYouChangeID, preferredStyle: .alert)
+            let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
+            let checkButton = UIAlertAction(title: LanguageChange.AlertWord.alertLogOut, style: .destructive) { _ in
                 UserDefaults.standard.setValue(0, forKey: "appAuthorization")
                 UserDefaults.standard.setValue("", forKey: "ID")
                 UIApplication.shared.perform(#selector(NSXPCConnection.suspend))

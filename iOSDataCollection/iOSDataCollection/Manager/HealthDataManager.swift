@@ -42,11 +42,16 @@ class HealthDataManager {
     var sleepStringDataArray: [String] = []
     var sleepStringToUpload = ""
     
+    // 심박수 데이터를 HKSample 형식으로 받아들일 배열, 받아들인 배열 구조를 업로드할 구조로 재구성할(startTime, endTime, data) 배열, 업로드를 위한 문자열
+    var heartRateDataArray: [HKSample] = []
+    var heartRateStringDataArray: [String] = []
+    var heartRateStringToUpload = ""
+    
     // 파일을 저장할 때 인덱싱을 하기 위한 변수
     var indexCount: Int = 0
     
     // Health 데이터의 컨테이너 이름 배열
-    let healthContainerNameArray: [String] = ["steps", "calories", "distance", "sleep"]
+    let healthContainerNameArray: [String] = ["steps", "calories", "distance", "sleep", "HR"]
     
     // MARK: - Method
     // 앱 재시작 시, 업로드되지 않은 파일의 인덱스를 확인하여 전부 업로드시키는 메소드
@@ -75,8 +80,8 @@ class HealthDataManager {
     // 건강 정보를 읽기 위해 사용자의 허가를 얻기 위한 메소드
     func requestHealthDataAuthorization() {
         if HKHealthStore.isHealthDataAvailable() {
-            let read = Set([HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!, HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!, HKObjectType.quantityType(forIdentifier: .stepCount)!, HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!])
-            let share = Set([HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!, HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!, HKObjectType.quantityType(forIdentifier: .stepCount)!, HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!])
+            let read = Set([HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!, HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!, HKObjectType.quantityType(forIdentifier: .stepCount)!, HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!, HKQuantityType.quantityType(forIdentifier: .heartRate)!])
+            let share = Set([HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!, HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!, HKObjectType.quantityType(forIdentifier: .stepCount)!, HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!, HKQuantityType.quantityType(forIdentifier: .heartRate)!])
             
             healthStore.requestAuthorization(toShare: share, read: read) { (success, error) in
                 if error != nil {
@@ -99,15 +104,15 @@ class HealthDataManager {
         print(end)
         
         guard let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }
-        let startDate = Calendar.current.startOfDay(for: end)
-        print(startDate)
+        let startTime = Calendar.current.startOfDay(for: end)
+        print(startTime)
         
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: end, options: .strictStartDate)
+        let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
         
         let query = HKSampleQuery(sampleType: stepType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
-            if error != nil {
-                print("Step Query Error, Set Error String")
-                let errorStepString = "\(startDate.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,-1"
+            if let error = error {
+                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                let errorStepString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
                 self.stepStringDataArray.append(errorStepString)
                 return
             }
@@ -115,7 +120,7 @@ class HealthDataManager {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if result?.count == 0 {
                     print("Step Query Count(No Data) Error, Set Error String")
-                    let errorStepString = "\(startDate.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    let errorStepString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,0"
                     self.stepStringDataArray.append(errorStepString)
                     return
                 } else if let results = result {
@@ -150,9 +155,9 @@ class HealthDataManager {
         let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
         
         let query = HKSampleQuery(sampleType: activeEnergyType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
-            if error != nil {
-                print("Energy Query Error, Set Error String")
-                let errorEnergyString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,-1"
+            if let error = error {
+                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                let errorEnergyString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
                 self.energyStringDataArray.append(errorEnergyString)
                 return
             }
@@ -160,7 +165,7 @@ class HealthDataManager {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if result?.count == 0 {
                     print("Energy Query Count(No Data) Error, Set Error String")
-                    let errorEnergyString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    let errorEnergyString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,0"
                     self.energyStringDataArray.append(errorEnergyString)
                     return
                 } else if let results = result {
@@ -195,9 +200,9 @@ class HealthDataManager {
         let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
         
         let query = HKSampleQuery(sampleType: distanceType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
-            if error != nil {
-                print("Distance Query Error, Set Error String")
-                let errorDistanceString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,-1"
+            if let error = error {
+                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                let errorDistanceString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
                 self.distanceStringDataArray.append(errorDistanceString)
                 return
             }
@@ -205,7 +210,7 @@ class HealthDataManager {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if result?.count == 0 {
                     print("Distance Query Count(No Data) Error, Set Error String")
-                    let errorDistanceString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    let errorDistanceString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,0"
                     self.distanceStringDataArray.append(errorDistanceString)
                     return
                 } else if let results = result {
@@ -239,9 +244,9 @@ class HealthDataManager {
         let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
         
         let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { [weak self] (_, result, error) -> Void in
-            if error != nil {
-                print("Sleep Query Error, Set Error String")
-                let errorSleepString = "\(start.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,-1"
+            if let error = error {
+                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                let errorSleepString = "\(Int(start.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
                 self?.sleepStringDataArray.append(errorSleepString)
                 return
             }
@@ -249,7 +254,7 @@ class HealthDataManager {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if result?.count == 0 {
                     print("Sleep Query Count(No Data) Error, Set Error String")
-                    let errorSleepString = "\(start.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    let errorSleepString = "\(Int(start.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,0"
                     self?.sleepStringDataArray.append(errorSleepString)
                     return
                 } else if let results = result {
@@ -274,6 +279,54 @@ class HealthDataManager {
                     let newSleepData = "\(startCollectTime),\(endCollectTime),\(collectDevice ),\(collectedSleepTimeData)"
                     
                     self?.sleepStringDataArray.append(newSleepData)
+                }
+            }
+        }
+        
+        healthStore.execute(query)
+    }
+    
+    // 어제 하루의 심박 수를 가져오는 메소드
+    func getHeartRatePerDay(end: Date) {
+        guard let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate) else { return }
+        let startTime = Calendar.current.startOfDay(for: end)
+        print(startTime)
+        
+        let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
+        
+        let query = HKSampleQuery(sampleType: heartRateType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
+            if let error = error {
+                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                let errorHeartRateString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
+                self.heartRateStringDataArray.append(errorHeartRateString)
+                return
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                if result?.count == 0 {
+                    print("HeartRate Query Count(No Data) Error, Set Error String")
+                    let errorHeartRateString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    self.heartRateStringDataArray.append(errorHeartRateString)
+                    return
+                } else if let results = result {
+                    print("HeartRate Query No Error, Start Appending Results In Array")
+                    for newResult in results {
+                        self.heartRateDataArray.append(newResult)
+                    }
+                }
+                
+                
+                print("No Error, Start Convert HeartRate Data To String")
+                for newData in self.heartRateDataArray {
+                    let startCollectTime = Int(newData.startDate.timeIntervalSince1970)
+                    let endCollectTime = Int(newData.endDate.timeIntervalSince1970)
+                    let collectDevice = newData.device?.model
+                    let printResultToQuantity: HKQuantitySample = newData as! HKQuantitySample
+                    let collectedHeartRateData = Int(printResultToQuantity.quantity.doubleValue(for: .count().unitDivided(by: .minute())))
+                    
+                    let newHeartRateData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedHeartRateData)"
+                    
+                    self.heartRateStringDataArray.append(newHeartRateData)
                 }
             }
         }
@@ -327,6 +380,17 @@ class HealthDataManager {
             
             sleepDataArray.removeAll()
             sleepStringDataArray.removeAll()
+        } else if dataType == "HR" {
+            heartRateStringToUpload += heartRateStringDataArray[0]
+            
+            if heartRateStringDataArray.count > 1 {
+                for dataIndex in 1..<self.heartRateStringDataArray.count {
+                    heartRateStringToUpload += "," + heartRateStringDataArray[dataIndex]
+                }
+            }
+            
+            heartRateDataArray.removeAll()
+            heartRateStringDataArray.removeAll()
         }
     }
     
@@ -335,13 +399,15 @@ class HealthDataManager {
         let calendar = Calendar.current
         
         let now = Date()
-        //        let tomorrow = Calendar.current.date(byAdding: .day, value: +1, to: now)
-//        let startTime = calendar.date(bySettingHour: 10, minute: 00, second: 00, of: tomorrow)!
-        let startTime = calendar.date(bySettingHour: 11, minute: 41, second: 00, of: now)!
+        
+        // MARK: 오늘 10시에 실행하면 어제 데이터를 받아옴(걸음/심박/거리는 00시 ~ 23:59:59, 수면은 작일 10시 ~ 금일 09:59:59). 테스트 진행 후에는 반드시 RunLoop FireTime 되돌려 놓을 것.
+        let tomorrow = Calendar.current.date(byAdding: .day, value: +1, to: now)
+        let startTime = calendar.date(bySettingHour: 10, minute: 00, second: 00, of: tomorrow ?? Date())!
+//        let startTime = calendar.date(bySettingHour: 17, minute: 52, second: 00, of: now)
         
         var getHealthDataTimer = Timer()
         
-        getHealthDataTimer = Timer.init(fireAt: startTime , interval: 86400, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
+        getHealthDataTimer = Timer.init(fireAt: startTime, interval: 86400, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
         
         print("Collecting health data loop started")
         print("------------------------------------------------------------")
@@ -383,6 +449,10 @@ class HealthDataManager {
             }
         } else if property == "sleep" {
             if getRealm[fileIndex].lastUploadedSleepNumber == 0 {
+                return false
+            }
+        } else if property == "HR" {
+            if getRealm[fileIndex].lastUploadedHeartRateNumber == 0 {
                 return false
             }
         }
@@ -431,21 +501,21 @@ class HealthDataManager {
                             
                             if containerName == "steps" {
                                 getStepCountPerDay(end: notUploadedDate)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                     self.makeHealthDataString(dataType: "steps")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.stepStringToUpload, dataType: "steps", index: index)
                                     self.stepStringToUpload = ""
                                 }
                             } else if containerName == "calories" {
                                 getActiveEnergyPerDay(end: notUploadedDate)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                     self.makeHealthDataString(dataType: "calories")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: index)
                                     self.energyStringToUpload = ""
                                 }
                             } else if containerName == "distance" {
                                 getDistanceWalkAndRunPerDay(end: notUploadedDate)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                     self.makeHealthDataString(dataType: "distance")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: index)
                                     self.distanceStringToUpload = ""
@@ -455,9 +525,16 @@ class HealthDataManager {
                                 let endYesterday = Calendar.current.date(byAdding: .day, value: +1, to: notUploadedDate)
                                 let endTime = Calendar.current.date(bySettingHour: 09, minute: 59, second: 59, of: endYesterday!)
                                 getSleepPerDay(start: startTime!, end: endTime!)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                     self.makeHealthDataString(dataType: "sleep")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: index)
+                                    self.sleepStringToUpload = ""
+                                }
+                            } else if containerName == "HR" {
+                                getHeartRatePerDay(end: notUploadedDate)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    self.makeHealthDataString(dataType: "HR")
+                                    CSVFileManager.shared.writeHealthCSV(sensorData: self.heartRateStringToUpload, dataType: "HR", index: index)
                                     self.sleepStringToUpload = ""
                                 }
                             }
@@ -479,7 +556,6 @@ class HealthDataManager {
     @objc func makeHealthCSVFileAndUpload() {
         print("Start save and upload health data")
         
-        // TODO: - TEST
         let now = Date()
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)
         let yesterdayStartSleep = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: yesterday ?? Date())
@@ -500,18 +576,21 @@ class HealthDataManager {
         saveNewIndexInRealm.lastUploadedEnergyNumber = 0
         saveNewIndexInRealm.lastUploadedDistanceNumber = 0
         saveNewIndexInRealm.lastUploadedSleepNumber = 0
+        saveNewIndexInRealm.lastUploadedHeartRateNumber = 0
+        
         try! realm.write {
             realm.add(saveNewIndexInRealm)
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
             self.getStepCountPerDay(end: end!)
             self.getActiveEnergyPerDay(end: end!)
             self.getDistanceWalkAndRunPerDay(end: end!)
             self.getSleepPerDay(start: yesterdayStartSleep!, end: todayFinishSleep!)
+            self.getHeartRatePerDay(end: end!)
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
             for array in self.healthContainerNameArray {
                 self.makeHealthDataString(dataType: array)
             }
@@ -520,11 +599,13 @@ class HealthDataManager {
             CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: self.indexCount)
             CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: self.indexCount)
             CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: self.indexCount)
+            CSVFileManager.shared.writeHealthCSV(sensorData: self.heartRateStringToUpload, dataType: "HR", index: self.indexCount)
             
             self.stepStringToUpload = ""
             self.energyStringToUpload = ""
             self.distanceStringToUpload = ""
             self.sleepStringToUpload = ""
+            self.heartRateStringToUpload = ""
             
             CSVFileManager.shared.checkInternetAndStartUploadHealthData()
         }

@@ -1,0 +1,70 @@
+/* 
+  Localizable.strings
+  iOSDataCollection
+
+  Created by ROLF J. on 2022/08/24.
+  
+*/
+
+// MARK: - TabBarWord
+measure = "측정";
+appSensor = "센서";
+appMenu = "메뉴";
+
+// MARK: - MainViewWord
+accX = "가속도 X";
+accY = "가속도 Y";
+accZ = "가속도 Z";
+gyrX = "각속도 X";
+gyrY = "각속도 Y";
+gyrZ = "각속도 Z";
+altitude = "고도";
+pressure = "기압";
+sensorLeftTime = "센서 데이터 업로드 잔여시간";
+
+// MARK: - SensorViewWord
+accOn = "가속도계 작동여부";
+gyrOn = "각속도계 작동여부";
+altitudeOn = "고도계 작동여부";
+pressureOn = "기압계 작동여부";
+internetOn = "인터넷 연결여부";
+
+// MARK: - MenuViewWord
+whatToDoLabel = "'사용방법' 노션 페이지로 이동합니다.";
+whatToDoButton = "사용방법 확인하기";
+precautionLabel = "'주의사항' 노션 페이지로 이동합니다.";
+precautionButton = "주의사항 확인하기";
+contactLabel = "'문의하기' 노션 페이지로 이동합니다.";
+contactButton = "문의메일 확인하기";
+registerLabel = "설문조사 회원가입 페이지로 이동합니다.";
+registerButton = "설문조사 회원가입하기";
+surveyLabel = "설문조사 페이지로 이동합니다.";
+surveyButton = "설문조사 참여하기";
+logOutWarning = "Warning : 로그아웃은 ID가 잘못되었을 때만 사용해주세요!";
+logOutButton = "로그아웃";
+
+// MARK: - SignInViewWord
+signInLabel = "전달받은 ID 3자리를 입력해주세요! (예: 999)";
+signInPlaceHolder = "999";
+signInButton = "로그인";
+
+// MARK: - AlertWord
+onlyNumber = "ID는 숫자만 입력되어야 합니다!";
+typeAgain = "다시 입력해주세요!";
+IDLength3 = "ID 길이는 3자리입니다!";
+signInComplete = "로그인에 성공하였습니다!";
+reStartRequest = "앱이 꺼집니다. 종료 후 앱을 재시작해주세요!";
+wantToOpenWeb = "페이지를 여시겠습니까?";
+wantToLogOut = "로그아웃 하시겠습니까?";
+canNotCollectData = "로그아웃하면 데이터를 수집할 수 없습니다!";
+reallySingOut = "정말 로그아웃 하시겠습니까?";
+signOutWhenYouChangeID = "로그아웃은 ID를 변경할 때만 실행해주세요!";
+alertCancel = "취소";
+alertConfirm = "확인";
+alertLogOut = "로그아웃";
+
+// MARK: - NotiWord
+appOpen = "앱이 꺼진 것 같은데요..? 🧐";
+cantCheckData = "앱이 켜져있는지 확인해주세요!";
+surveyTime = "설문조사를 진행할 시간입니다!";
+finishSurvey = "오늘 설문조사는 하셨나요? 😃";

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FD0F2B7428B64EC7006B0A67 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FD0F2B7628B64EC7006B0A67 /* Localizable.strings */; };
+		FD0F2B7928B64EFE006B0A67 /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0F2B7828B64EFE006B0A67 /* LanguageManager.swift */; };
+		FD0F2B7B28B64F6D006B0A67 /* LanguageChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0F2B7A28B64F6D006B0A67 /* LanguageChange.swift */; };
 		FD272AF72892B2D7009CED32 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD272AF62892B2D7009CED32 /* NetworkManager.swift */; };
 		FD43D61028917B34007F28D0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FD43D60F28917B34007F28D0 /* SnapKit */; };
 		FD75A8FE2896E27B00DC2C88 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD75A8FD2896E27B00DC2C88 /* UserInfoViewController.swift */; };
@@ -55,6 +58,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FD0F2B7528B64EC7006B0A67 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FD0F2B7728B64ED1006B0A67 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FD0F2B7828B64EFE006B0A67 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
+		FD0F2B7A28B64F6D006B0A67 /* LanguageChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageChange.swift; sourceTree = "<group>"; };
 		FD272AF62892B2D7009CED32 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		FD75A8FD2896E27B00DC2C88 /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTabBarViewController.swift; sourceTree = "<group>"; };
@@ -123,6 +130,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FD0F2B6A28B64E0E006B0A67 /* OtherFiles */ = {
+			isa = PBXGroup;
+			children = (
+				FD0F2B7A28B64F6D006B0A67 /* LanguageChange.swift */,
+				FD0F2B7628B64EC7006B0A67 /* Localizable.strings */,
+			);
+			path = OtherFiles;
+			sourceTree = "<group>";
+		};
 		FDD1D75C288E508800D4E6F3 = {
 			isa = PBXGroup;
 			children = (
@@ -157,6 +173,7 @@
 				FDD1D79D288E513300D4E6F3 /* Manager */,
 				FDFB647528937E7F00D6791D /* Model */,
 				FDD1D79B288E512C00D4E6F3 /* ViewController */,
+				FD0F2B6A28B64E0E006B0A67 /* OtherFiles */,
 			);
 			path = iOSDataCollection;
 			sourceTree = "<group>";
@@ -198,6 +215,7 @@
 				FD272AF62892B2D7009CED32 /* NetworkManager.swift */,
 				FDB33DA328978B620007C149 /* NotificationManager.swift */,
 				FDB33DC9289950210007C149 /* HealthDataManager.swift */,
+				FD0F2B7828B64EFE006B0A67 /* LanguageManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -316,6 +334,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = FDD1D75C288E508800D4E6F3;
 			packageReferences = (
@@ -340,6 +359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FDD1D778288E508900D4E6F3 /* LaunchScreen.storyboard in Resources */,
+				FD0F2B7428B64EC7006B0A67 /* Localizable.strings in Resources */,
 				FDD1D775288E508900D4E6F3 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -374,6 +394,8 @@
 				FDD1D769288E508800D4E6F3 /* AppDelegate.swift in Sources */,
 				FD75A8FE2896E27B00DC2C88 /* UserInfoViewController.swift in Sources */,
 				FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */,
+				FD0F2B7B28B64F6D006B0A67 /* LanguageChange.swift in Sources */,
+				FD0F2B7928B64EFE006B0A67 /* LanguageManager.swift in Sources */,
 				FDC1F400288FA9C9002B7BF2 /* CSVFileManager.swift in Sources */,
 				FDD1D76B288E508800D4E6F3 /* SceneDelegate.swift in Sources */,
 				FDA69CF028B101CF003A2F53 /* HealthRealmManager.swift in Sources */,
@@ -415,6 +437,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		FD0F2B7628B64EC7006B0A67 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FD0F2B7528B64EC7006B0A67 /* en */,
+				FD0F2B7728B64ED1006B0A67 /* ko */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		FDD1D776288E508900D4E6F3 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -430,6 +461,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -490,6 +522,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -547,18 +580,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOSDataCollection/iOSDataCollection.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 8RN9H3Z673;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSDataCollection/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "앱을 사용하기 위해 건강 정보가 필요합니다.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "앱을 사용하기 위해 건강 정보가 필요합니다.";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "앱을 사용하기 위해 위치 정보가 필요합니다.";
-				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "위치 정보를 받아올 때 필요합니다";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "앱을 사용하기 위해 위치 정보가 필요합니다.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app requires health data permissions for collecting health datas";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app requires health data permissions for collecting health datas";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app requires location permissions for background processing";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "This app requires location permissions for background processing";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app requires location permissions for background processing";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -588,18 +621,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOSDataCollection/iOSDataCollection.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 8RN9H3Z673;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSDataCollection/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "앱을 사용하기 위해 건강 정보가 필요합니다.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "앱을 사용하기 위해 건강 정보가 필요합니다.";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "앱을 사용하기 위해 위치 정보가 필요합니다.";
-				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "위치 정보를 받아올 때 필요합니다";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "앱을 사용하기 위해 위치 정보가 필요합니다.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app requires health data permissions for collecting health datas";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app requires health data permissions for collecting health datas";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app requires location permissions for background processing";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "This app requires location permissions for background processing";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app requires location permissions for background processing";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

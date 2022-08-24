@@ -25,11 +25,11 @@ class WindowTabBarViewController: UITabBarController {
         let thirdViewController = UINavigationController(rootViewController: MenuViewController())
         
         firstViewController.tabBarItem.image = UIImage(systemName: "checkmark.circle.fill")
-        firstViewController.tabBarItem.title = "센서"
+        firstViewController.tabBarItem.title = LanguageChange.TabBarWord.appSensor
         secondViewController.tabBarItem.image = UIImage(systemName: "house.fill")
-        secondViewController.tabBarItem.title = "측정"
+        secondViewController.tabBarItem.title = LanguageChange.TabBarWord.measure
         thirdViewController.tabBarItem.image = UIImage(systemName: "menucard.fill")
-        thirdViewController.tabBarItem.title = "메뉴"
+        thirdViewController.tabBarItem.title = LanguageChange.TabBarWord.appMenu
         
         tabBar.backgroundColor = .systemGray6
         tabBar.tintColor = .systemBlue

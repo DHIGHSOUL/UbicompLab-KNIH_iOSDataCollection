@@ -21,35 +21,35 @@ class CheckSensorViewController: UIViewController {
     // 센서 정상 작동을 표시할 TextField(색만 사용할 예정)
     private let checkAccelerationLabel: UILabel = {
         let label = UILabel()
-        label.text = "가속도계 작동여부"
+        label.text = LanguageChange.SensorViewWord.accOn
         
         return label
     }()
     private var checkAcceleration = UITextField()
     private let checkGyroLabel: UILabel = {
         let label = UILabel()
-        label.text = "각속도계 작동여부"
+        label.text = LanguageChange.SensorViewWord.gyrOn
         
         return label
     }()
     private var checkGyro = UITextField()
     private let checkAltitudeLabel: UILabel = {
         let label = UILabel()
-        label.text = "고도계 작동여부"
+        label.text = LanguageChange.SensorViewWord.altitudeOn
         
         return label
     }()
     private var checkAltitude = UITextField()
     private let checkPressureLabel: UILabel = {
         let label = UILabel()
-        label.text = "기압계 작동여부"
+        label.text = LanguageChange.SensorViewWord.pressureOn
         
         return label
     }()
     private var checkPressure = UITextField()
     private let checkInternetLabel: UILabel = {
         let label = UILabel()
-        label.text = "인터넷 연결여부"
+        label.text = LanguageChange.SensorViewWord.internetOn
         
         return label
     }()
@@ -116,7 +116,8 @@ class CheckSensorViewController: UIViewController {
     private func componentsInView() {
         checkAccelerationLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.equalTo(view.frame.width/3)
+            make.centerX.equalTo(view)
+//            make.leading.equalTo(view.frame.width/2.845)
         }
         checkAcceleration.snp.makeConstraints { make in
             make.top.equalTo(checkAccelerationLabel.snp.bottom).offset(10)

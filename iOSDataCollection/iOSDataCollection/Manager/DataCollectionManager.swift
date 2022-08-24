@@ -61,8 +61,8 @@ class DataCollectionManager {
     func dataCollectionManagerMethod() {
         print("Start Data Collection")
         
-        motionManager.accelerometerUpdateInterval = 1/20
-        motionManager.gyroUpdateInterval = 1/20
+        motionManager.accelerometerUpdateInterval = 1/15
+        motionManager.gyroUpdateInterval = 1/15
         
         if let currentValue = OperationQueue.current {
             motionManager.startAccelerometerUpdates(to: currentValue, withHandler: {

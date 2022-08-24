@@ -17,7 +17,7 @@ class CSVFileManager {
     let sensorContainerNameArray: [String] = ["mAcc", "mGyr", "mPre"]
     
     // Health 데이터의 컨테이너 이름 배열
-    let healthContainerNameArray: [String] = ["steps", "calories", "distance", "sleep"]
+    let healthContainerNameArray: [String] = ["steps", "calories", "distance", "sleep", "HR"]
     
     // CSV 파일이 업로드되었는지 확인하는 Bool 값
     var csvFileUploaded: Bool = false
@@ -224,7 +224,7 @@ class CSVFileManager {
         
         if containerName == "mAcc" || containerName == "mGyr" || containerName == "mPre" {
             mainContainerName = "mobile"
-        } else if containerName == "steps" || containerName == "calories" || containerName == "distance" || containerName == "sleep" {
+        } else if containerName == "steps" || containerName == "calories" || containerName == "distance" || containerName == "sleep" || containerName == "HR" {
             mainContainerName = "health"
         }
         
@@ -272,6 +272,8 @@ class CSVFileManager {
                 self.updateLastUploadedDistancenumber(fileNumber: fileNumber)
             } else if containerName == "sleep" {
                 self.updateLastUploadedSleepNumber(fileNumber: fileNumber)
+            } else if containerName == "HR" {
+                self.updateLastUploadedHeartRateNumber(fileNumber: fileNumber)
             }
             
             self.removeCSV(containerName: containerName, index: fileNumber)
@@ -376,6 +378,19 @@ class CSVFileManager {
         }
     }
     
+    private func updateLastUploadedHeartRateNumber(fileNumber: Int) {
+        let realm = try! Realm()
+        
+        guard let updateRealm = realm.object(ofType: HealthRealmManager.self, forPrimaryKey: fileNumber) else {
+            print("File_\(String(describing: self.healthFileNumber)) not founc")
+            return
+        }
+        
+        try! realm.write {
+            updateRealm.lastUploadedHeartRateNumber = 1
+        }
+    }
+    
     // CSV 파일을 삭제하는 메소드
     private func removeCSV(containerName: String, index: Int) {
         let fileManager: FileManager = FileManager.default
@@ -384,7 +399,7 @@ class CSVFileManager {
         
         if containerName == "mAcc" || containerName == "mGyr" || containerName == "mPre" {
             folderName = "saveSensorCSVFolder"
-        } else if containerName == "steps" || containerName == "calories" || containerName == "distance" || containerName == "sleep" {
+        } else if containerName == "steps" || containerName == "calories" || containerName == "distance" || containerName == "sleep" || containerName == "HR" {
             folderName = "saveHealthCSVFolder"
         }
         

@@ -1,0 +1,71 @@
+/*
+ Localizable.strings
+ iOSDataCollection
+ 
+ Created by ROLF J. on 2022/08/24.
+ 
+ */
+
+// MARK: - TabBarWord
+measure = "Main";
+appSensor = "Sensor";
+appMenu = "Menu";
+
+// MARK: - MainViewWord
+accX = "AccX";
+accY = "AccY";
+accZ = "AccZ";
+gyrX = "GyrX";
+gyrY = "GyrY";
+gyrZ = "GyrZ";
+altitude = "Altitude";
+pressure = "Pressure";
+sensorLeftTime = "Data upload remaning";
+
+// MARK: - SensorViewWord
+accOn = "Acceleration";
+gyrOn = "Gyroscope";
+altitudeOn = "Altitude";
+pressureOn = "Pressure";
+internetOn = "Internet connection";
+
+// MARK: - MenuViewWord
+whatToDoLabel = "Move to 'Manual' Notion page";
+whatToDoButton = "How to use";
+precautionLabel = "Move to 'Precautions' Notion page";
+precautionButton = "Precautions";
+contactLabel = "Move to 'Contact' Notion page";
+contactButton = "Contact";
+registerLabel = "Go to survey registeration page";
+registerButton = "Register survey program";
+surveyLabel = "Go to survey page";
+surveyButton = "Start survey";
+logOutWarning = "Warning : Use this button only when the ID is wrong";
+logOutButton = "Sign Out";
+
+// MARK: - SignInViewWord
+signInLabel = "Enter 3 numbers you received (ex: 999)";
+signInPlaceHolder = "999";
+signInButton = "Sign In";
+
+// MARK: - AlertWord
+onlyNumber = "Type numbers only!";
+typeAgain = "Please enter it again";
+IDLength3 = "Only 3 numbers are allowed for ID";
+signInComplete = "Success to login!";
+reStartRequest = "App will terminate. Please restart the app!";
+wantToOpenWeb = "Want to open page?";
+wantToLogOut = "Want to sign out?";
+canNotCollectData = "We can't collect data if you sign out";
+reallySingOut = "Are you sure?";
+signOutWhenYouChangeID = "Please sign out only when the ID is wrong";
+alertCancel = "Cancel";
+alertConfirm = "OK";
+alertLogOut = "Sing Out";
+
+// MARK: - NotiWord
+appOpen = "I think the app turned off 😦";
+cantCheckData = "Please check application open!";
+surveyTime = "It's time for a survey!";
+finishSurvey = "Did you completed today's survey?";
+

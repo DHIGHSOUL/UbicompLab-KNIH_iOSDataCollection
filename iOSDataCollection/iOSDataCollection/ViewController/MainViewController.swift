@@ -24,35 +24,25 @@ class MainViewController: UIViewController {
     let showAccelerationAndRotationInterval = 0.1
     let showAltitudeAndPressureInterval = 1.0
     
-    // 업로드를 확인하기 위한 Label과 변수, Timer와 Interval
-    private let uploadLeftLabel: UILabel = {
-        let label = UILabel()
-        label.text = "센서 데이터 업로드 잔여시간"
-        
-        return label
-    }()
-    var uploadTimeLabel = UILabel()
-    let showUploadTimeInterval = 1.0
-    
     // MARK: - Instance member
     // 가속도 표시 변수
     private let accelerationXLabel: UILabel = {
         let label = UILabel()
-        label.text = "가속도 X값"
+        label.text = LanguageChange.MainViewWord.accX
         
         return label
     }()
     private var showAccelerationXTextField = UITextField()
     private let accelerationYLabel: UILabel = {
         let label = UILabel()
-        label.text = "가속도 Y값"
+        label.text = LanguageChange.MainViewWord.accY
         
         return label
     }()
     private var showAccelerationYTextField = UITextField()
     private let accelerationZLabel: UILabel = {
         let label = UILabel()
-        label.text = "가속도 Z값"
+        label.text = LanguageChange.MainViewWord.accZ
         
         return label
     }()
@@ -61,21 +51,21 @@ class MainViewController: UIViewController {
     // 회전속도 표시 변수
     private let rotationXLabel: UILabel = {
         let label = UILabel()
-        label.text = "각속도 X값"
+        label.text = LanguageChange.MainViewWord.gyrX
         
         return label
     }()
     private var showRotationXTextField = UITextField()
     private let rotationYLabel: UILabel = {
         let label = UILabel()
-        label.text = "각속도 Y값"
+        label.text = LanguageChange.MainViewWord.gyrY
         
         return label
     }()
     private var showRotationYTextField = UITextField()
     private let rotationZLabel: UILabel = {
         let label = UILabel()
-        label.text = "각속도 Z값"
+        label.text = LanguageChange.MainViewWord.gyrZ
         
         return label
     }()
@@ -84,18 +74,28 @@ class MainViewController: UIViewController {
     // 고도/기압/절대고도 표시 변수
     private let altitudeLabel: UILabel = {
         let label = UILabel()
-        label.text = "고도값"
+        label.text = LanguageChange.MainViewWord.altitude
         
         return label
     }()
     private var showAltitudeTextField = UITextField()
     private let pressureLabel: UILabel = {
         let label = UILabel()
-        label.text = "기압"
+        label.text = LanguageChange.MainViewWord.pressure
         
         return label
     }()
     private var showPressureTextField = UITextField()
+    
+    // 업로드를 확인하기 위한 Label과 변수, Timer와 Interval
+    private let uploadLeftLabel: UILabel = {
+        let label = UILabel()
+        label.text = LanguageChange.MainViewWord.sensorLeftTime
+
+        return label
+    }()
+    var uploadTimeLabel = UILabel()
+    let showUploadTimeInterval = 1.0
     
     // MARK: - View Life Cycle
     override func viewDidLoad() {
@@ -110,7 +110,6 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         
         showSensorDatas()
-        showUploadTimer()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -152,12 +151,12 @@ class MainViewController: UIViewController {
         showRotationInViews()
         showAltitudeInViews()
         showPressureInViews()
-        showUploadTimer()
+        showUploadTimeInViews()
     }
     
     // AddSubView를 한 번에 실시
     private func addViewsInMainView() {
-        let mainViews = [accelerationXLabel, accelerationYLabel, accelerationZLabel, showAccelerationXTextField, showAccelerationYTextField, showAccelerationZTextField, rotationXLabel, rotationYLabel, rotationZLabel, showRotationXTextField, showRotationYTextField, showRotationZTextField, altitudeLabel, showAltitudeTextField, pressureLabel, showPressureTextField, uploadTimeLabel, uploadLeftLabel]
+        let mainViews = [accelerationXLabel, accelerationYLabel, accelerationZLabel, showAccelerationXTextField, showAccelerationYTextField, showAccelerationZTextField, rotationXLabel, rotationYLabel, rotationZLabel, showRotationXTextField, showRotationYTextField, showRotationZTextField, altitudeLabel, showAltitudeTextField, pressureLabel, showPressureTextField, uploadLeftLabel, uploadTimeLabel]
         
         for newView in mainViews {
             view.addSubview(newView)
@@ -281,7 +280,7 @@ class MainViewController: UIViewController {
     }
     
     // 업로드 시간을 파악하기 위한 타이머 Label의 위치 결정
-    private func showUploadTimer() {
+    private func showUploadTimeInViews() {
         uploadTimeLabel.snp.makeConstraints { make in
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
             make.centerX.equalTo(view)
@@ -289,7 +288,7 @@ class MainViewController: UIViewController {
         uploadTimeLabel.textAlignment = .center
         uploadTimeLabel.clipsToBounds = false
         uploadTimeLabel.font = UIFont.boldSystemFont(ofSize: 25)
-        
+
         uploadLeftLabel.snp.makeConstraints { make in
             make.bottom.equalTo(uploadTimeLabel.snp.top).offset(-10)
             make.centerX.equalTo(view)
@@ -312,24 +311,26 @@ class MainViewController: UIViewController {
         showAltitudeTextField.text = DataCollectionManager.shared.newAltitudeData
         showPressureTextField.text = DataCollectionManager.shared.newPressureData
         
-        if uploadTimeVariable > 399 {
+        if uploadTimeVariable > 499 {
+            uploadTimeLabel.textColor = .white
+        } else if uploadTimeVariable > 399 {
             uploadTimeLabel.textColor = .systemBlue
         } else if uploadTimeVariable > 299 {
             uploadTimeLabel.textColor = .green
         } else if uploadTimeVariable > 199 {
-            uploadTimeLabel.textColor = .orange
-        } else if uploadTimeVariable > 99 {
             uploadTimeLabel.textColor = .yellow
+        } else if uploadTimeVariable > 99 {
+            uploadTimeLabel.textColor = .orange
         } else {
             uploadTimeLabel.textColor = .red
         }
-        
+
         var leftMinute = String()
         var leftSecond = String()
         
         if uploadTimeVariable > 0 {
-            leftMinute = String(format: "%02d", uploadTimeVariable / 60)
-            leftSecond = String(format: "%02d", uploadTimeVariable % 60)
+            leftMinute = String(format: "%02d", uploadTimeVariable/60)
+            leftSecond = String(format: "%02d", uploadTimeVariable%60)
         } else {
             leftMinute = "00"
             leftSecond = "00"
