@@ -105,25 +105,38 @@ class HealthDataManager {
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: end, options: .strictStartDate)
         
         let query = HKSampleQuery(sampleType: stepType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
-            let result = result
-            
-            for newResult in result! {
-                self.stepDataArray.append(newResult)
+            if error != nil {
+                print("Step Query Error, Set Error String")
+                let errorStepString = "\(startDate.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,-1"
+                self.stepStringDataArray.append(errorStepString)
+                return
             }
             
-            for dataIndex in 0..<self.stepDataArray.count {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                if result?.count == 0 {
+                    print("Step Query Count(No Data) Error, Set Error String")
+                    let errorStepString = "\(startDate.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    self.stepStringDataArray.append(errorStepString)
+                    return
+                } else if let results = result {
+                    print("Step Query No Error, Start Appending Results In Array")
+                    for newResult in results {
+                        self.stepDataArray.append(newResult)
+                    }
+                }
                 
-                let printResult = self.stepDataArray[dataIndex]
-                
-                let startCollectTime = Int(printResult.startDate.timeIntervalSince1970)
-                let endCollectTime = Int(printResult.endDate.timeIntervalSince1970)
-                let collectDevice = printResult.device?.model
-                let printResultToQuantity: HKQuantitySample = printResult as! HKQuantitySample
-                let collectedStepData = Int(printResultToQuantity.quantity.doubleValue(for: .count()))
-                
-                let newStepData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedStepData)"
-                
-                self.stepStringDataArray.append(newStepData)
+                print("No Error, Start Convert Step Data To String")
+                for newData in self.stepDataArray {
+                    let startCollectTime = Int(newData.startDate.timeIntervalSince1970)
+                    let endCollectTime = Int(newData.endDate.timeIntervalSince1970)
+                    let collectDevice = newData.device?.model
+                    let printResultToQuantity: HKQuantitySample = newData as! HKQuantitySample
+                    let collectedStepData = Int(printResultToQuantity.quantity.doubleValue(for: .count()))
+                    
+                    let newStepData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedStepData)"
+                    
+                    self.stepStringDataArray.append(newStepData)
+                }
             }
         }
         
@@ -137,25 +150,38 @@ class HealthDataManager {
         let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
         
         let query = HKSampleQuery(sampleType: activeEnergyType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
-            let results = result
-            
-            for newResult in results! {
-                self.energyDataArray.append(newResult)
+            if error != nil {
+                print("Energy Query Error, Set Error String")
+                let errorEnergyString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,-1"
+                self.energyStringDataArray.append(errorEnergyString)
+                return
             }
             
-            for dataIndex in 0..<self.energyDataArray.count {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                if result?.count == 0 {
+                    print("Energy Query Count(No Data) Error, Set Error String")
+                    let errorEnergyString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    self.energyStringDataArray.append(errorEnergyString)
+                    return
+                } else if let results = result {
+                    print("Energy Query No Error, Start Appending Results In Array")
+                    for newResult in results {
+                        self.energyDataArray.append(newResult)
+                    }
+                }
                 
-                let printResult = self.energyDataArray[dataIndex]
-                
-                let startCollectTime = Int(printResult.startDate.timeIntervalSince1970)
-                let endCollectTime = Int(printResult.endDate.timeIntervalSince1970)
-                let collectDevice = printResult.device?.model
-                let printResultToQuantity: HKQuantitySample = printResult as! HKQuantitySample
-                let collectedEnergyData = Int(printResultToQuantity.quantity.doubleValue(for: .smallCalorie()))
-                
-                let newEnergyData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedEnergyData)"
-                
-                self.energyStringDataArray.append(newEnergyData)
+                print("No Error, Start Convert Energy Data To String")
+                for newData in self.energyDataArray {
+                    let startCollectTime = Int(newData.startDate.timeIntervalSince1970)
+                    let endCollectTime = Int(newData.endDate.timeIntervalSince1970)
+                    let collectDevice = newData.device?.model
+                    let printResultToQuantity: HKQuantitySample = newData as! HKQuantitySample
+                    let collectedEnergyData = Int(printResultToQuantity.quantity.doubleValue(for: .smallCalorie()))
+                    
+                    let newEnergyData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedEnergyData)"
+                    
+                    self.energyStringDataArray.append(newEnergyData)
+                }
             }
         }
         
@@ -169,24 +195,38 @@ class HealthDataManager {
         let predicate = HKQuery.predicateForSamples(withStart: startTime, end: end, options: .strictStartDate)
         
         let query = HKSampleQuery(sampleType: distanceType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
-            let results = result
-            
-            for newResult in results! {
-                self.distanceDataArray.append(newResult)
+            if error != nil {
+                print("Distance Query Error, Set Error String")
+                let errorDistanceString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,-1"
+                self.distanceStringDataArray.append(errorDistanceString)
+                return
             }
             
-            for dataIndex in 0..<self.distanceDataArray.count {
-                let printResult = self.distanceDataArray[dataIndex]
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                if result?.count == 0 {
+                    print("Distance Query Count(No Data) Error, Set Error String")
+                    let errorDistanceString = "\(startTime.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    self.distanceStringDataArray.append(errorDistanceString)
+                    return
+                } else if let results = result {
+                    print("Distance Query No Error, Start Appending Results In Array")
+                    for newResult in results {
+                        self.distanceDataArray.append(newResult)
+                    }
+                }
                 
-                let startCollectTime = Int(printResult.startDate.timeIntervalSince1970)
-                let endCollectTime = Int(printResult.endDate.timeIntervalSince1970)
-                let collectDevice = printResult.device?.model
-                let printResultToQuantity: HKQuantitySample = printResult as! HKQuantitySample
-                let collectedDistanceData = Int(printResultToQuantity.quantity.doubleValue(for: .meter()))
-                
-                let newDistanceData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedDistanceData)"
-                
-                self.distanceStringDataArray.append(newDistanceData)
+                print("No Error, Start Convert Distance Data To String")
+                for newData in self.distanceDataArray {
+                    let startCollectTime = Int(newData.startDate.timeIntervalSince1970)
+                    let endCollectTime = Int(newData.endDate.timeIntervalSince1970)
+                    let collectDevice = newData.device?.model
+                    let printResultToQuantity: HKQuantitySample = newData as! HKQuantitySample
+                    let collectedDistanceData = Int(printResultToQuantity.quantity.doubleValue(for: .meter()) * 1000)
+                    
+                    let newDistanceData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedDistanceData)"
+                    
+                    self.distanceStringDataArray.append(newDistanceData)
+                }
             }
         }
         
@@ -200,16 +240,26 @@ class HealthDataManager {
         
         let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { [weak self] (_, result, error) -> Void in
             if error != nil {
+                print("Sleep Query Error, Set Error String")
+                let errorSleepString = "\(start.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,-1"
+                self?.sleepStringDataArray.append(errorSleepString)
                 return
             }
             
-            if let result = result {
-                for newResult in result {
-                    self?.sleepDataArray.append(newResult as! HKCategorySample)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                if result?.count == 0 {
+                    print("Sleep Query Count(No Data) Error, Set Error String")
+                    let errorSleepString = "\(start.timeIntervalSince1970),\(end.timeIntervalSince1970),iPhone,0"
+                    self?.sleepStringDataArray.append(errorSleepString)
+                    return
+                } else if let results = result {
+                    print("Sleep Query No Error, Start Appending Results In Array")
+                    for newResult in results {
+                        self?.sleepDataArray.append(newResult as! HKCategorySample)
+                    }
                 }
-            }
-            
-            if (self?.sleepDataArray.count)! > 0 {
+                
+                print("No Error, Start Convert Sleep Data To String")
                 for newData in self!.sleepDataArray {
                     let startCollectTime = Int(newData.startDate.timeIntervalSince1970)
                     let endCollectTime = Int(newData.endDate.timeIntervalSince1970)
@@ -225,7 +275,7 @@ class HealthDataManager {
                     
                     self?.sleepStringDataArray.append(newSleepData)
                 }
-            } else { return }
+            }
         }
         
         healthStore.execute(query)
@@ -241,6 +291,9 @@ class HealthDataManager {
                     self.stepStringToUpload += "," + self.stepStringDataArray[dataIndex]
                 }
             }
+            
+            stepDataArray.removeAll()
+            stepStringDataArray.removeAll()
         } else if dataType == "calories" {
             energyStringToUpload += energyStringDataArray[0]
             
@@ -249,6 +302,9 @@ class HealthDataManager {
                     energyStringToUpload += "," + energyStringDataArray[dataIndex]
                 }
             }
+            
+            energyDataArray.removeAll()
+            energyStringDataArray.removeAll()
         } else if dataType == "distance" {
             distanceStringToUpload += distanceStringDataArray[0]
             
@@ -257,6 +313,9 @@ class HealthDataManager {
                     distanceStringToUpload += "," + distanceStringDataArray[dataIndex]
                 }
             }
+            
+            distanceDataArray.removeAll()
+            distanceStringDataArray.removeAll()
         } else if dataType == "sleep" {
             sleepStringToUpload += sleepStringDataArray[0]
             
@@ -265,6 +324,9 @@ class HealthDataManager {
                     sleepStringToUpload += "," + sleepStringDataArray[dataIndex]
                 }
             }
+            
+            sleepDataArray.removeAll()
+            sleepStringDataArray.removeAll()
         }
     }
     
@@ -273,8 +335,9 @@ class HealthDataManager {
         let calendar = Calendar.current
         
         let now = Date()
-        let tomorrow = Calendar.current.date(byAdding: .day, value: +1, to: now)
-        let startTime = calendar.date(bySettingHour: 10, minute: 00, second: 00, of: tomorrow ?? Date())!
+        //        let tomorrow = Calendar.current.date(byAdding: .day, value: +1, to: now)
+//        let startTime = calendar.date(bySettingHour: 10, minute: 00, second: 00, of: tomorrow)!
+        let startTime = calendar.date(bySettingHour: 11, minute: 41, second: 00, of: now)!
         
         var getHealthDataTimer = Timer()
         
@@ -371,8 +434,6 @@ class HealthDataManager {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                     self.makeHealthDataString(dataType: "steps")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.stepStringToUpload, dataType: "steps", index: index)
-                                    self.stepDataArray.removeAll()
-                                    self.stepStringDataArray.removeAll()
                                     self.stepStringToUpload = ""
                                 }
                             } else if containerName == "calories" {
@@ -380,8 +441,6 @@ class HealthDataManager {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                     self.makeHealthDataString(dataType: "calories")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: index)
-                                    self.energyDataArray.removeAll()
-                                    self.energyStringDataArray.removeAll()
                                     self.energyStringToUpload = ""
                                 }
                             } else if containerName == "distance" {
@@ -389,8 +448,6 @@ class HealthDataManager {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                     self.makeHealthDataString(dataType: "distance")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: index)
-                                    self.distanceDataArray.removeAll()
-                                    self.distanceStringDataArray.removeAll()
                                     self.distanceStringToUpload = ""
                                 }
                             } else if containerName == "sleep" {
@@ -401,8 +458,6 @@ class HealthDataManager {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                     self.makeHealthDataString(dataType: "sleep")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: index)
-                                    self.sleepDataArray.removeAll()
-                                    self.sleepStringDataArray.removeAll()
                                     self.sleepStringToUpload = ""
                                 }
                             }
@@ -449,12 +504,14 @@ class HealthDataManager {
             realm.add(saveNewIndexInRealm)
         }
         
-        getStepCountPerDay(end: end!)
-        getActiveEnergyPerDay(end: end!)
-        getDistanceWalkAndRunPerDay(end: end!)
-        getSleepPerDay(start: yesterdayStartSleep!, end: todayFinishSleep!)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.getStepCountPerDay(end: end!)
+            self.getActiveEnergyPerDay(end: end!)
+            self.getDistanceWalkAndRunPerDay(end: end!)
+            self.getSleepPerDay(start: yesterdayStartSleep!, end: todayFinishSleep!)
+        }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
             for array in self.healthContainerNameArray {
                 self.makeHealthDataString(dataType: array)
             }
@@ -464,14 +521,6 @@ class HealthDataManager {
             CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: self.indexCount)
             CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: self.indexCount)
             
-            self.stepDataArray.removeAll()
-            self.energyDataArray.removeAll()
-            self.distanceDataArray.removeAll()
-            self.sleepDataArray.removeAll()
-            self.stepStringDataArray.removeAll()
-            self.energyStringDataArray.removeAll()
-            self.distanceStringDataArray.removeAll()
-            self.sleepStringDataArray.removeAll()
             self.stepStringToUpload = ""
             self.energyStringToUpload = ""
             self.distanceStringToUpload = ""

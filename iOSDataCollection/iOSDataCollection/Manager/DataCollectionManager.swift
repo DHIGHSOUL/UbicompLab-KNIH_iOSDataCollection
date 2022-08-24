@@ -9,6 +9,9 @@ import Foundation
 import CoreMotion
 import RealmSwift
 
+// 남은 측정시간을 표시하기 위한 변수
+public var uploadTimeVariable = 600
+
 class DataCollectionManager {
     
     static let shared = DataCollectionManager()
@@ -58,8 +61,8 @@ class DataCollectionManager {
     func dataCollectionManagerMethod() {
         print("Start Data Collection")
         
-        motionManager.accelerometerUpdateInterval = 1/15
-        motionManager.gyroUpdateInterval = 1/15
+        motionManager.accelerometerUpdateInterval = 1/20
+        motionManager.gyroUpdateInterval = 1/20
         
         if let currentValue = OperationQueue.current {
             motionManager.startAccelerometerUpdates(to: currentValue, withHandler: {
@@ -91,6 +94,7 @@ class DataCollectionManager {
         }
         
         Timer.scheduledTimer(timeInterval: 600, target: self, selector: #selector(makeSensorCSVFileAndUpload), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(uploadTimeLabelMethod), userInfo: nil, repeats: true)
     }
     
     // Sensor Realm의 마지막 인덱스를 읽어오는 메소드
@@ -223,6 +227,7 @@ class DataCollectionManager {
     // MARK: - @objc Method
     // Sensor CSV 파일을 만들고 업로드하는 메소드
     @objc private func makeSensorCSVFileAndUpload() {
+        uploadTimeVariable = 600
         print("Start save and upload")
         
         let realm = try! Realm()
@@ -265,4 +270,12 @@ class DataCollectionManager {
         
         completion()
     }
+    
+    // 업로드 주기를 확인하기 위한 메소드
+    @objc func uploadTimeLabelMethod() {
+        if uploadTimeVariable > 0 {
+            uploadTimeVariable -= 1
+        }
+    }
+    
 }

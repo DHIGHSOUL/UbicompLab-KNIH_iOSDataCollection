@@ -58,9 +58,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     // 백그라운드에서 알림을 클릭하면 앞으로 보낼 알림, 이미 보내진 알림을 모두 삭제함
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-            NotificationManager.shared.notificationCenter.removeAllPendingNotificationRequests()
-            NotificationManager.shared.notificationCenter.removeAllDeliveredNotifications()
-            NotificationManager.shared.setAskSurveyNotification()
+        NotificationManager.shared.notificationCenter.removeAllPendingNotificationRequests()
+        NotificationManager.shared.notificationCenter.removeAllDeliveredNotifications()
+        NotificationManager.shared.setAskSurveyNotification()
         
         completionHandler()
     }
