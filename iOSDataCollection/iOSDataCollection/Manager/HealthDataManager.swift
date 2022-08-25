@@ -19,6 +19,9 @@ class HealthDataManager {
     // Health 데이터들을 업로드하기 위한 타이머
     var uploadHealthDataTimer = Timer()
     
+    // 건강 정보를 받아올 루프를 생성하는 타이머
+    var getHealthDataTimer = Timer()
+    
     // 앱 재시작 후의 잔여 파일을 감지하고 인터넷 연결을 지속적으로 체크하기 위한 타이머
     var restartAndCheckTimer = Timer()
     
@@ -315,7 +318,6 @@ class HealthDataManager {
                     }
                 }
                 
-                
                 print("No Error, Start Convert HeartRate Data To String")
                 for newData in self.heartRateDataArray {
                     let startCollectTime = Int(newData.startDate.timeIntervalSince1970)
@@ -396,22 +398,18 @@ class HealthDataManager {
     
     // 건강 정보를 받아오는 루프를 생성하는 메소드
     func setHealthDataLoop() {
-        let calendar = Calendar.current
-        
         let now = Date()
         
         // MARK: 오늘 10시에 실행하면 어제 데이터를 받아옴(걸음/심박/거리는 00시 ~ 23:59:59, 수면은 작일 10시 ~ 금일 09:59:59). 테스트 진행 후에는 반드시 RunLoop FireTime 되돌려 놓을 것.
         let tomorrow = Calendar.current.date(byAdding: .day, value: +1, to: now)
-        let startTime = calendar.date(bySettingHour: 10, minute: 00, second: 00, of: tomorrow ?? Date())!
-//        let startTime = calendar.date(bySettingHour: 17, minute: 52, second: 00, of: now)
-        
-        var getHealthDataTimer = Timer()
+        let startTime = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: tomorrow ?? Date())!
+        //        let startTime = calendar.date(bySettingHour: 17, minute: 52, second: 00, of: now)
         
         getHealthDataTimer = Timer.init(fireAt: startTime, interval: 86400, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
         
         print("Collecting health data loop started")
         print("------------------------------------------------------------")
-        RunLoop.main.add(getHealthDataTimer, forMode: .common)
+        RunLoop.main.add(getHealthDataTimer, forMode: .default)
     }
     
     // Health Realm의 마지막 인덱스를 읽어오는 메소드
@@ -501,21 +499,21 @@ class HealthDataManager {
                             
                             if containerName == "steps" {
                                 getStepCountPerDay(end: notUploadedDate)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                DispatchQueue.main.sync {
                                     self.makeHealthDataString(dataType: "steps")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.stepStringToUpload, dataType: "steps", index: index)
                                     self.stepStringToUpload = ""
                                 }
                             } else if containerName == "calories" {
                                 getActiveEnergyPerDay(end: notUploadedDate)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                DispatchQueue.main.sync {
                                     self.makeHealthDataString(dataType: "calories")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: index)
                                     self.energyStringToUpload = ""
                                 }
                             } else if containerName == "distance" {
                                 getDistanceWalkAndRunPerDay(end: notUploadedDate)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                DispatchQueue.main.sync {
                                     self.makeHealthDataString(dataType: "distance")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: index)
                                     self.distanceStringToUpload = ""
@@ -525,14 +523,14 @@ class HealthDataManager {
                                 let endYesterday = Calendar.current.date(byAdding: .day, value: +1, to: notUploadedDate)
                                 let endTime = Calendar.current.date(bySettingHour: 09, minute: 59, second: 59, of: endYesterday!)
                                 getSleepPerDay(start: startTime!, end: endTime!)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                DispatchQueue.main.sync {
                                     self.makeHealthDataString(dataType: "sleep")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: index)
                                     self.sleepStringToUpload = ""
                                 }
                             } else if containerName == "HR" {
                                 getHeartRatePerDay(end: notUploadedDate)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                DispatchQueue.main.sync {
                                     self.makeHealthDataString(dataType: "HR")
                                     CSVFileManager.shared.writeHealthCSV(sensorData: self.heartRateStringToUpload, dataType: "HR", index: index)
                                     self.sleepStringToUpload = ""
@@ -582,7 +580,7 @@ class HealthDataManager {
             realm.add(saveNewIndexInRealm)
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+        DispatchQueue.main.sync {
             self.getStepCountPerDay(end: end!)
             self.getActiveEnergyPerDay(end: end!)
             self.getDistanceWalkAndRunPerDay(end: end!)
@@ -590,25 +588,23 @@ class HealthDataManager {
             self.getHeartRatePerDay(end: end!)
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
-            for array in self.healthContainerNameArray {
-                self.makeHealthDataString(dataType: array)
-            }
-            
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.stepStringToUpload, dataType: "steps", index: self.indexCount)
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: self.indexCount)
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: self.indexCount)
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: self.indexCount)
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.heartRateStringToUpload, dataType: "HR", index: self.indexCount)
-            
-            self.stepStringToUpload = ""
-            self.energyStringToUpload = ""
-            self.distanceStringToUpload = ""
-            self.sleepStringToUpload = ""
-            self.heartRateStringToUpload = ""
-            
-            CSVFileManager.shared.checkInternetAndStartUploadHealthData()
+        for array in self.healthContainerNameArray {
+            self.makeHealthDataString(dataType: array)
         }
+        
+        CSVFileManager.shared.writeHealthCSV(sensorData: self.stepStringToUpload, dataType: "steps", index: self.indexCount)
+        CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: self.indexCount)
+        CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: self.indexCount)
+        CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: self.indexCount)
+        CSVFileManager.shared.writeHealthCSV(sensorData: self.heartRateStringToUpload, dataType: "HR", index: self.indexCount)
+        
+        self.stepStringToUpload = ""
+        self.energyStringToUpload = ""
+        self.distanceStringToUpload = ""
+        self.sleepStringToUpload = ""
+        self.heartRateStringToUpload = ""
+        
+        CSVFileManager.shared.checkInternetAndStartUploadHealthData()
     }
     
 }

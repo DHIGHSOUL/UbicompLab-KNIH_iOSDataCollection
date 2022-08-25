@@ -44,7 +44,7 @@ logOutWarning = "Warning : Use this button only when the ID is wrong";
 logOutButton = "Sign Out";
 
 // MARK: - SignInViewWord
-signInLabel = "Enter 3 numbers you received (ex: 999)";
+signInLabel = "Enter your ID code (ex: 999)";
 signInPlaceHolder = "999";
 signInButton = "Sign In";
 
