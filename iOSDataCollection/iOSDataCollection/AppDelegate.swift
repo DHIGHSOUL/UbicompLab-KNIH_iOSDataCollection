@@ -15,9 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MainViewController.shared.requestLocationAuthorization()
             NotificationManager.shared.requestNotificationAuthorization()
             HealthDataManager.shared.requestHealthDataAuthorization()
-            UserDefaults.standard.setValue(true, forKey: "firstSingIn")
         } else {
             NotificationManager.shared.notificationCenter.delegate = self
+            let appStartTime = Date()
+            let appStartDate = String(Int(appStartTime.timeIntervalSince1970))
+            UserDefaults.standard.setValue(appStartDate, forKey: "appStartDate")
             MainViewController.shared.makeRealm()
             CSVFileManager.shared.createSensorCSVFolder()
             CSVFileManager.shared.createHealthCSVFolder()

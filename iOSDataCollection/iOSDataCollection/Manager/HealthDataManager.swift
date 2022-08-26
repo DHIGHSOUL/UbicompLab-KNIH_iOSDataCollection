@@ -552,9 +552,14 @@ class HealthDataManager {
     
     // Health CSV 파일을 만들고 업로드하는 메소드
     @objc func makeHealthCSVFileAndUpload() {
-        if UserDefaults.standard.bool(forKey: "firstSingIn") == true {
-            print("First Sign in, set query tomorrow")
-            UserDefaults.standard.setValue(false, forKey: "firstSignIn")
+        let calendar = Calendar.current
+        guard let checkAppStartDateString = Double(UserDefaults.standard.string(forKey: "appStartDate") ?? "appStartDateError") else { return }
+        let checkAppStartDate = Date(timeIntervalSince1970: checkAppStartDateString)
+        print("App start date is \(checkAppStartDate), and it's \(calendar.isDateInToday(checkAppStartDate))")
+        
+        
+        if calendar.isDateInToday(checkAppStartDate) {
+            print("Today is app start date. Health query will set since tomorrow")
             return
         }
         
