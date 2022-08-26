@@ -15,9 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MainViewController.shared.requestLocationAuthorization()
             NotificationManager.shared.requestNotificationAuthorization()
             HealthDataManager.shared.requestHealthDataAuthorization()
+            UserDefaults.standard.setValue(true, forKey: "firstSingIn")
         } else {
             NotificationManager.shared.notificationCenter.delegate = self
-            
             MainViewController.shared.makeRealm()
             CSVFileManager.shared.createSensorCSVFolder()
             CSVFileManager.shared.createHealthCSVFolder()

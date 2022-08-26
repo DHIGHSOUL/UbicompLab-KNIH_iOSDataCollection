@@ -8,6 +8,7 @@
 import Foundation
 import CoreMotion
 import RealmSwift
+import Realm
 
 // 남은 측정시간을 표시하기 위한 변수
 public var uploadTimeVariable = 600
@@ -257,7 +258,7 @@ class DataCollectionManager {
     }
     
     // 앱 재시작 후 잔여 파일을 모두 업로드하기 위한 메소드
-    @objc private func reuploadFiles(completion: @escaping () -> Void) {
+    @objc private func reuploadFiles() {
         if NetWorkManager.shared.isConnected == true {
             for index in checkWhenReStartSensorDatas()..<getLastIndexOfSensorRealm() + 1 {
                 CSVFileManager.shared.readAndUploadSensorCSV(fileNumber: index)
@@ -267,8 +268,6 @@ class DataCollectionManager {
                 restartAndCheckTimer.invalidate()
             }
         }
-        
-        completion()
     }
     
     // 업로드 주기를 확인하기 위한 메소드

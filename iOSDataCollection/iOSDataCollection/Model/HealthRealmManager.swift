@@ -7,6 +7,7 @@
 
 import Foundation
 import RealmSwift
+import Realm
 
 class HealthRealmManager: Object {
     @objc dynamic var lastSavedNumber: Int = 0

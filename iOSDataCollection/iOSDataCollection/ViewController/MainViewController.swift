@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import RealmSwift
+import Realm
 import CoreLocation
 
 class MainViewController: UIViewController {
@@ -137,10 +138,10 @@ class MainViewController: UIViewController {
     
     // 파일을 저장한 번호를 추적하기 위한 인덱스를 저장하는 Realm 라이브러리 생성
     func makeRealm() {
-        _ = try! Realm()
+        let realm = try! Realm()
     
         print("Realm DB 생성")
-        print(Realm.Configuration.defaultConfiguration.fileURL!)
+        print(realm.configuration.fileURL ?? "RealmFileNameError")
     }
     
     // Main View의 Layout 지정

@@ -7,6 +7,7 @@
 
 import Foundation
 import RealmSwift
+import Realm
 
 class SensorRealmManager: Object {
     @objc dynamic var lastSavedNumber: Int = 0
