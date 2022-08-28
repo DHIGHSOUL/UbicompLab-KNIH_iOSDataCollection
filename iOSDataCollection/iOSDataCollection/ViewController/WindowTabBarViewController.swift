@@ -9,6 +9,8 @@ import UIKit
 
 class WindowTabBarViewController: UITabBarController {
     
+    static let shared = WindowTabBarViewController()
+    
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()

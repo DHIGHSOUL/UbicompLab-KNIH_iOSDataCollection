@@ -9,6 +9,7 @@ import Foundation
 import HealthKit
 import RealmSwift
 import Realm
+import SwiftUI
 
 class HealthDataManager {
     
@@ -56,6 +57,11 @@ class HealthDataManager {
     
     // Health 데이터의 컨테이너 이름 배열
     let healthContainerNameArray: [String] = ["steps", "calories", "distance", "sleep", "HR"]
+    
+    // 현재 휴대폰의 잠금 상태를 파악할 변수
+    var isPhoneLock = Bool()
+    // 휴대폰이 잠겨 있다면 반복적으로 휴대폰 잠금 상태를 파악하는 타이머
+    var phoneLockTimer = Timer()
     
     // MARK: - Method
     // 앱 재시작 시, 업로드되지 않은 파일의 인덱스를 확인하여 전부 업로드시키는 메소드
@@ -115,7 +121,7 @@ class HealthDataManager {
         
         let query = HKSampleQuery(sampleType: stepType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
             if let error = error {
-                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                print("Step Query Error, Set Error String : \(error.localizedDescription)")
                 let errorStepString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
                 self.stepStringDataArray.append(errorStepString)
                 return
@@ -205,7 +211,7 @@ class HealthDataManager {
         
         let query = HKSampleQuery(sampleType: distanceType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
             if let error = error {
-                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                print("Distance Query Error, Set Error String : \(error.localizedDescription)")
                 let errorDistanceString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
                 self.distanceStringDataArray.append(errorDistanceString)
                 return
@@ -249,7 +255,7 @@ class HealthDataManager {
         
         let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { [weak self] (_, result, error) -> Void in
             if let error = error {
-                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                print("Sleep Query Error, Set Error String : \(error.localizedDescription)")
                 let errorSleepString = "\(Int(start.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
                 self?.sleepStringDataArray.append(errorSleepString)
                 return
@@ -300,7 +306,7 @@ class HealthDataManager {
         
         let query = HKSampleQuery(sampleType: heartRateType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (_, result, error) in
             if let error = error {
-                print("Energy Query Error, Set Error String : \(error.localizedDescription)")
+                print("HeartRate Query Error, Set Error String : \(error.localizedDescription)")
                 let errorHeartRateString = "\(Int(startTime.timeIntervalSince1970)),\(Int(end.timeIntervalSince1970)),iPhone,-1"
                 self.heartRateStringDataArray.append(errorHeartRateString)
                 return
@@ -397,21 +403,21 @@ class HealthDataManager {
         }
     }
     
-    // 건강 정보를 받아오는 루프를 생성하는 메소드
-    func setHealthDataLoop() {
-        let now = Date()
-        
-        // MARK: 오늘 10시에 실행하면 어제 데이터를 받아옴(걸음/심박/거리는 00시 ~ 23:59:59, 수면은 작일 10시 ~ 금일 09:59:59). 테스트 진행 후에는 반드시 RunLoop FireTime 되돌려 놓을 것.
-        let startTime = Calendar.current.date(bySettingHour: 10, minute: 01, second: 00, of: now)!
-//        let startTime = Calendar.current.date(bySettingHour: 13, minute: 19, second: 00, of: now)!
-        print(startTime)
-        
-        getHealthDataTimer = Timer.init(fireAt: startTime, interval: 86400, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
-        
-        print("Collecting health data loop started")
-        print("------------------------------------------------------------")
-        RunLoop.main.add(getHealthDataTimer, forMode: .default)
-    }
+    //    // 건강 정보를 받아오는 루프를 생성하는 메소드
+    //    func setHealthDataLoop() {
+    //        let now = Date()
+    //
+    //        // MARK: 오늘 10시에 실행하면 어제 데이터를 받아옴(걸음/심박/거리는 00시 ~ 23:59:59, 수면은 작일 10시 ~ 금일 09:59:59). 테스트 진행 후에는 반드시 RunLoop FireTime 되돌려 놓을 것.
+    //        let startTime = Calendar.current.date(bySettingHour: 00, minute: 47, second: 00, of: now)!
+    //        //        let startTime = Calendar.current.date(bySettingHour: 13, minute: 19, second: 00, of: now)!
+    //        print(startTime)
+    //
+    //        getHealthDataTimer = Timer.init(fireAt: startTime, interval: 86400, target: self, selector: #selector(healthFileUploadCheck), userInfo: nil, repeats: true)
+    //
+    //        print("Collecting health data loop started")
+    //        print("------------------------------------------------------------")
+    //        RunLoop.main.add(getHealthDataTimer, forMode: .default)
+    //    }
     
     // Health Realm의 마지막 인덱스를 읽어오는 메소드
     func getLastIndexOfHealthRealm() -> Int {
@@ -483,6 +489,96 @@ class HealthDataManager {
         return true
     }
     
+    // 테스트 쿼리로 오류를 도출해내는 메소드
+    func testHealthQuery() {
+        print("Start test query")
+        
+        let now = Date()
+        let testHour = Calendar.current.date(byAdding: .hour, value: -12, to: now)
+        
+        guard let testType = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return }
+        
+        let predicate = HKQuery.predicateForSamples(withStart: testHour, end: now, options: .strictStartDate)
+        
+        let query = HKSampleQuery(sampleType: testType, predicate: predicate, limit: Int(HKObjectQueryNoLimit), sortDescriptors: nil) { (query, result, error) in
+            if let error = error {
+                print("Test query error")
+                if error.localizedDescription == "Protected health data is inaccessible" {
+                    print("Device is locked")
+                }
+                self.isPhoneLock = true
+            } else {
+                self.isPhoneLock = false
+            }
+        }
+        
+        healthStore.execute(query)
+    }
+    
+    // Health CSV 파일을 만들고 업로드하는 메소드
+    func makeHealthCSVFileAndUpload() {
+        print("Start test query in makeHealthCSVFileAndUpload")
+        self.phoneLockTimer.invalidate()
+        
+        print("Start save and upload health data")
+        
+        let now = Date()
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)
+        let yesterdayStartSleep = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: yesterday ?? Date())
+        let todayFinishSleep = Calendar.current.date(bySettingHour: 09, minute: 59, second: 59, of: now)
+        let end = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: yesterday ?? Date())
+        let todayEndUnixTime = String(end!.timeIntervalSince1970)
+        
+        let realm = try! Realm()
+        let getRealm = realm.objects(HealthRealmManager.self)
+        self.indexCount = getRealm.endIndex
+        
+        self.indexCount += 1
+        
+        print("Saved Time = \(end ?? Date())")
+        print("Saved UnixTime = \(todayEndUnixTime)")
+        print("Now saving Realm index = \(self.indexCount)")
+        
+        let saveNewIndexInRealm = HealthRealmManager()
+        saveNewIndexInRealm.lastSavedNumber = self.indexCount
+        saveNewIndexInRealm.saveUnixTime = todayEndUnixTime
+        saveNewIndexInRealm.lastUploadedStepNumber = 0
+        saveNewIndexInRealm.lastUploadedEnergyNumber = 0
+        saveNewIndexInRealm.lastUploadedDistanceNumber = 0
+        saveNewIndexInRealm.lastUploadedSleepNumber = 0
+        saveNewIndexInRealm.lastUploadedHeartRateNumber = 0
+        
+        try! realm.write {
+            realm.add(saveNewIndexInRealm)
+        }
+        
+        self.getStepCountPerDay(end: end!)
+        self.getActiveEnergyPerDay(end: end!)
+        self.getDistanceWalkAndRunPerDay(end: end!)
+        self.getSleepPerDay(start: yesterdayStartSleep!, end: todayFinishSleep!)
+        self.getHeartRatePerDay(end: end!)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            for array in self.healthContainerNameArray {
+                self.makeHealthDataString(dataType: array)
+            }
+            
+            CSVFileManager.shared.writeHealthCSV(sensorData: self.stepStringToUpload, dataType: "steps", index: self.indexCount)
+            CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: self.indexCount)
+            CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: self.indexCount)
+            CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: self.indexCount)
+            CSVFileManager.shared.writeHealthCSV(sensorData: self.heartRateStringToUpload, dataType: "HR", index: self.indexCount)
+            
+            self.stepStringToUpload = ""
+            self.energyStringToUpload = ""
+            self.distanceStringToUpload = ""
+            self.sleepStringToUpload = ""
+            self.heartRateStringToUpload = ""
+            
+            CSVFileManager.shared.checkInternetAndStartUploadHealthData()
+        }
+    }
+    
     // MARK: - @objc Method
     // 앱 재시작 후 잔여 파일을 모두 업로드하기 위한 메소드
     @objc private func reuploadFiles() {
@@ -550,72 +646,10 @@ class HealthDataManager {
         }
     }
     
-    // Health CSV 파일을 만들고 업로드하는 메소드
-    @objc func makeHealthCSVFileAndUpload() {
-        let calendar = Calendar.current
-        guard let checkAppStartDateString = Double(UserDefaults.standard.string(forKey: "appStartDate") ?? "appStartDateError") else { return }
-        let checkAppStartDate = Date(timeIntervalSince1970: checkAppStartDateString)
-        print("App start date is \(checkAppStartDate), and it's \(calendar.isDateInToday(checkAppStartDate))")
-        
-        
-        if calendar.isDateInToday(checkAppStartDate) {
-            print("Today is app start date. Health query will set since tomorrow")
-            return
-        }
-        
-        print("Start save and upload health data")
-        
-        let now = Date()
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)
-        let yesterdayStartSleep = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: yesterday ?? Date())
-        let todayFinishSleep = Calendar.current.date(bySettingHour: 09, minute: 59, second: 59, of: now)
-        let end = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: yesterday ?? Date())
-        let todayEndUnixTime = String(end!.timeIntervalSince1970)
-        
-        let realm = try! Realm()
-        let getRealm = realm.objects(HealthRealmManager.self)
-        indexCount = getRealm.endIndex
-        
-        indexCount += 1
-        
-        let saveNewIndexInRealm = HealthRealmManager()
-        saveNewIndexInRealm.lastSavedNumber = indexCount
-        saveNewIndexInRealm.saveUnixTime = todayEndUnixTime
-        saveNewIndexInRealm.lastUploadedStepNumber = 0
-        saveNewIndexInRealm.lastUploadedEnergyNumber = 0
-        saveNewIndexInRealm.lastUploadedDistanceNumber = 0
-        saveNewIndexInRealm.lastUploadedSleepNumber = 0
-        saveNewIndexInRealm.lastUploadedHeartRateNumber = 0
-        
-        try! realm.write {
-            realm.add(saveNewIndexInRealm)
-        }
-        
-        self.getStepCountPerDay(end: end!)
-        self.getActiveEnergyPerDay(end: end!)
-        self.getDistanceWalkAndRunPerDay(end: end!)
-        self.getSleepPerDay(start: yesterdayStartSleep!, end: todayFinishSleep!)
-        self.getHeartRatePerDay(end: end!)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            for array in self.healthContainerNameArray {
-                self.makeHealthDataString(dataType: array)
-            }
-            
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.stepStringToUpload, dataType: "steps", index: self.indexCount)
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.energyStringToUpload, dataType: "calories", index: self.indexCount)
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.distanceStringToUpload, dataType: "distance", index: self.indexCount)
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.sleepStringToUpload, dataType: "sleep", index: self.indexCount)
-            CSVFileManager.shared.writeHealthCSV(sensorData: self.heartRateStringToUpload, dataType: "HR", index: self.indexCount)
-            
-            self.stepStringToUpload = ""
-            self.energyStringToUpload = ""
-            self.distanceStringToUpload = ""
-            self.sleepStringToUpload = ""
-            self.heartRateStringToUpload = ""
-            
-            CSVFileManager.shared.checkInternetAndStartUploadHealthData()
-        }
-    }
+    //    // 앱 잠금을 파악하고 건강 데이터 생성/업로드를 지시하는 메소드
+    //    @objc func healthFileUploadCheck() {
+    //        print("Set health file upload timer")
+    //        phoneLockTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
+    //    }
     
 }

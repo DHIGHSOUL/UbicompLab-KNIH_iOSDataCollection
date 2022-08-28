@@ -42,6 +42,9 @@ surveyLabel = "Go to survey page";
 surveyButton = "Start survey";
 logOutWarning = "Warning : Use this button only when the ID is wrong";
 logOutButton = "Sign Out";
+notYetUploaded = "Today's health data is not uploaded yet";
+uploadCompleted = "Health data upload completed!";
+uploadDataButton = "Upload health data";
 
 // MARK: - SignInViewWord
 signInLabel = "Enter your ID code (ex: 999)";
@@ -59,6 +62,11 @@ wantToLogOut = "Want to sign out?";
 canNotCollectData = "We can't collect data if you sign out";
 reallySingOut = "Are you sure?";
 signOutWhenYouChangeID = "Please sign out only when the ID is wrong";
+uploadTomorrow = "You can upload it since tomorrow";
+alreadyUploaded = "Today health data is already uploaded";
+uploadComplete = "Upload complete!";
+internetError = "Internet disconnected";
+internetErrorMessage = "Please check internet connection";
 alertCancel = "Cancel";
 alertConfirm = "OK";
 alertLogOut = "Sing Out";
@@ -67,5 +75,6 @@ alertLogOut = "Sing Out";
 appOpen = "I think the app turned off 😦";
 cantCheckData = "Please check application open!";
 surveyTime = "It's time for a survey!";
-finishSurvey = "Did you completed today's survey?";
-
+finishSurvey = "Did you completed today's survey? 🤔";
+uploadHealthPlz = "Please upload health data!";
+pushButtonToUpload = "Please tab the button to upload datas 😃";

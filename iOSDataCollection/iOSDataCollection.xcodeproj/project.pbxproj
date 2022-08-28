@@ -12,11 +12,11 @@
 		FD0F2B7B28B64F6D006B0A67 /* LanguageChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0F2B7A28B64F6D006B0A67 /* LanguageChange.swift */; };
 		FD272AF72892B2D7009CED32 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD272AF62892B2D7009CED32 /* NetworkManager.swift */; };
 		FD43D61028917B34007F28D0 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FD43D60F28917B34007F28D0 /* SnapKit */; };
-		FD666AF728B8FC20004F431A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD666AF628B8FC20004F431A /* ViewController.swift */; };
 		FD75A8FE2896E27B00DC2C88 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD75A8FD2896E27B00DC2C88 /* UserInfoViewController.swift */; };
 		FD789FD3288ECF2900EB8C70 /* WindowTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */; };
 		FD789FD5288ECF4C00EB8C70 /* CheckSensorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */; };
 		FD8BB6B2288E5EA800F2F386 /* DataCollectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8BB6B1288E5EA800F2F386 /* DataCollectionManager.swift */; };
+		FDA3ED1928BB49C3001B0DDF /* NVActivityIndicatorView in Frameworks */ = {isa = PBXBuildFile; productRef = FDA3ED1828BB49C3001B0DDF /* NVActivityIndicatorView */; };
 		FDA69CF028B101CF003A2F53 /* HealthRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA69CEF28B101CF003A2F53 /* HealthRealmManager.swift */; };
 		FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DA328978B620007C149 /* NotificationManager.swift */; };
 		FDB33DCA289950210007C149 /* HealthDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB33DC9289950210007C149 /* HealthDataManager.swift */; };
@@ -64,7 +64,6 @@
 		FD0F2B7828B64EFE006B0A67 /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 		FD0F2B7A28B64F6D006B0A67 /* LanguageChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageChange.swift; sourceTree = "<group>"; };
 		FD272AF62892B2D7009CED32 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		FD666AF628B8FC20004F431A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FD75A8FD2896E27B00DC2C88 /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		FD789FD2288ECF2900EB8C70 /* WindowTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTabBarViewController.swift; sourceTree = "<group>"; };
 		FD789FD4288ECF4C00EB8C70 /* CheckSensorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckSensorViewController.swift; sourceTree = "<group>"; };
@@ -109,6 +108,7 @@
 				FDF19573289C199A00C55461 /* CoreMotion.framework in Frameworks */,
 				FDF19571289C198900C55461 /* SafariServices.framework in Frameworks */,
 				FDF1956F289C161000C55461 /* HealthKit.framework in Frameworks */,
+				FDA3ED1928BB49C3001B0DDF /* NVActivityIndicatorView in Frameworks */,
 				FDFB6474289363DD00D6791D /* RealmSwift in Frameworks */,
 				FDD1D7A1288E515D00D4E6F3 /* SnapKit in Frameworks */,
 				FD43D61028917B34007F28D0 /* SnapKit in Frameworks */,
@@ -218,7 +218,6 @@
 				FDB33DA328978B620007C149 /* NotificationManager.swift */,
 				FDB33DC9289950210007C149 /* HealthDataManager.swift */,
 				FD0F2B7828B64EFE006B0A67 /* LanguageManager.swift */,
-				FD666AF628B8FC20004F431A /* ViewController.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -266,6 +265,7 @@
 				FDD1D7A0288E515D00D4E6F3 /* SnapKit */,
 				FD43D60F28917B34007F28D0 /* SnapKit */,
 				FDFB6473289363DD00D6791D /* RealmSwift */,
+				FDA3ED1828BB49C3001B0DDF /* NVActivityIndicatorView */,
 			);
 			productName = iOSDataCollection;
 			productReference = FDD1D765288E508800D4E6F3 /* iOSDataCollection.app */;
@@ -344,6 +344,7 @@
 				FDD1D79F288E515D00D4E6F3 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				FD43D60E28917B34007F28D0 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				FDFB6472289363DD00D6791D /* XCRemoteSwiftPackageReference "realm-swift" */,
+				FDA3ED1728BB49C3001B0DDF /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */,
 			);
 			productRefGroup = FDD1D766288E508800D4E6F3 /* Products */;
 			projectDirPath = "";
@@ -397,7 +398,6 @@
 				FDD1D769288E508800D4E6F3 /* AppDelegate.swift in Sources */,
 				FD75A8FE2896E27B00DC2C88 /* UserInfoViewController.swift in Sources */,
 				FDB33DA428978B620007C149 /* NotificationManager.swift in Sources */,
-				FD666AF728B8FC20004F431A /* ViewController.swift in Sources */,
 				FD0F2B7B28B64F6D006B0A67 /* LanguageChange.swift in Sources */,
 				FD0F2B7928B64EFE006B0A67 /* LanguageManager.swift in Sources */,
 				FDC1F400288FA9C9002B7BF2 /* CSVFileManager.swift in Sources */,
@@ -601,7 +601,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -642,7 +642,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -785,6 +785,14 @@
 				kind = branch;
 			};
 		};
+		FDA3ED1728BB49C3001B0DDF /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ninjaprox/NVActivityIndicatorView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		FDD1D79F288E515D00D4E6F3 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -808,6 +816,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FDD1D79F288E515D00D4E6F3 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		FDA3ED1828BB49C3001B0DDF /* NVActivityIndicatorView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FDA3ED1728BB49C3001B0DDF /* XCRemoteSwiftPackageReference "NVActivityIndicatorView" */;
+			productName = NVActivityIndicatorView;
 		};
 		FDD1D7A0288E515D00D4E6F3 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -140,7 +140,7 @@ class CSVFileManager {
         } else {
             if checkFailAgainUploadSensorData == 0 {
                 uploadFailSensorNumber = sensorFileNumber
-                uploadFailSensorTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadSensorDataIfInternetConnected), userInfo: nil, repeats: true)
+                uploadFailSensorTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(reuploadSensorDataIfInternetConnected), userInfo: nil, repeats: true)
                 checkFailAgainUploadSensorData = 1
             }
         }
@@ -155,7 +155,7 @@ class CSVFileManager {
         } else {
             if checkFailAgainUploadHealthData == 0 {
                 uploadFailHealthNumber = healthFileNumber
-                uploadFailHealthTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(reuploadHealthDataIfInternetConnected), userInfo: nil, repeats: true)
+                uploadFailHealthTimer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(reuploadHealthDataIfInternetConnected), userInfo: nil, repeats: true)
                 checkFailAgainUploadHealthData = 1
             }
         }
@@ -283,6 +283,9 @@ class CSVFileManager {
             semaphore.signal()
         }
         
+        UserDefaults.standard.setValue(true, forKey: "todayUploadState")
+//        UserDefaults.standard.setValue(false, forKey: "")
+        
         task.resume()
         semaphore.wait()
     }
@@ -299,6 +302,8 @@ class CSVFileManager {
         try! realm.write {
             updateRealm.lastUploadedmAccNumber = 1
         }
+        
+        print("lastUploadedmAccNumber = \(updateRealm.lastUploadedmAccNumber)")
     }
     
     private func updateLastUploadedmGyrNumber(fileNumber: Int) {
@@ -312,6 +317,7 @@ class CSVFileManager {
         try! realm.write {
             updateRealm.lastUploadedmGyrNumber = 1
         }
+        print("lastUploadedmGyrNumber =\(updateRealm.lastUploadedmGyrNumber)")
     }
     
     private func updateLastUploadedmPreNumber(fileNumber: Int) {
@@ -325,6 +331,7 @@ class CSVFileManager {
         try! realm.write {
             updateRealm.lastUploadedmPreNumber = 1
         }
+        print("lastUploadedmPreNumber = \(updateRealm.lastUploadedmPreNumber)")
     }
     
     private func updateLastUploadedStepsNumber(fileNumber: Int) {
@@ -338,6 +345,7 @@ class CSVFileManager {
         try! realm.write {
             updateRealm.lastUploadedStepNumber = 1
         }
+        print("lastUploadedStepNumber = \(updateRealm.lastUploadedStepNumber)")
     }
     
     private func updateLastUploadedCaloriesNumber(fileNumber: Int) {
@@ -351,6 +359,7 @@ class CSVFileManager {
         try! realm.write {
             updateRealm.lastUploadedEnergyNumber = 1
         }
+        print("lastUploadedCaloriesNumer = \(updateRealm.lastUploadedEnergyNumber)")
     }
     
     private func updateLastUploadedDistancenumber(fileNumber: Int) {
@@ -364,6 +373,7 @@ class CSVFileManager {
         try! realm.write {
             updateRealm.lastUploadedDistanceNumber = 1
         }
+        print("lastUploadedDistanceNumber = \(updateRealm.lastUploadedDistanceNumber)")
     }
     
     private func updateLastUploadedSleepNumber(fileNumber: Int) {
@@ -377,6 +387,7 @@ class CSVFileManager {
         try! realm.write {
             updateRealm.lastUploadedSleepNumber = 1
         }
+        print("lastUploadedSleepNumber = \(updateRealm.lastUploadedSleepNumber)")
     }
     
     private func updateLastUploadedHeartRateNumber(fileNumber: Int) {
@@ -390,6 +401,7 @@ class CSVFileManager {
         try! realm.write {
             updateRealm.lastUploadedHeartRateNumber = 1
         }
+        print("lastUploadedHeartRateNumber = \(updateRealm.lastUploadedHeartRateNumber)")
     }
     
     // CSV 파일을 삭제하는 메소드

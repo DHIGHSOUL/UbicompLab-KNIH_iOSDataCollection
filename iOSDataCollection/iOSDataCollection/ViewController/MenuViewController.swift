@@ -7,12 +7,17 @@
 
 import UIKit
 import SafariServices
+import RealmSwift
+import NVActivityIndicatorView
 
 class MenuViewController: UIViewController {
     
     static let shared = MenuViewController()
     
     // MARK: - Instance member
+    // 10시 즈음에 업로드 상태를 업로드할 타이머
+    var checkUploadTimer = Timer()
+    
     // 유저 ID를 보여주는 Label
     private let userIDLabel: UILabel = {
         let label = UILabel()
@@ -143,6 +148,23 @@ class MenuViewController: UIViewController {
         return button
     }()
     
+    // Health Data 업로드 상태를 나타낼 Label
+    private let healthDataLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.textAlignment = .center
+        
+        return label
+    }()
+    
+    // 건강 데이터 업로드 버튼
+    private let uploadDataButton: UIButton = {
+        let button = UIButton()
+        button.clipsToBounds = true
+        
+        return button
+    }()
+    
     // 로그아웃 경고를 나타낼 Label
     private let warningLogOutLabel: UILabel = {
         let label = UILabel()
@@ -172,7 +194,12 @@ class MenuViewController: UIViewController {
         super.viewDidLoad()
         
         menuViewLayout()
-
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        isUploadedToday()
     }
     
     // MARK: - Method
@@ -188,7 +215,7 @@ class MenuViewController: UIViewController {
         }
         
         testNotionLabel.snp.makeConstraints { make in
-            make.top.equalTo(userIDLabel.snp.bottom).offset(30)
+            make.top.equalTo(userIDLabel.snp.bottom).offset(15)
             make.width.equalTo(view)
         }
         
@@ -247,6 +274,18 @@ class MenuViewController: UIViewController {
         }
         surveyButton.addTarget(self, action: #selector(pressSurveyButton), for: .touchUpInside)
         
+        healthDataLabel.snp.makeConstraints { make in
+            make.top.equalTo(surveyButton.snp.bottom).offset(15)
+            make.width.equalToSuperview()
+        }
+        
+        uploadDataButton.snp.makeConstraints { make in
+            make.top.equalTo(healthDataLabel.snp.bottom).offset(5)
+            make.width.equalToSuperview()
+            make.height.equalTo(40)
+        }
+        uploadDataButton.addTarget(self, action: #selector(pressUploadDataButton), for: .touchUpInside)
+        
         logOutButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
             make.centerX.equalToSuperview()
@@ -264,12 +303,98 @@ class MenuViewController: UIViewController {
     
     // AddSubView를 한 번에 실시
     private func addSubViews() {
-        let views = [userIDLabel, testNotionLabel, testNotionButton, warningNotionLabel, warningNotionButton, contactNotionLabel, contactNotionButton, surveyRegisterLabel, surveyRegisterButton, surveyLabel, surveyButton, warningLogOutLabel, logOutButton]
+        let views = [userIDLabel, testNotionLabel, testNotionButton, warningNotionLabel, warningNotionButton, contactNotionLabel, contactNotionButton, surveyRegisterLabel, surveyRegisterButton, surveyLabel, surveyButton, healthDataLabel, uploadDataButton, warningLogOutLabel, logOutButton]
         
         for newView in views {
             view.addSubview(newView)
             newView.translatesAutoresizingMaskIntoConstraints = false
         }
+    }
+    
+    // 오늘이 앱 시작일인지 파악하는 메소드
+    func checkAppStartDay() -> Bool {
+        let calendar = Calendar.current
+        let checkAppStartDateString = Double(UserDefaults.standard.string(forKey: "appStartDate") ?? "appStartDateError") ?? 0.0
+        let checkAppStartDate = Date(timeIntervalSince1970: checkAppStartDateString)
+        print("App start date is \(checkAppStartDate), and it's \(calendar.isDateInToday(checkAppStartDate))")
+        if calendar.isDateInToday(checkAppStartDate) {
+            print("Today is app start date. Health query will set since tomorrow")
+            return true
+        }
+        
+        return false
+    }
+    
+    // 버튼을 눌렀을 때 10시 이후인지 확인하는 메소드
+    func isAfterTen() {
+        let realm = try! Realm()
+        let lastIndex = HealthDataManager.shared.getLastIndexOfHealthRealm()
+        
+        let now = Date()
+        let nowUnixTime = now.timeIntervalSince1970
+        let nowTen = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: now)
+        let nowTenUnixTime = nowTen?.timeIntervalSince1970
+        
+        print(now)
+        print(nowTen!)
+        
+        // 첫 다음 날에 10시 이전 데이터를 업로드를 하려는 것을 막는 조건(해당 날짜의 10시 이전에는 업로드 불가)
+        if lastIndex == 0 {
+            if nowUnixTime > nowTenUnixTime! {
+                UserDefaults.standard.setValue(false, forKey: "todayUploadState")
+                return
+            } else {
+                UserDefaults.standard.setValue(true, forKey: "todayUploadState")
+                return
+            }
+        }
+        
+        let checkRealm = realm.object(ofType: HealthRealmManager.self, forPrimaryKey: lastIndex)
+        let yesterDayUploadUnixTimeString = checkRealm?.saveUnixTime
+        let yesterDayUploadUnixTime = Double(yesterDayUploadUnixTimeString ?? "GetLastIndexUnixTimeError")
+        let yesterDayUploadTime = Date(timeIntervalSince1970: yesterDayUploadUnixTime!)
+        let todayCanUploadDate = Calendar.current.date(byAdding: .day, value: 2, to: yesterDayUploadTime)
+        let todayCanUploadTime = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: todayCanUploadDate!)
+        let todayCanUploadUnixTime = todayCanUploadTime?.timeIntervalSince1970
+        
+        print("now = \(now)")
+        print("TodayCanUploadTime = \(todayCanUploadTime!)")
+
+        if nowUnixTime > todayCanUploadUnixTime! {
+            UserDefaults.standard.setValue(false, forKey: "todayUploadState")
+        } else {
+            UserDefaults.standard.setValue(true, forKey: "todayUploadState")
+        }
+    }
+    
+    // 오늘 업로드 상태를 파악하고 업로드 상태 라벨을 변경하는 메소드
+    func isUploadedToday() {
+        let checkUpload = UserDefaults.standard.bool(forKey: "todayUploadState")
+        
+        if checkUpload == true {
+            var buttonConfiguration = UIButton.Configuration.filled()
+            buttonConfiguration.baseBackgroundColor = .darkGray
+            buttonConfiguration.baseForegroundColor = .white
+            uploadDataButton.configuration = buttonConfiguration
+            uploadDataButton.setTitle(LanguageChange.MenuViewWord.uploadDataButton, for: .normal)
+            healthDataLabel.textColor = .lightGray
+            healthDataLabel.text = LanguageChange.MenuViewWord.uploadCompleted
+        } else {
+            var buttonConfiguration = UIButton.Configuration.filled()
+            buttonConfiguration.baseBackgroundColor = .systemPink
+            buttonConfiguration.baseForegroundColor = .white
+            uploadDataButton.configuration = buttonConfiguration
+            uploadDataButton.setTitle(LanguageChange.MenuViewWord.uploadDataButton, for: .normal)
+            healthDataLabel.textColor = .systemPink
+            healthDataLabel.text = LanguageChange.MenuViewWord.notYetUploaded
+        }
+    }
+    
+    // 오늘 업로드가 완료되었는지 매일 00시에 확인하는 메소드
+    func checkUploadState() {
+        let now = Date()
+        let checkTime = Calendar.current.date(bySettingHour: 10, minute: 00, second: 03, of: now)!
+        checkUploadTimer = Timer.init(fireAt: checkTime, interval: 86400, target: self, selector: #selector(checkTodayUploadState), userInfo: nil, repeats: true)
     }
     
     // MARK: - @objc Method
@@ -350,6 +475,56 @@ class MenuViewController: UIViewController {
         self.present(surveyAlert, animated: true, completion: nil)
     }
     
+    // 건강 데이터를 업로드하는 버튼 메소드
+    @objc private func pressUploadDataButton() {
+        let indicator = NVActivityIndicatorView(frame: CGRect(x: view.frame.midX - 50, y: view.frame.midY - 50, width: 100, height: 100), type: .ballSpinFadeLoader, color: .lightGray, padding: 0)
+        view.addSubview(indicator)
+        indicator.bounds = view.frame
+        indicator.startAnimating()
+        
+        if checkAppStartDay() == true {
+            indicator.stopAnimating()
+            let appStartAlert = UIAlertController(title: LanguageChange.AlertWord.uploadTomorrow, message: nil, preferredStyle: .alert)
+            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
+            appStartAlert.addAction(okButton)
+            present(appStartAlert, animated: true, completion: nil)
+            return
+        }
+        
+        isAfterTen()
+        let uploadAlreadyCompleted = UserDefaults.standard.bool(forKey: "todayUploadState")
+        print("todayUploadState = \(uploadAlreadyCompleted)")
+        if uploadAlreadyCompleted == true {
+            indicator.stopAnimating()
+            let alreadyUploadedAlert = UIAlertController(title: LanguageChange.AlertWord.alreadyUploaded, message: nil, preferredStyle: .alert)
+            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
+            alreadyUploadedAlert.addAction(okButton)
+            present(alreadyUploadedAlert, animated: true, completion: nil)
+            return
+        }
+        
+        if NetWorkManager.shared.isConnected == false {
+            indicator.stopAnimating()
+            let netWorkAlert = UIAlertController(title: LanguageChange.AlertWord.internetError, message: LanguageChange.AlertWord.internetErrorMessage, preferredStyle: .alert)
+            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
+            netWorkAlert.addAction(okButton)
+            present(netWorkAlert, animated: true, completion: nil)
+            return
+        }
+        
+        HealthDataManager.shared.makeHealthCSVFileAndUpload()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            indicator.stopAnimating()
+            WindowTabBarViewController.shared.selectedIndex = 1
+            self.isUploadedToday()
+            let finishAlert = UIAlertController(title: LanguageChange.AlertWord.uploadComplete, message: nil, preferredStyle: .alert)
+            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
+            finishAlert.addAction(okButton)
+            self.present(finishAlert, animated: true, completion: nil)
+        }
+    }
+    
     // 로그아웃 버튼을 누를 때 실행되는 메소드
     @objc private func pressLogOutButton() {
         let logOutAlert = UIAlertController(title: LanguageChange.AlertWord.wantToLogOut, message: LanguageChange.AlertWord.canNotCollectData, preferredStyle: .alert)
@@ -372,6 +547,11 @@ class MenuViewController: UIViewController {
         logOutAlert.addAction(cancelButton)
         logOutAlert.addAction(checkButton)
         self.present(logOutAlert, animated: true, completion: nil)
+    }
+    
+    // 오늘 업로드가 되었는지 파악하는 메소드
+    @objc func checkTodayUploadState() {
+        isUploadedToday()
     }
     
 }

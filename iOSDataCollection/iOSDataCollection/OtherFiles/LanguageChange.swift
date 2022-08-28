@@ -52,6 +52,9 @@ struct LanguageChange {
         static let surveyButton = "surveyButton".localized
         static let logOutWarning = "logOutWarning".localized
         static let logOutButton = "logOutButton".localized
+        static let notYetUploaded = "notYetUploaded".localized
+        static let uploadCompleted = "uploadCompleted".localized
+        static let uploadDataButton = "uploadDataButton".localized
     }
     
     // Words in UserInfoView
@@ -73,6 +76,12 @@ struct LanguageChange {
         static let canNotCollectData = "canNotCollectData".localized
         static let reallySingOut = "reallySingOut".localized
         static let signOutWhenYouChangeID = "signOutWhenYouChangeID".localized
+        static let uploadTomorrow = "uploadTomorrow".localized
+//        static let uploadTomorrowMessage = "uploadTomorrowMessage".localized
+        static let alreadyUploaded = "alreadyUploaded".localized
+        static let uploadComplete = "uploadComplete".localized
+        static let internetError = "internetError".localized
+        static let internetErrorMessage = "internetErrorMessage".localized
         static let alertCancel = "alertCancel".localized
         static let alertConfirm = "alertConfirm".localized
         static let alertLogOut = "alertLogOut".localized
@@ -84,6 +93,8 @@ struct LanguageChange {
         static let cantCheckData = "cantCheckData".localized
         static let surveyTime = "surveyTime".localized
         static let finishSurvery = "finishSurvey".localized
+        static let uploadHealthPlz = "uploadHealthPlz".localized
+        static let pushButtonToUpload = "pushButtonToUpload".localized
     }
     
 }

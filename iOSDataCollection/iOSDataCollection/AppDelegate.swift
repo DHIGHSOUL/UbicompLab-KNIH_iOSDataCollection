@@ -15,20 +15,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MainViewController.shared.requestLocationAuthorization()
             NotificationManager.shared.requestNotificationAuthorization()
             HealthDataManager.shared.requestHealthDataAuthorization()
+            UserDefaults.standard.setValue(false, forKey: "todayUploadState")
         } else {
-            NotificationManager.shared.notificationCenter.delegate = self
             let appStartTime = Date()
             let appStartDate = String(Int(appStartTime.timeIntervalSince1970))
             UserDefaults.standard.setValue(appStartDate, forKey: "appStartDate")
+            NotificationManager.shared.notificationCenter.delegate = self
+            MenuViewController.shared.checkUploadState()
             MainViewController.shared.makeRealm()
             CSVFileManager.shared.createSensorCSVFolder()
             CSVFileManager.shared.createHealthCSVFolder()
             NotificationManager.shared.setAskSurveyNotification()
+            NotificationManager.shared.setAskUploadHealthDataNotification()
             NetWorkManager.shared.startMonitoring()
-            HealthDataManager.shared.setHealthDataLoop()
+//            HealthDataManager.shared.setHealthDataLoop()
             DataCollectionManager.shared.dataCollectionManagerMethod()
             DataCollectionManager.shared.checkAndReUploadSensorFiles()
-            HealthDataManager.shared.checkAndReUploadHealthFiles()
+//            HealthDataManager.shared.checkAndReUploadHealthFiles()
         }
         
         return true
@@ -63,6 +66,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         NotificationManager.shared.notificationCenter.removeAllPendingNotificationRequests()
         NotificationManager.shared.notificationCenter.removeAllDeliveredNotifications()
         NotificationManager.shared.setAskSurveyNotification()
+        NotificationManager.shared.setAskUploadHealthDataNotification()
         
         completionHandler()
     }

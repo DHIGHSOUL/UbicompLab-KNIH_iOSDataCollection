@@ -42,6 +42,9 @@ surveyLabel = "설문조사 페이지로 이동합니다.";
 surveyButton = "설문조사 참여하기";
 logOutWarning = "Warning : 로그아웃은 ID가 잘못되었을 때만 사용해주세요!";
 logOutButton = "로그아웃";
+notYetUploaded = "오늘 건강 데이터가 아직 업로드되지 않았어요!";
+uploadCompleted = "오늘의 건강 데이터 업로드가 완료되었어요 :)";
+uploadDataButton = "건강 데이터 업로드하기";
 
 // MARK: - SignInViewWord
 signInLabel = "전달받은 ID 3자리를 입력해주세요! (예: 999)";
@@ -59,6 +62,11 @@ wantToLogOut = "로그아웃 하시겠습니까?";
 canNotCollectData = "로그아웃하면 데이터를 수집할 수 없습니다!";
 reallySingOut = "정말 로그아웃 하시겠습니까?";
 signOutWhenYouChangeID = "로그아웃은 ID를 변경할 때만 실행해주세요!";
+uploadTomorrow = "내일부터 업로드 가능합니다!";
+alreadyUploaded = "이미 오늘 업로드가 완료되었습니다!";
+uploadComplete = "업로드가 완료되었습니다!";
+internetError = "인터넷이 연결되지 않았습니다!";
+internetErrorMessage = "인터넷 연결을 확인해주세요!";
 alertCancel = "취소";
 alertConfirm = "확인";
 alertLogOut = "로그아웃";
@@ -68,3 +76,5 @@ appOpen = "앱이 꺼진 것 같은데요..? 🧐";
 cantCheckData = "앱이 켜져있는지 확인해주세요!";
 surveyTime = "설문조사를 진행할 시간입니다!";
 finishSurvey = "오늘 설문조사는 하셨나요? 😃";
+uploadHealthPlz = "건강 데이터를 업로드해주세요!";
+pushButtonToUpload = "앱에서 버튼을 눌러주세요! 😊";

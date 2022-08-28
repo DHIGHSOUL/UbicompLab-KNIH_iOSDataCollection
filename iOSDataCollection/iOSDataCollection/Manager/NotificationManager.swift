@@ -75,4 +75,27 @@ class NotificationManager {
         }
     }
     
+    // Health 데이터 업로드 요청 알림 설정
+    func setAskUploadHealthDataNotification() {
+        let notificationCenter = NotificationManager.shared.notificationCenter
+        
+        print("건강 데이터 업로드 알림 설정")
+        
+        let notificaitonContent = UNMutableNotificationContent()
+        notificaitonContent.title = LanguageChange.NotiWord.uploadHealthPlz
+        notificaitonContent.body = LanguageChange.NotiWord.pushButtonToUpload
+        notificaitonContent.sound = .default
+        
+        let uploadDataTime = DateComponents(hour: 10, minute: 00, second: 00)
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: uploadDataTime, repeats: true)
+        let request = UNNotificationRequest(identifier: "askUploadHealthData", content: notificaitonContent, trigger: trigger)
+        
+        notificationCenter.add(request) { error in
+            if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
 }
