@@ -199,6 +199,7 @@ class MenuViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        isAfterTen()
         isUploadedToday()
     }
     
@@ -327,40 +328,18 @@ class MenuViewController: UIViewController {
     
     // 버튼을 눌렀을 때 10시 이후인지 확인하는 메소드
     func isAfterTen() {
-        let realm = try! Realm()
-        let lastIndex = HealthDataManager.shared.getLastIndexOfHealthRealm()
-        
         let now = Date()
         let nowUnixTime = now.timeIntervalSince1970
-        let nowTen = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: now)
-        let nowTenUnixTime = nowTen?.timeIntervalSince1970
+        
+        let getUploadDate = UserDefaults.standard.string(forKey: "nextUploadDate")
+        let uploadDate = Date(timeIntervalSince1970: Double(getUploadDate ?? "nextUploadDateError") ?? 0.0)
+        let todayUploadDate = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: uploadDate)
+        let todayUploadUnixTime = todayUploadDate?.timeIntervalSince1970
         
         print(now)
-        print(nowTen!)
+        print("todayUploadDate = \(String(describing: todayUploadDate))\ntodayUploadUnixTime = \(String(describing: todayUploadUnixTime))")
         
-        // 첫 다음 날에 10시 이전 데이터를 업로드를 하려는 것을 막는 조건(해당 날짜의 10시 이전에는 업로드 불가)
-        if lastIndex == 0 {
-            if nowUnixTime > nowTenUnixTime! {
-                UserDefaults.standard.setValue(false, forKey: "todayUploadState")
-                return
-            } else {
-                UserDefaults.standard.setValue(true, forKey: "todayUploadState")
-                return
-            }
-        }
-        
-        let checkRealm = realm.object(ofType: HealthRealmManager.self, forPrimaryKey: lastIndex)
-        let yesterDayUploadUnixTimeString = checkRealm?.saveUnixTime
-        let yesterDayUploadUnixTime = Double(yesterDayUploadUnixTimeString ?? "GetLastIndexUnixTimeError")
-        let yesterDayUploadTime = Date(timeIntervalSince1970: yesterDayUploadUnixTime!)
-        let todayCanUploadDate = Calendar.current.date(byAdding: .day, value: 2, to: yesterDayUploadTime)
-        let todayCanUploadTime = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: todayCanUploadDate!)
-        let todayCanUploadUnixTime = todayCanUploadTime?.timeIntervalSince1970
-        
-        print("now = \(now)")
-        print("TodayCanUploadTime = \(todayCanUploadTime!)")
-
-        if nowUnixTime > todayCanUploadUnixTime! {
+        if nowUnixTime > todayUploadUnixTime ?? 0.0 {
             UserDefaults.standard.setValue(false, forKey: "todayUploadState")
         } else {
             UserDefaults.standard.setValue(true, forKey: "todayUploadState")
@@ -390,10 +369,10 @@ class MenuViewController: UIViewController {
         }
     }
     
-    // 오늘 업로드가 완료되었는지 매일 00시에 확인하는 메소드
+    // 오늘 업로드가 완료되었는지 매일 10시에 확인하는 메소드
     func checkUploadState() {
         let now = Date()
-        let checkTime = Calendar.current.date(bySettingHour: 10, minute: 00, second: 03, of: now)!
+        let checkTime = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: now)!
         checkUploadTimer = Timer.init(fireAt: checkTime, interval: 86400, target: self, selector: #selector(checkTodayUploadState), userInfo: nil, repeats: true)
     }
     
@@ -403,7 +382,7 @@ class MenuViewController: UIViewController {
         let testNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
         let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
-            if let testNotionURL = NSURL(string: "https://potent-barnacle-025.notion.site/bc2c2486ad7b4cfa94823e303082abca") {
+            if let testNotionURL = NSURL(string: LanguageChange.LinkWord.howToUseNotion) {
                 let testNotionView: SFSafariViewController = SFSafariViewController(url: testNotionURL as URL)
                 self.present(testNotionView, animated: true, completion: nil)
             }
@@ -419,7 +398,7 @@ class MenuViewController: UIViewController {
         let warningNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
         let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
-            if let warningNotionURL = NSURL(string: "https://potent-barnacle-025.notion.site/3af5727fddf149f09a56bfa624d9ef15") {
+            if let warningNotionURL = NSURL(string: LanguageChange.LinkWord.precautionsNotion) {
                 let warningNotionView: SFSafariViewController = SFSafariViewController(url: warningNotionURL as URL)
                 self.present(warningNotionView, animated: true, completion: nil)
             }
@@ -435,7 +414,7 @@ class MenuViewController: UIViewController {
         let contactNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
         let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
-            if let contactNotionURL = NSURL(string: "https://potent-barnacle-025.notion.site/71828069ba564a4b876991c1610f161e") {
+            if let contactNotionURL = NSURL(string: LanguageChange.LinkWord.contactNotion) {
                 let contactNotionView: SFSafariViewController = SFSafariViewController(url: contactNotionURL as URL)
                 self.present(contactNotionView, animated: true, completion: nil)
             }
@@ -516,8 +495,8 @@ class MenuViewController: UIViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             indicator.stopAnimating()
-            WindowTabBarViewController.shared.selectedIndex = 1
             self.isUploadedToday()
+            
             let finishAlert = UIAlertController(title: LanguageChange.AlertWord.uploadComplete, message: nil, preferredStyle: .alert)
             let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
             finishAlert.addAction(okButton)
@@ -551,6 +530,7 @@ class MenuViewController: UIViewController {
     
     // 오늘 업로드가 되었는지 파악하는 메소드
     @objc func checkTodayUploadState() {
+        isAfterTen()
         isUploadedToday()
     }
     

@@ -78,3 +78,8 @@ surveyTime = "It's time for a survey!";
 finishSurvey = "Did you completed today's survey? 🤔";
 uploadHealthPlz = "Please upload health data!";
 pushButtonToUpload = "Please tab the button to upload datas 😃";
+
+// MARK: - LinkWord
+howToUseNotion = "https://potent-barnacle-025.notion.site/App-introduction-68f1959ac5a24a03a63828adbfd5fc22";
+precautionsNotion = "https://potent-barnacle-025.notion.site/Precautions-0748147f630e49eab9b4f889356adf5b";
+contactNotion = "https://potent-barnacle-025.notion.site/How-to-contact-us-0c1ea8146fee4b64960f63a0b392398c";

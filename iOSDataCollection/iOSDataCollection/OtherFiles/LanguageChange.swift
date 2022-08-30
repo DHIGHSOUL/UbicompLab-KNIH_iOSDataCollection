@@ -97,4 +97,10 @@ struct LanguageChange {
         static let pushButtonToUpload = "pushButtonToUpload".localized
     }
     
+    struct LinkWord {
+        static let howToUseNotion = "howToUseNotion".localized
+        static let precautionsNotion = "precautionsNotion".localized
+        static let contactNotion = "contactNotion".localized
+    }
+    
 }

@@ -78,3 +78,8 @@ surveyTime = "설문조사를 진행할 시간입니다!";
 finishSurvey = "오늘 설문조사는 하셨나요? 😃";
 uploadHealthPlz = "건강 데이터를 업로드해주세요!";
 pushButtonToUpload = "앱에서 버튼을 눌러주세요! 😊";
+
+// MARK: - LinkWord
+howToUseNotion = "https://potent-barnacle-025.notion.site/bc2c2486ad7b4cfa94823e303082abca";
+precautionsNotion = "https://potent-barnacle-025.notion.site/3af5727fddf149f09a56bfa624d9ef15";
+contactNotion = "https://potent-barnacle-025.notion.site/71828069ba564a4b876991c1610f161e";

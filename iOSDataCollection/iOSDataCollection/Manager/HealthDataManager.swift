@@ -646,10 +646,10 @@ class HealthDataManager {
         }
     }
     
-    //    // 앱 잠금을 파악하고 건강 데이터 생성/업로드를 지시하는 메소드
-    //    @objc func healthFileUploadCheck() {
-    //        print("Set health file upload timer")
-    //        phoneLockTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
-    //    }
+//        // 앱 잠금을 파악하고 건강 데이터 생성/업로드를 지시하는 메소드
+//        @objc func healthFileUploadCheck() {
+//            print("Set health file upload timer")
+//            phoneLockTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(makeHealthCSVFileAndUpload), userInfo: nil, repeats: true)
+//        }
     
 }
