@@ -283,12 +283,6 @@ class CSVFileManager {
             semaphore.signal()
         }
         
-        UserDefaults.standard.setValue(true, forKey: "todayUploadState")
-        let now = Date()
-        let nextDate = Calendar.current.date(byAdding: .day, value: 1, to: now)
-        let nextUnixTime = String(Int(nextDate?.timeIntervalSince1970 ?? 0.0))
-        UserDefaults.standard.setValue(nextUnixTime, forKey: "nextUploadDate")
-        
         task.resume()
         semaphore.wait()
     }

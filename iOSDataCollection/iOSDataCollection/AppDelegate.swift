@@ -21,7 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.standard.setValue(appStartDate, forKey: "appStartDate")
             print(appStartTime)
             let nextUploadDate = Calendar.current.date(byAdding: .day, value: 1, to: appStartTime)
-            print(nextUploadDate!)
             let nextUploadUnixTime = String(Int(nextUploadDate?.timeIntervalSince1970 ?? 0.0))
             UserDefaults.standard.setValue(nextUploadUnixTime, forKey: "nextUploadDate")
         } else {

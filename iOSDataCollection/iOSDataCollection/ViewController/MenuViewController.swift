@@ -374,6 +374,7 @@ class MenuViewController: UIViewController {
         let now = Date()
         let checkTime = Calendar.current.date(bySettingHour: 10, minute: 00, second: 00, of: now)!
         checkUploadTimer = Timer.init(fireAt: checkTime, interval: 86400, target: self, selector: #selector(checkTodayUploadState), userInfo: nil, repeats: true)
+        RunLoop.main.add(checkUploadTimer, forMode: .default)
     }
     
     // MARK: - @objc Method
@@ -471,6 +472,7 @@ class MenuViewController: UIViewController {
         }
         
         isAfterTen()
+        isUploadedToday()
         let uploadAlreadyCompleted = UserDefaults.standard.bool(forKey: "todayUploadState")
         print("todayUploadState = \(uploadAlreadyCompleted)")
         if uploadAlreadyCompleted == true {
@@ -485,7 +487,8 @@ class MenuViewController: UIViewController {
         if NetWorkManager.shared.isConnected == false {
             indicator.stopAnimating()
             let netWorkAlert = UIAlertController(title: LanguageChange.AlertWord.internetError, message: LanguageChange.AlertWord.internetErrorMessage, preferredStyle: .alert)
-            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
+            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) {_ in
+            }
             netWorkAlert.addAction(okButton)
             present(netWorkAlert, animated: true, completion: nil)
             return
@@ -495,10 +498,20 @@ class MenuViewController: UIViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             indicator.stopAnimating()
+            self.isAfterTen()
             self.isUploadedToday()
-            
+            UserDefaults.standard.setValue(true, forKey: "todayUploadState")
+            let now = Date()
+            let nextDate = Calendar.current.date(byAdding: .day, value: 1, to: now)
+            let nextUnixTime = String(Int(nextDate?.timeIntervalSince1970 ?? 0.0))
+            UserDefaults.standard.setValue(nextUnixTime, forKey: "nextUploadDate")
+            print("NextUploadDate = \(nextDate ?? Date())")
+            print("NextUploadUnixTime = \(nextUnixTime)")
             let finishAlert = UIAlertController(title: LanguageChange.AlertWord.uploadComplete, message: nil, preferredStyle: .alert)
-            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
+            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) {_ in
+                self.isAfterTen()
+                self.isUploadedToday()
+            }
             finishAlert.addAction(okButton)
             self.present(finishAlert, animated: true, completion: nil)
         }
