@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import SafariServices
+//import SafariServices
 import RealmSwift
 import NVActivityIndicatorView
 
@@ -348,6 +348,7 @@ class MenuViewController: UIViewController {
     
     // 오늘 업로드 상태를 파악하고 업로드 상태 라벨을 변경하는 메소드
     func isUploadedToday() {
+        UserDefaults.standard.setValue(false, forKey: "todayUploadState")
         let checkUpload = UserDefaults.standard.bool(forKey: "todayUploadState")
         
         if checkUpload == true {
@@ -383,11 +384,8 @@ class MenuViewController: UIViewController {
         let testNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
         let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
-            if let testNotionURL = NSURL(string: LanguageChange.LinkWord.howToUseNotion) {
-                let testNotionView: SFSafariViewController = SFSafariViewController(url: testNotionURL as URL)
-                self.present(testNotionView, animated: true, completion: nil)
-            }
-            
+            let testNotionURL = URL(string: LanguageChange.LinkWord.howToUseNotion)
+            UIApplication.shared.open(testNotionURL!, options: [:])
         }
         testNotionAlert.addAction(cancelButton)
         testNotionAlert.addAction(okButton)
@@ -399,11 +397,8 @@ class MenuViewController: UIViewController {
         let warningNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
         let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
-            if let warningNotionURL = NSURL(string: LanguageChange.LinkWord.precautionsNotion) {
-                let warningNotionView: SFSafariViewController = SFSafariViewController(url: warningNotionURL as URL)
-                self.present(warningNotionView, animated: true, completion: nil)
-            }
-            
+            let warningNotionURL = URL(string: LanguageChange.LinkWord.precautionsNotion)
+            UIApplication.shared.open(warningNotionURL!, options: [:])
         }
         warningNotionAlert.addAction(cancelButton)
         warningNotionAlert.addAction(okButton)
@@ -415,10 +410,8 @@ class MenuViewController: UIViewController {
         let contactNotionAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
         let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
-            if let contactNotionURL = NSURL(string: LanguageChange.LinkWord.contactNotion) {
-                let contactNotionView: SFSafariViewController = SFSafariViewController(url: contactNotionURL as URL)
-                self.present(contactNotionView, animated: true, completion: nil)
-            }
+            let contactNotionURL = URL(string: LanguageChange.LinkWord.contactNotion)
+            UIApplication.shared.open(contactNotionURL!, options: [:])
         }
         contactNotionAlert.addAction(cancelButton)
         contactNotionAlert.addAction(okButton)
@@ -430,10 +423,8 @@ class MenuViewController: UIViewController {
         let surveyAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
         let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
-            if let surveyRegisterURL = NSURL(string: "http://114.71.220.59:2017/register") {
-                let surveyRegisterView: SFSafariViewController = SFSafariViewController(url: surveyRegisterURL as URL)
-                self.present(surveyRegisterView, animated: true, completion: nil)
-            }
+            let surveyRegisterURL = URL(string: "http://114.71.220.59:2017/register")
+            UIApplication.shared.open(surveyRegisterURL!)
         }
         surveyAlert.addAction(cancelButton)
         surveyAlert.addAction(okButton)
@@ -445,10 +436,8 @@ class MenuViewController: UIViewController {
         let surveyAlert = UIAlertController(title: LanguageChange.AlertWord.wantToOpenWeb, message: nil, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: LanguageChange.AlertWord.alertCancel, style: .cancel)
         let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default) { _ in
-            if let surveyURL = NSURL(string: "http://114.71.220.59:2017/") {
-                let surveyView: SFSafariViewController = SFSafariViewController(url: surveyURL as URL)
-                self.present(surveyView, animated: true, completion: nil)
-            }
+            let surveyURL = URL(string: "http://114.71.220.59:2017/")
+            UIApplication.shared.open(surveyURL!)
         }
         surveyAlert.addAction(cancelButton)
         surveyAlert.addAction(okButton)
@@ -462,14 +451,14 @@ class MenuViewController: UIViewController {
         indicator.bounds = view.frame
         indicator.startAnimating()
         
-        if checkAppStartDay() == true {
-            indicator.stopAnimating()
-            let appStartAlert = UIAlertController(title: LanguageChange.AlertWord.uploadTomorrow, message: nil, preferredStyle: .alert)
-            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
-            appStartAlert.addAction(okButton)
-            present(appStartAlert, animated: true, completion: nil)
-            return
-        }
+//        if checkAppStartDay() == true {
+//            indicator.stopAnimating()
+//            let appStartAlert = UIAlertController(title: LanguageChange.AlertWord.uploadTomorrow, message: nil, preferredStyle: .alert)
+//            let okButton = UIAlertAction(title: LanguageChange.AlertWord.alertConfirm, style: .default)
+//            appStartAlert.addAction(okButton)
+//            present(appStartAlert, animated: true, completion: nil)
+//            return
+//        }
         
         isAfterTen()
         isUploadedToday()

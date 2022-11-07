@@ -127,7 +127,7 @@ class MainViewController: UIViewController {
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.pausesLocationUpdatesAutomatically = false
         locationManager.requestAlwaysAuthorization()
-        
+    
         if CLLocationManager.locationServicesEnabled() {
             print("위치 정보 읽기 시작")
             locationManager.startUpdatingLocation()
@@ -362,7 +362,8 @@ extension MainViewController: CLLocationManagerDelegate {
             print("위치 권한 거부")
             requestLocationAuthorization()
         default:
-            print("Default")
+            print("Location authorization is denied")
+            return
         }
     }
     

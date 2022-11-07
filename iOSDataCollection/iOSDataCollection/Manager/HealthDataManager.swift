@@ -9,7 +9,6 @@ import Foundation
 import HealthKit
 import RealmSwift
 import Realm
-import SwiftUI
 
 class HealthDataManager {
     
@@ -193,7 +192,7 @@ class HealthDataManager {
                     let printResultToQuantity: HKQuantitySample = newData as! HKQuantitySample
                     let collectedEnergyData = Int(printResultToQuantity.quantity.doubleValue(for: .smallCalorie()))
                     
-                    let newEnergyData = "\(startCollectTime),\(endCollectTime),\(collectDevice!),\(collectedEnergyData)"
+                    let newEnergyData = "\(startCollectTime),\(endCollectTime),\(String(describing: collectDevice)),\(collectedEnergyData)"
                     
                     self.energyStringDataArray.append(newEnergyData)
                 }

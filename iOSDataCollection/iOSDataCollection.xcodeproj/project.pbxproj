@@ -591,7 +591,7 @@
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSDataCollection/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = KNIH;
+				INFOPLIST_KEY_CFBundleDisplayName = Health24;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app requires health data permissions for collecting health datas";
@@ -633,7 +633,7 @@
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSDataCollection/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = KNIH;
+				INFOPLIST_KEY_CFBundleDisplayName = Health24;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app requires health data permissions for collecting health datas";
