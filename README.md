@@ -6,4 +6,4 @@ Don't use this application without permission.
 ### [2. Installation guide](https://github.com/DHIGHSOUL/UbicompLab-KNIH_iOSDataCollection/blob/main/Introduction/InstallationGuide.md)
 ### [3. Application introduction](https://github.com/DHIGHSOUL/UbicompLab-KNIH_iOSDataCollection/blob/main/Introduction/HowToUse.md)
 ### [4. Precautions](https://github.com/DHIGHSOUL/UbicompLab-KNIH_iOSDataCollection/blob/main/Introduction/Precautions.md)
-### 5. After test
+### [5. After test](https://github.com/DHIGHSOUL/UbicompLab-KNIH_GetAllHealthData/blob/main/README.md)
