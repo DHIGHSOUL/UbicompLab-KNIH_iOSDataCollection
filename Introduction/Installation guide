@@ -1,0 +1,14 @@
+# Application installation guide
+## Why you should set permissions correctly
+We can collect data normally only if you agree permissions in order below.<br>
+If you do not agree with the permissions below, or even change them later, app could be crash.<br>
+**Do not set the permissions separately!**<br>
+Sign in after set permissions.<br>
+Require permissions: **Location, Notification, Health data access**
+#
+### 1. Location permission(1)
+Location permissions are required twice. One is here, and the other in main view.<br>
+Click ‘Allow while using app’ in the location permission alert.
+
+### 2. Notification permission & Pass explanation
+Click ‘Allow’ in the notification permission alert.
