@@ -36,7 +36,6 @@ Please do the survey using guide below.
 #### + Survey guide(Kor)
 [KNIH_Manual_설문조사.pptx](https://github.com/DHIGHSOUL/UbicompLab-KNIH_iOSDataCollection/files/11889800/KNIH_Manual_.pptx)
 ## How to use application?
-#
 #### What is in the application?
 You can see 3 tabs below. Let’s find out what they do on each view!
 <br>
