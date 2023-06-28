@@ -2,7 +2,7 @@
 This application has been developed for the KNIH research, Ubicomp Lab at Soonchunhyang Univ.
 Don't use this application without permission.
 
-## 1. Downloading testing app(<span style="color:red">expired</span>)
+## 1. Downloading testing app<span style="color:red">(expired)</span>
 ### 1. TestFlight is Apple’s app testing tool
 Install testing application in the following order
 ### 2. TestFlight is Apple’s app testing tool
