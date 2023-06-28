@@ -1,4 +1,5 @@
-## 1. Downloading testing app<span style="color:red">(EXPIRED)</span>
+## 1. Downloading testing app
+<span style="color:red">(EXPIRED)</span>
 #### 1. TestFlight is Apple’s app testing tool
 Install testing application in the following order
 #
